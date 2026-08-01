@@ -10,7 +10,7 @@ config:
 
 ## 知识库结构
 
-知识库是一个 Git 仓库，由 `repo_url` 指定远程地址，克隆到本地 `kb_path` 目录。其内部结构如下：
+知识库是一个 Git 仓库，由 `repo_url` 指定远程地址，克隆到本地 `kb_path` 目录（`kb_path` 为可配置默认值，执行时替换为实际路径）。其内部结构如下：
 
 ```
 {kb_path}/
@@ -21,7 +21,7 @@ config:
 └── docs/
     └── {domain}/
         └── {doc_id}_{文档简称}/
-            ├── source.md          # 原始 Markdown 文档
+            ├── *.md               # 原始 Markdown 文档（约定为 source.md，文件名不限）
             ├── tree.json          # 章节索引树
             └── metadata.yaml      # 元数据
 ```
@@ -40,7 +40,7 @@ config:
   - 确认 `docs/` 目录结构
 
 - [ ] **Step 3: 放置文档**
-  - 在 `{kb_path}/docs/{domain}/{doc_id}_{简称}/` 下创建 source.md
+  - 在 `{kb_path}/docs/{domain}/{doc_id}_{简称}/` 下放入 Markdown 文档（约定命名为 source.md，文件名不限）
   - 直接使用用户提供的 Markdown 文件，不做格式转换
   - 检查 Markdown 结构：标题层级是否完整（#、##、###）、表格/代码块是否正确
 
@@ -49,13 +49,13 @@ config:
   - 字段：doc_id, title, domain, maintainer, source_format, converted_at, conversion_quality, manual_edit
 
 - [ ] **Step 5: 构建 tree.json 骨架**
-  - 运行脚本：`python .trae/skills/kb-ingest/scripts/build_tree.py "{kb_path}/docs/{domain}/{doc_id}_{简称}/source.md"`
-  - 脚本会自动在 source.md 同目录下生成 tree.json
+  - 运行脚本：`python .trae/skills/kb-ingest/scripts/build_tree.py "{kb_path}/docs/{domain}/{doc_id}_{简称}/{文档文件名}"`
+  - 脚本会自动在文档同目录下生成 tree.json
   - 生成骨架包含：id, level, title, anchor, start_line, end_line, page_range, children
   - summary 和 keywords 为空，等待下一步填充
 
 - [ ] **Step 6: 填充 summary 和 keywords**
-  - 读取 source.md 和 tree.json 骨架
+  - 读取文档原文和 tree.json 骨架
   - 为每个节点生成：summary（≤20字）、keywords（3~8个）
   - 将填充结果写入 tree.json
 
@@ -74,18 +74,18 @@ config:
 
 ## 文档重建
 
-用户说"重建 tree.json"或 source.md 有大幅修改时，直接从 Step 5 开始执行（覆盖已有 tree.json）。
+用户说"重建 tree.json"或文档有大幅修改时，直接从 Step 5 开始执行（覆盖已有 tree.json）。
 
 ## 质量检查
 
-- 检查 source.md 是否有完整标题层级（#、##、###）
+- 检查文档是否有完整标题层级（#、##、###）
 - 检查 tree.json 节点数是否合理（通常 10~30 个节点）
 - 标题层级缺失时，提示用户完善 Markdown 结构后重新入库
 
 ## 常见陷阱（Gotchas）
 
 - **doc_id 序号**：不要依赖记忆或简单计数，必须遍历 docs/ 目录确认最大已有序号
-- **标题层级**：source.md 必须有完整的标题层级（#、##、###），这是 tree.json 构建的基础
+- **标题层级**：文档必须有完整的标题层级（#、##、###），这是 tree.json 构建的基础
 - **tree.json 覆盖**：重建 tree.json 会覆盖之前填充的 summary 和 keywords，需重新填充
 - **manifest.json 更新**：必须使用 build_manifest.py 脚本生成，不要手动编辑
-- **{kb_path} 占位符**：执行时替换为实际知识库路径，通常是 `knowledge_repo`
+- **{kb_path} 占位符**：执行时替换为实际知识库路径，默认为 `knowledge_repo`（可配置）

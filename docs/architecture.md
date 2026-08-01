@@ -82,9 +82,9 @@ kb-pilot 反其道而行：**把 LLM 当作会阅读的人，给它目录和原�
 - `start_line` / `end_line`：原文行号范围
 - `children`：子节点列表
 
-### 3. 原始文档（source.md）
+### 3. 原始文档
 
-Markdown 格式的完整文档，不切分，保留所有原始内容和结构。
+Markdown 格式的完整文档，不切分，保留所有原始内容和结构。文件名不限，约定为 `source.md`。
 
 ### 4. 元数据（metadata.yaml）
 

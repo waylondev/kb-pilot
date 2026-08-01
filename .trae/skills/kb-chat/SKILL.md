@@ -1,6 +1,6 @@
 ---
 name: kb-chat
-description: 基于结构化树索引（tree.json）和全文（source.md）的知识库问答。处理知识问答、自我纠错、跨文档对比、知识同步、路由偏好记忆。当用户询问知识库中的文档内容时使用。
+description: 基于结构化树索引（tree.json）和全文（Markdown 原文）的知识库问答。处理知识问答、自我纠错、跨文档对比、知识同步、路由偏好记忆。当用户询问知识库中的文档内容时使用。
 config:
   repo_url: ""
   kb_path: knowledge_repo
@@ -26,10 +26,10 @@ config:
 ### 3. 章节定位
 - 读取候选文档的 `docs/{domain}/{doc_id}/tree.json`，遍历 nodes
 - 按 keywords 匹配用户问题关键词，取匹配数最多者
-- 按 anchor 在 `docs/{domain}/{doc_id}/source.md` 中精确定位
+- 按 anchor 在 `docs/{domain}/{doc_id}/` 下的 Markdown 原文中精确定位
 
 ### 4. 内容截取
-- 根据选中节点的 start_line 和 end_line 读取 `docs/{domain}/{doc_id}/source.md`
+- 根据选中节点的 start_line 和 end_line 读取 `docs/{domain}/{doc_id}/` 下的 Markdown 原文
 - 内容超过 2000 字时启用二次精确定位
 
 ### 5. 纠错加载
@@ -76,7 +76,7 @@ config:
 ```
 **答案**：[直接回答]
 
-**依据**：docs/{domain}/{doc_dir}/source.md#L{start}-L{end}（{章节名}）
+**依据**：docs/{domain}/{doc_dir}/{文件名}#L{start}-L{end}（{章节名}）
 
 **置信度**：[高/中/低]（[原因说明]）
 ```
@@ -85,7 +85,7 @@ config:
 
 ## 重要约束
 
-- 答案必须基于 source.md 原文，不能凭空编造
+- 答案必须基于文档原文，不能凭空编造
 - 知识库中找不到相关信息时，明确告知"知识库中未找到相关信息"
 - 优先使用 active 状态的纠错记录
 - 每次回答必须引用具体行号范围
@@ -97,4 +97,4 @@ config:
 - **纠错冲突处理**：conflicted 状态的纠错必须展示所有版本让用户选择，不能自行裁决
 - **跨文档对比**：确保各文档分别独立执行路由和定位，不要混用
 - **路由偏好**：仅存储用户明确表达的偏好，不要从对话历史中推断
-- **{kb_path} 占位符**：执行时替换为实际知识库路径，默认为 `knowledge_repo`
+- **{kb_path} 占位符**：执行时替换为实际知识库路径，默认为 `knowledge_repo`（可配置）

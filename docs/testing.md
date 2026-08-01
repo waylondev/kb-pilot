@@ -14,7 +14,7 @@ kb-pilot 的 E2E 测试严格遵循 SKILL 流程，**不使用 Python 脚本替�
 
 - 输入：包含各种标题层级（#、##、###）的 Markdown 文件
 - 验证：节点数、层级、行号范围是否正确
-- 方法：`python .trae/skills/kb-ingest/scripts/build_tree.py <source.md>`
+- 方法：`python .trae/skills/kb-ingest/scripts/build_tree.py <Markdown 文件路径>`
 
 #### build_manifest.py 测试
 
@@ -32,7 +32,7 @@ kb-pilot 的 E2E 测试严格遵循 SKILL 流程，**不使用 Python 脚本替�
 
 ```
 Phase 1: kb-ingest
-  1. 选择测试文档（source.md）
+  1. 选择测试文档（Markdown 文件）
   2. 执行 kb-ingest SKILL 9 步流程
   3. 验证产物：metadata.yaml, tree.json, manifest.json
 

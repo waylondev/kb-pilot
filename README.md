@@ -12,6 +12,32 @@
 | 检索黑盒 | 向量相似度，结果不可解释 | 树索引关键词匹配，确定性可复现 |
 | 答案错误 | 无法修正，只能重跑 | 对话式纠错，持久化记忆 |
 
+### 架构对比一览
+
+```mermaid
+graph TB
+    subgraph traditional["传统 RAG"]
+        direction TB
+        T1["📄 文档"] --> T2["✂️ Chunk 切分<br/><i>上下文断裂</i>"]
+        T2 --> T3["🔢 Embedding 向量化"]
+        T3 --> T4["🗄️ 向量数据库"]
+        T4 --> T5["🎲 相似度检索<br/><i>黑盒不可解释</i>"]
+        T5 --> T6["🤖 LLM 生成答案<br/><i>无法纠错</i>"]
+    end
+
+    subgraph kbpilot["kb-pilot"]
+        direction TB
+        K1["📄 文档"] --> K2["📝 source.md<br/><b>零切分，完整保留</b>"]
+        K2 --> K3["🌳 tree.json<br/>章节索引树"]
+        K3 --> K4["🗺️ manifest.json<br/>全局路由表"]
+        K4 --> K5["🎯 关键词精确匹配<br/><b>确定性可复现</b>"]
+        K5 --> K6["🤖 LLM 生成答案<br/><b>对话式纠错</b>"]
+    end
+
+    traditional -.->|"Chunk 切分<br/>向量检索<br/>概率匹配"| traditional
+    kbpilot -.->|"零切分<br/>树索引<br/>确定性路由"| kbpilot
+```
+
 ## 核心创新
 
 - **树索引替代向量检索**：不依赖 Embedding 模型，用 tree.json 章节索引树实现确定性定位，路由结果可复现

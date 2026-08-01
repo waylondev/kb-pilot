@@ -2,7 +2,9 @@
 
 ## 概述
 
-将 PDF/Word/Excel/HTML 文档接入知识库系统。转换文档为 Markdown，创建元数据，构建章节索引树，更新全局路由表。
+将 Markdown 文档接入知识库系统。创建元数据，构建章节索引树，更新全局路由表。
+
+> **设计边界**：kb-pilot 专注 Markdown 输入。PDF/Word/Excel/HTML 等格式的转换由客户自行处理，本 SKILL 不负责格式转换。
 
 ## 配置
 
@@ -16,7 +18,7 @@ config:
 
 ```
 Step 1: 接收用户输入
-  ├── 文档路径（PDF/Word/Excel/HTML）
+  ├── Markdown 文档路径
   ├── 所属领域
   ├── 文档简称
   └── 维护人
@@ -27,10 +29,9 @@ Step 2: 准备知识库
   └── 已存在 → git pull 同步
     │
     ▼
-Step 3: 转换文档
-  ├── PDF/Word/Excel → MarkItDown
-  ├── HTML → html2text / pandoc
-  └── 检查转换质量：表格完整性、标题层级
+Step 3: 放置文档
+  ├── 直接使用用户提供的 Markdown 文件
+  └── 检查 Markdown 结构：标题层级、表格/代码块正确性
     │
     ▼
 Step 4: 创建 metadata.yaml
@@ -82,9 +83,9 @@ Step 9: 确认完成
 
 ## 质量检查
 
-- 转换质量差时标记 `conversion_quality: poor`
 - 检查 source.md 标题层级完整性（#、##、###）
 - tree.json 节点数合理范围：10-30 个节点
+- 标题层级缺失时，提示用户完善 Markdown 结构后重新入库
 
 ## 文档重建
 
@@ -93,6 +94,6 @@ source.md 大幅修改时，从 Step 5 重新执行（覆盖已有 tree.json）�
 ## 常见陷阱
 
 - **doc_id 序号**：必须遍历 docs/ 目录确认最大序号，不能依赖记忆
-- **转换质量**：MarkItDown 对复杂表格和图文混排可能不佳，务必检查
+- **标题层级**：source.md 必须有完整的标题层级，这是 tree.json 构建的基础
 - **tree.json 覆盖**：重建会丢失 summary 和 keywords
 - **manifest.json**：必须用脚本生成，不要手动编辑

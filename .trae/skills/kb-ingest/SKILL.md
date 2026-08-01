@@ -1,10 +1,12 @@
 ---
 name: kb-ingest
-description: 将 PDF/Word/Excel/HTML 文档接入知识库系统。转换文档为 Markdown，创建元数据，构建章节索引树，更新全局路由表。当用户提供新文档需要入库时使用。
+description: 将 Markdown 文档接入知识库系统。创建元数据，构建章节索引树，更新全局路由表。当用户提供 Markdown 文档需要入库时使用。
 config:
   repo_url: ""
   kb_path: knowledge_repo
 ---
+
+> **设计边界**：kb-pilot 专注 Markdown 输入。PDF/Word/Excel/HTML 等格式的转换由客户自行处理，本 SKILL 不负责格式转换。原因：转换质量不可控，引入转换工具会增加复杂度且无法保证输出质量。
 
 ## 知识库结构
 
@@ -27,7 +29,7 @@ config:
 ## 接入流程（检查清单）
 
 - [ ] **Step 1: 接收用户输入**
-  - 文档路径（PDF/Word/Excel/HTML）
+  - Markdown 文档路径
   - 所属领域
   - 文档简称
   - 维护人
@@ -37,12 +39,10 @@ config:
   - 若已存在，执行 `git pull` 同步最新内容
   - 确认 `docs/` 目录结构
 
-- [ ] **Step 3: 转换文档**
+- [ ] **Step 3: 放置文档**
   - 在 `{kb_path}/docs/{domain}/{doc_id}_{简称}/` 下创建 source.md
-  - **PDF/Word/Excel** → 使用 MarkItDown 转换
-  - **HTML 页面** → 使用 html2text 或 pandoc 转换
-  - 检查转换质量：表格是否完整、标题层级是否正常
-  - 工具不可用时，提示用户手动提供 Markdown 内容
+  - 直接使用用户提供的 Markdown 文件，不做格式转换
+  - 检查 Markdown 结构：标题层级是否完整（#、##、###）、表格/代码块是否正确
 
 - [ ] **Step 4: 创建 metadata.yaml**
   - doc_id 序号规则：查看 `{kb_path}/docs/` 下所有已有文档，取最大序号+1
@@ -78,14 +78,14 @@ config:
 
 ## 质量检查
 
-- 转换质量差时，metadata.yaml 中标记 `conversion_quality: poor`，提示用户手动校验
 - 检查 source.md 是否有完整标题层级（#、##、###）
 - 检查 tree.json 节点数是否合理（通常 10~30 个节点）
+- 标题层级缺失时，提示用户完善 Markdown 结构后重新入库
 
 ## 常见陷阱（Gotchas）
 
 - **doc_id 序号**：不要依赖记忆或简单计数，必须遍历 docs/ 目录确认最大已有序号
-- **转换质量**：MarkItDown 对复杂表格和图文混排可能转换不佳，务必人工检查标题层级
+- **标题层级**：source.md 必须有完整的标题层级（#、##、###），这是 tree.json 构建的基础
 - **tree.json 覆盖**：重建 tree.json 会覆盖之前填充的 summary 和 keywords，需重新填充
 - **manifest.json 更新**：必须使用 build_manifest.py 脚本生成，不要手动编辑
 - **{kb_path} 占位符**：执行时替换为实际知识库路径，通常是 `knowledge_repo`

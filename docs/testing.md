@@ -45,18 +45,19 @@ Phase 2: kb-chat
 
 #### 测试数据集
 
-推荐使用 CRAG（Comprehensive RAG Benchmark）数据集：
+自建测试数据集，覆盖多种格式和题型：
 
-- 来源：Meta CRAG Benchmark
-- 规模：~4409 个 QA 对，覆盖 5 个领域
-- 题型：8 种问题类型（simple, simple_w_condition, multi-hop, comparison, aggregation, set, post-processing, false_premise）
-- 格式：JSONL，每行包含 query、answer、page_content（HTML 文档）
+- 文档格式：表格、代码块、Mermaid 图、数学公式、列表、流程图
+- 语言：中文 + 英文混合
+- 题型：simple、aggregation、comparison、multi-hop、post-processing
+- 每个文档配套 QA.md（问题 + 预期答案），确保答案可验证
 
 #### 测试样本选择
 
-选择 5-10 个样本，覆盖：
-- 多领域（finance, sports, music, movie, open）
-- 多题型（simple, simple_w_condition, multi-hop, comparison, aggregation, post-processing）
+选择 5+ 篇文档，覆盖：
+- 多领域（AI、财经、技术、金融等）
+- 多题型（simple、aggregation、comparison、multi-hop、post-processing）
+- 多格式（中文表格、英文财务表、代码块、Mermaid 图、数学公式）
 - 不同文档长度（短/中/长）
 
 #### 答案评估标准
@@ -129,23 +130,6 @@ Phase 2: kb-chat
 2. 验证 `route_preferences.json` 更新
 3. 问一个模糊问题，验证是否优先匹配偏好领域
 
-## 与传统 RAG 的对比测试
+## 与 RAG 方案的关系
 
-详见 [rag-comparison.md](rag-comparison.md) — 与 8 种主流方案的架构对比。
-
-| 方案 | 检索方式 | 部署要求 |
-|------|---------|---------|
-| Naive RAG | 向量相似度 + Chunk 切分 | Embedding 模型 + 向量数据库 |
-| GraphRAG | 实体关系图 | 图数据库 + 实体抽取 |
-| HyDE | 假设文档嵌入 | Embedding 模型 + 向量数据库 |
-| RAPTOR | 层级摘要树 | Embedding 模型 + 向量数据库 |
-| kb-pilot | 树索引确定性定位 | 仅文件系统 |
-
-对比维度：
-- 路由准确率
-- 答案召回率
-- 部署成本
-- 上下文完整性
-- 可追溯性
-- 纠错能力
-- 文档更新成本
+详见 [rag-comparison.md](rag-comparison.md) — 与 8 种主流方案的**设计哲学**对比，而非性能跑分。核心差异在于对 LLM 的信任程度：kb-pilot 信任 LLM 自己理解，RAG 方案给 LLM 加辅助检索结构。

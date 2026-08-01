@@ -220,3 +220,7 @@ __marimo__/
 # kb-pilot: knowledge base data and datasets (not source code)
 knowledge_repo/
 data/
+
+# kb-pilot: test scripts and temporary tools (not source code)
+tests/
+scripts/

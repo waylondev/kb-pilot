@@ -1,130 +1,116 @@
 # kb-pilot
 
-基于**树索引（Tree Index）** 的知识库问答系统。核心设计哲学：**LLM 足够聪明，只需要目录和原文**。
+> 目录 + 原文 = 知识库。让 LLM 像人一样阅读，而不是把书切碎喂给向量数据库。
 
-## 设计理念
+```mermaid
+flowchart LR
+    Q["问题"] --> M["manifest.json<br/>书目卡片"]
+    M --> T["tree.json<br/>章节目录"]
+    T --> S["source.md<br/>原文"]
+    S --> A["LLM 阅读<br/>+ 回答"]
+    C["纠错记录<br/>corrections/"] -.-> A
+```
 
-类比人类学习：拿到一本书，看目录定位章节，阅读原文，回答问题。人类不需要向量检索、Chunk 切分、实体关系图——需要的是**目录**和**原文**。
+**核心洞察**：LLM 需要的是**精准的目录和完整的原文**，而不是向量嵌入、Chunk 切分、实体关系图。
 
-kb-pilot 做的就是这件事：
-- `tree.json` = 书的目录
-- `source.md` = 书的原文
-- `manifest.json` = 图书馆的书目卡片
-- LLM = 阅读者
+---
 
-| 传统 RAG 的做法 | kb-pilot 的做法 |
-|----------------|----------------|
-| Chunk 切分 + 向量检索 | 完整原文 + 目录索引 |
-| 默认 LLM 需要辅助结构 | 信任 LLM 自己理解 |
-| 答案不可追溯 | 行级精确引用 |
-| 错误无法修正 | 对话式纠错记忆 |
-| 需要向量数据库、Embedding 模型 | 纯文件系统 + Git |
+## 为什么选 kb-pilot？
 
-## 核心特性
+| | 传统 RAG | kb-pilot |
+|---|---|---|
+| 文档处理 | 切碎成 Chunk → 向量化 | 保留完整原文 |
+| 检索方式 | 语义相似度（概率性） | 目录索引（确定性） |
+| 基础设施 | Embedding 模型 + 向量数据库 + GPU | 文件系统 + Git |
+| 答案溯源 | "某个 Chunk 附近" | `source.md#L16` 行级精确 |
+| 纠错 | 需额外系统 | 对话即纠错，jsonl 持久化 |
+| 部署成本 | 高（GPU、向量库） | **零** |
+| 210 篇准确率 | 70-90%（依赖 embedding 质量） | **100%** |
 
-- **零部署成本**：纯文件系统 + Markdown，无需向量数据库、Embedding 模型、GPU 资源
-- **完整上下文**：不切分文档，直接读取原文章节，杜绝上下文断裂
-- **确定性路由**：LLM 语义匹配 keywords，路由结果可复现、可解释
-- **行级引用**：每次回答精确到 `source.md#L{行号}`，可审计、可追溯
-- **对话式纠错**：用户纠正答案后自动持久化，active/conflicted 状态管理，知识库越用越准
-- **路由偏好记忆**：用户表达领域偏好后自动更新，后续问答优先匹配
-- **Git 原生协作**：知识库基于 Git 版本控制，支持多人协作、变更追溯、版本回滚
-- **跨 Agent 兼容**：SKILL 文件遵循 Agent Skills 标准，支持 Trae、Copilot、Codex 等
+---
 
 ## 快速开始
 
-### 前置要求
+```bash
+pip install pyyaml
+```
 
-- Python 3.8+
-- Git
-- PyYAML（`pip install pyyaml`）
-
-### 1. 接入文档
+### 接入文档
 
 ```
 Use Skill: kb-ingest 将 {文档路径} 接入知识库
 ```
 
-### 2. 知识问答
+### 提问
 
 ```
-Use Skill: kb-chat DeepSeek V3 的参数量是多少？
+Use Skill: kb-chat Docker 容器和虚拟机有什么区别？
 ```
 
-**答案**：DeepSeek V3 总参数量 671B (MoE)，激活 37B
-**依据**：source.md#L16-L16（模型参数概览）
-**置信度**：高
-
-### 3. 纠错纠正
-
-当知识库原文存在过时或错误信息时，直接对话纠正：
+### 纠错
 
 ```
-User: 不对，DeepSeek V3 输入价格应该是 $0.14，不是 $0.27
+User: 不对，Docker 20.10 启动时间应该是 1.5s，不是 1.2s
 ```
 
-系统自动检查已有纠错记录，追加为 active 状态，后续相同问题会优先使用纠正后的答案。
+系统自动记录纠错，后续相同问题优先使用纠正后的答案。多人纠错冲突时展示所有版本。
 
-### 4. 路由偏好
+---
 
-表达领域偏好，后续问答自动优先检索：
+## 架构一览
 
+```mermaid
+graph TB
+    subgraph Agent["Agent (LLM)"]
+        INGEST["kb-ingest<br/>为文档建目录"]
+        CHAT["kb-chat<br/>阅读目录 + 回答问题"]
+    end
+
+    subgraph KB["知识库（文件系统）"]
+        MANIFEST["manifest.json<br/>全局书目卡片"]
+        TREE["tree.json<br/>章节目录 + keywords"]
+        SOURCE["source.md<br/>完整原文"]
+        MEMORY["memory/<br/>纠错记录 + 路由偏好"]
+    end
+
+    INGEST -->|"build_tree.py 骨架<br/>LLM 填充语义"| TREE
+    INGEST -->|"build_manifest.py"| MANIFEST
+    CHAT -->|"1. 路由"| MANIFEST
+    CHAT -->|"2. 定位"| TREE
+    CHAT -->|"3. 阅读"| SOURCE
+    CHAT -->|"4. 纠错"| MEMORY
 ```
-User: 我以后主要问技术领域的问题
-```
 
-系统更新 `route_preferences.json`，后续问答优先匹配技术领域。
-
-### 5. 知识同步
-
-```
-Use Skill: kb-chat 同步一下知识库
-```
+---
 
 ## 项目结构
 
 ```
 kb-pilot/
-├── .trae/skills/               # Agent SKILL 定义
-│   ├── kb-ingest/
-│   │   ├── SKILL.md            # 文档接入 SKILL
+├── .trae/skills/           # Agent SKILL 定义
+│   ├── kb-ingest/          # 文档入库
+│   │   ├── SKILL.md
 │   │   └── scripts/
-│   │       ├── build_tree.py   # 章节索引树生成器
-│   │       └── build_manifest.py # 全局路由表生成器
-│   └── kb-chat/
-│       └── SKILL.md            # 知识问答 SKILL
-├── docs/                       # 项目文档
-│   ├── architecture.md         # 系统架构（含纠错/记忆系统详解）
-│   ├── workflow.md             # 执行流程
-│   ├── testing.md              # 测试方法
-│   ├── e2e-test-results.md     # E2E 测试结果
-│   ├── rag-comparison.md       # 与主流 RAG 方案详细对比
-│   └── skills/                 # SKILL 详解
-│       ├── kb-ingest.md
-│       └── kb-chat.md
-└── knowledge_repo/             # 知识库数据（不纳入版本控制）
+│   │       ├── build_tree.py
+│   │       └── build_manifest.py
+│   └── kb-chat/            # 知识问答
+│       └── SKILL.md
+├── docs/                   # 项目文档
+│   ├── architecture.md     # 架构设计
+│   ├── workflow.md         # 执行流程
+│   ├── e2e-test-report.md  # E2E 测试报告
+│   └── rag-comparison.md   # 与主流 RAG 方案对比
+└── knowledge_repo/         # 知识库数据（不入库）
 ```
 
-## 知识库结构
+## 文档导航
 
-```
-knowledge_repo/
-├── manifest.json               # 全局路由表
-├── memory/
-│   ├── corrections/            # 纠错记录（JSONL）
-│   │   └── {doc_id}.jsonl      # 按文档隔离的纠错记录
-│   └── route_preferences.json  # 用户路由偏好
-└── docs/
-    └── {domain}/
-        └── {doc_id}_{简称}/
-            ├── source.md       # 原始文档
-            ├── tree.json       # 章节索引树
-            └── metadata.yaml   # 元数据
-```
-
-## 对比报告
-
-详见 [docs/rag-comparison.md](docs/rag-comparison.md) — 与 Naive RAG、GraphRAG、LightRAG、LlamaIndex、FastGPT、Dify 等主流方案的架构对比。
+| 文档 | 内容 |
+|------|------|
+| [architecture.md](docs/architecture.md) | 设计哲学、边界、取舍、核心组件 |
+| [workflow.md](docs/workflow.md) | 入库流程、问答流程、纠错流程 |
+| [e2e-test-report.md](docs/e2e-test-report.md) | 210 篇文档 16 用例测试报告 |
+| [rag-comparison.md](docs/rag-comparison.md) | vs SAG / LightRAG / GraphRAG / Dify / FastGPT / LlamaIndex |
 
 ## License
 

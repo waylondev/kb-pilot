@@ -111,8 +111,49 @@ Step 6: 生成答案
    - 答案召回率（答案是否包含关键信息）
    - 置信度分布
 
+## 纠错流程
+
+当知识库原文存在过时或错误信息时，用户可以通过对话纠正：
+
+```
+User: 不对，DeepSeek V3 输入价格应该是 $0.14，不是 $0.27
+    │
+    ▼
+检查 memory/corrections/doc_001.jsonl
+    │
+    ├── 无相似记录
+    │   └── 追加: {"question":"DeepSeek V3 输入价格","correct_answer":"$0.14","status":"active"}
+    │
+    ├── 有记录且答案相同
+    │   └── 跳过（已存在）
+    │
+    └── 有记录且答案不同
+        └── 追加: {"correct_answer":"$0.14","status":"conflicted"}
+    │
+    ▼
+重新回答（使用纠正后的信息）
+```
+
+**后续问答时**，kb-chat Step 5 自动加载纠错记录，优先使用 `active` 状态的答案。`conflicted` 状态时展示所有版本让用户选择。
+
+## 路由偏好流程
+
+```
+User: 我以后主要问技术领域的问题
+    │
+    ▼
+更新 memory/route_preferences.json
+    │
+    ▼
+后续 kb-chat Step 1:
+  读取 route_preferences.json
+  偏好领域 "01_技术" 在匹配时给予更高权重
+```
+
 ## 注意事项
 
 - **LLM 驱动**：Step 6（填充 summary/keywords）和 kb-chat 全流程由 LLM 执行，不编写 Python 脚本替代
 - **脚本边界**：仅 build_tree.py（Step 5）和 build_manifest.py（Step 7）使用脚本，因为它们是确定性操作
 - **Git 同步**：多用户协作时，每次问答前先 git pull 确保知识库最新
+- **纠错隔离**：纠错记录按 doc_id 隔离，不同文档的纠错互不影响
+- **偏好约束**：仅存储用户明确表达的偏好，不从对话历史推断

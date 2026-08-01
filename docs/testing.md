@@ -131,7 +131,7 @@ Phase 2: kb-chat
 
 ## 与传统 RAG 的对比测试
 
-详见 [rag-comparison.md](rag-comparison.md) — 与 Naive RAG、GraphRAG、HyDE、RAPTOR 等主流方案的全面对比。
+详见 [rag-comparison.md](rag-comparison.md) — 与 8 种主流方案的架构对比。
 
 | 方案 | 检索方式 | 部署要求 |
 |------|---------|---------|

@@ -9,15 +9,19 @@
 | 痛点 | 传统 RAG | kb-pilot |
 |------|---------|----------|
 | 上下文断裂 | 固定大小 Chunk 切分，语义被截断 | 完整章节读取，零切分 |
-| 检索黑盒 | 向量相似度，结果不可解释 | 树索引关键词匹配，100% 可复现 |
+| 检索黑盒 | 向量相似度，结果不可解释 | 树索引关键词匹配，确定性可复现 |
 | 答案错误 | 无法修正，只能重跑 | 对话式纠错，持久化记忆 |
 
 ## 核心创新
 
-- **树索引替代向量检索**：不依赖 Embedding 模型，用 tree.json 章节索引树实现确定性定位，路由准确率 100%
+- **树索引替代向量检索**：不依赖 Embedding 模型，用 tree.json 章节索引树实现确定性定位，路由结果可复现
 - **完整上下文不切分**：直接读取 source.md 原文段落，保持文档完整语义，杜绝上下文断裂
-- **对话式纠错记忆**：用户纠正答案后自动持久化，后续问答自动使用修正后的信息，让知识库越用越准
-- **零部署成本**：纯文件系统 + Markdown + Git，无需向量数据库、Embedding 模型、GPU 资源
+- **对话式纠错记忆**：用户纠正答案后自动持久化为 JSONL 纠错记录，active/conflicted 状态管理，让知识库越用越准
+- **路由偏好记忆**：用户表达"主要关注 X 领域"后自动更新 route_preferences.json，后续问答自动优先匹配
+- **脚本骨架 + LLM 语义**：build_tree.py 生成确定性结构骨架，LLM 仅填充 summary 和 keywords，检索可控、语义可扩展
+- **行级精确引用**：每次回答精确到 `source.md#L{行号}`，可审计、可追溯、可复现
+- **Git 原生协作**：知识库基于 Git 版本控制，支持多人协作编辑、变更追溯、版本回滚
+- **零部署成本**：纯文件系统 + Markdown，无需向量数据库、Embedding 模型、GPU 资源
 - **跨 Agent 兼容**：SKILL 文件遵循 Agent Skills 标准，支持 Trae、Copilot、Codex 等多种 Agent
 
 ## 快速开始
@@ -113,7 +117,7 @@ knowledge_repo/
 
 ## 对比报告
 
-详见 [docs/rag-comparison.md](docs/rag-comparison.md) — 与 Naive RAG、GraphRAG、HyDE、RAPTOR 等主流方案的全面对比。
+详见 [docs/rag-comparison.md](docs/rag-comparison.md) — 与 Naive RAG、GraphRAG、LightRAG、LlamaIndex、FastGPT、Dify 等主流方案的架构对比。
 
 ## License
 

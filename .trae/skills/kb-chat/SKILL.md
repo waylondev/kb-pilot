@@ -1,9 +1,17 @@
 ---
 name: kb-chat
 description: 基于结构化树索引（tree.json）和全文（source.md）的知识库问答。处理知识问答、自我纠错、跨文档对比、知识同步、路由偏好记忆。当用户询问知识库中的文档内容时使用。
+config:
+  repo_url: ""
+  kb_path: knowledge_repo
 ---
 
 ## 核心流程
+
+### 0. 准备知识库
+- 若 `{kb_path}` 目录不存在，从 `repo_url` 克隆：`git clone {repo_url} {kb_path}`
+- 若已存在，执行 `git pull` 同步最新内容
+- 以下所有路径均相对于 `{kb_path}` 目录
 
 ### 1. 领域路由
 - 读取 `memory/route_preferences.json` 检查用户偏好
@@ -16,12 +24,12 @@ description: 基于结构化树索引（tree.json）和全文（source.md）的�
 - 匹配到多个候选时列出 Top 2 让用户确认
 
 ### 3. 章节定位
-- 读取候选文档的 `tree.json`，遍历 nodes
+- 读取候选文档的 `docs/{domain}/{doc_id}/tree.json`，遍历 nodes
 - 按 keywords 匹配用户问题关键词，取匹配数最多者
-- 按 anchor 在 source.md 中精确定位
+- 按 anchor 在 `docs/{domain}/{doc_id}/source.md` 中精确定位
 
 ### 4. 内容截取
-- 根据选中节点的 start_line 和 end_line 读取 source.md
+- 根据选中节点的 start_line 和 end_line 读取 `docs/{domain}/{doc_id}/source.md`
 - 内容超过 2000 字时启用二次精确定位
 
 ### 5. 纠错加载
@@ -37,7 +45,7 @@ description: 基于结构化树索引（tree.json）和全文（source.md）的�
 ### 自我纠错
 用户说"不对"/"应该是"/"纠正一下"等：
 1. 确认要纠正的信息
-2. 检查 `corrections/{doc_id}.jsonl` 是否有相似纠错
+2. 检查 `memory/corrections/{doc_id}.jsonl` 是否有相似纠错
 3. 不存在 → 追加为 `active`；存在且答案不同 → 追加为 `conflicted`
 4. 确认："已记录纠错：[原信息] → [新信息]"
 5. 用纠错后信息重新回答
@@ -60,7 +68,7 @@ description: 基于结构化树索引（tree.json）和全文（source.md）的�
 
 ### 知识同步
 用户说"同步一下"/"更新知识库"/"pull"等：
-1. 执行 `git pull`
+1. `cd {kb_path} && git pull`
 2. 报告更新了哪些文档，无变更则告知"知识库已是最新"
 
 ## 回答格式模板
@@ -68,7 +76,7 @@ description: 基于结构化树索引（tree.json）和全文（source.md）的�
 ```
 **答案**：[直接回答]
 
-**依据**：docs/{domain}/{doc_dir}/source.md#L{start}-L{end}（第{page_start}-{page_end}页，{章节名}）
+**依据**：docs/{domain}/{doc_dir}/source.md#L{start}-L{end}（{章节名}）
 
 **置信度**：[高/中/低]（[原因说明]）
 ```
@@ -89,3 +97,4 @@ description: 基于结构化树索引（tree.json）和全文（source.md）的�
 - **纠错冲突处理**：conflicted 状态的纠错必须展示所有版本让用户选择，不能自行裁决
 - **跨文档对比**：确保各文档分别独立执行路由和定位，不要混用
 - **路由偏好**：仅存储用户明确表达的偏好，不要从对话历史中推断
+- **{kb_path} 占位符**：执行时替换为实际知识库路径，默认为 `knowledge_repo`

@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# kb-pilot: knowledge base data and datasets (not source code)
+knowledge_repo/
+data/

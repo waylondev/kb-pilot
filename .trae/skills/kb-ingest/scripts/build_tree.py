@@ -207,8 +207,13 @@ def build(source_path: str, output_path: str | None = None, ai_fill: dict | None
     # 从文件路径推断 doc_id 和 title
     doc_dir = source.parent
     dir_name = doc_dir.name  # e.g. "doc_001_2025财务报告"
-    tree["doc_id"] = dir_name.split("_")[0] + "_" + dir_name.split("_")[1]
-    tree["title"] = dir_name.split("_", 2)[2] if len(dir_name.split("_", 2)) > 2 else dir_name
+    parts = dir_name.split("_", 2)
+    if len(parts) >= 2:
+        tree["doc_id"] = parts[0] + "_" + parts[1]
+        tree["title"] = parts[2] if len(parts) > 2 else parts[1]
+    else:
+        tree["doc_id"] = dir_name
+        tree["title"] = dir_name
     
     if ai_fill:
         tree = merge_summary_keywords(tree, ai_fill)

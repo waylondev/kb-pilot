@@ -88,4 +88,6 @@ config:
 - **标题层级**：文档必须有完整的标题层级（#、##、###），这是 tree.json 构建的基础
 - **tree.json 覆盖**：重建 tree.json 会覆盖之前填充的 summary 和 keywords，需重新填充
 - **manifest.json 更新**：必须使用 build_manifest.py 脚本生成，不要手动编辑
+- **并发协作**：多人同时入库时，corrections/tree.json 的写入冲突由 Git 合并机制解决，不在应用层加锁
+- **大规模知识库**：单库超过几百篇文档时，应按认知边界拆分 git 仓库（如技术库、财务库各自独立），不要在单库内做分片
 - **{kb_path} 占位符**：执行时替换为实际知识库路径，默认为 `knowledge_repo`（可配置）

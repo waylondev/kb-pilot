@@ -137,21 +137,42 @@ def _apply_constraints(nodes: list, max_nodes: int = 50) -> list:
 def merge_summary_keywords(tree: dict, ai_fill: dict) -> dict:
     """
     将 AI 填充的 summary 和 keywords 合并到骨架中。
+    如果节点已被压缩（子节点 ID 不存在于树中），自动合并到父节点。
     
     Args:
         tree: 骨架 tree dict
         ai_fill: {"ch_1": {"summary": "...", "keywords": [...]}, ...}
     """
-    def fill_node(node):
-        node_id = node["id"]
-        if node_id in ai_fill:
-            node["summary"] = ai_fill[node_id].get("summary", "")
-            node["keywords"] = ai_fill[node_id].get("keywords", [])
-        for child in node.get("children", []):
-            fill_node(child)
+    # 建立树中所有节点的 ID 索引
+    all_nodes = {}
+    def index_nodes(node_list):
+        for n in node_list:
+            all_nodes[n["id"]] = n
+            index_nodes(n.get("children", []))
+    index_nodes(tree["nodes"])
     
-    for node in tree["nodes"]:
-        fill_node(node)
+    for node_id, fill_data in ai_fill.items():
+        if not fill_data.get("summary") and not fill_data.get("keywords"):
+            continue
+        
+        if node_id in all_nodes:
+            # 直接填充
+            node = all_nodes[node_id]
+            if fill_data.get("summary"):
+                node["summary"] = fill_data["summary"]
+            if fill_data.get("keywords"):
+                node["keywords"] = fill_data["keywords"]
+        else:
+            # 节点已被压缩（>50 节点），合并到父节点
+            # 例如 ch_1_1 → ch_1, ch_2_3_1 → ch_2_3
+            parent_id = "_".join(node_id.split("_")[:-1])
+            if parent_id in all_nodes:
+                parent = all_nodes[parent_id]
+                if fill_data.get("summary"):
+                    existing = parent.get("summary", "")
+                    parent["summary"] = f"{existing}; {fill_data['summary']}" if existing else fill_data["summary"]
+                if fill_data.get("keywords"):
+                    parent["keywords"] = list(set(parent.get("keywords", []) + fill_data["keywords"]))
     
     return tree
 

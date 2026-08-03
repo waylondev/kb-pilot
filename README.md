@@ -59,7 +59,7 @@ Use Skill: kb-chat What's the difference between Docker containers and VMs?
 User: That's wrong — Docker 20.10 startup time should be 1.5s, not 1.2s
 ```
 
-The system persists the correction automatically; subsequent identical questions prefer the corrected answer. When multiple users give the same answer to the same fact, duplicate records are treated as a consensus signal, reinforcing confidence. Concurrent write conflicts are resolved by Git merge.
+Use Skill: kb-correct to persist the correction. Subsequent identical questions load the correction; when multiple users give the same answer to the same fact, duplicate records are treated as a consensus signal, reinforcing confidence. Concurrent write conflicts are resolved by Git merge.
 
 ### Initialize from an existing Git repo
 
@@ -108,6 +108,7 @@ graph TB
     subgraph Agent["Agent (LLM)"]
         INGEST["kb-ingest<br/>build a TOC for a document"]
         CHAT["kb-chat<br/>read the TOC + answer questions"]
+        CORRECT["kb-correct<br/>persist a correction"]
     end
 
     subgraph KB["Knowledge base (Git repo)"]
@@ -125,7 +126,8 @@ graph TB
     CHAT -->|"1. route"| MANIFEST
     CHAT -->|"2. localize"| TREE
     CHAT -->|"3. read"| SOURCE
-    CHAT -->|"4. correct"| MEMORY
+    CHAT -->|"4. load corrections"| MEMORY
+    CORRECT -->|"5. append correction"| MEMORY
 ```
 
 ---
@@ -142,7 +144,9 @@ kb-pilot/
 │       │   └── scripts/    # deterministic scripts (--help for usage; stdout JSON; stderr progress)
 │       │       ├── build_tree.py
 │       │       └── build_manifest.py
-│       └── kb-chat/        # knowledge Q&A
+│       ├── kb-chat/        # knowledge Q&A
+│       │   └── SKILL.md
+│       └── kb-correct/     # correction persistence
 │           └── SKILL.md
 └── knowledge_repo/         # knowledge base data (example, not committed)
 ```

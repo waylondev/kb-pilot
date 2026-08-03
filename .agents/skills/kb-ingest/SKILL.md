@@ -16,6 +16,27 @@ metadata:
 
 Original files stay in place. Metadata lives under `.kb/` in a mirrored path layout. Git is the source of truth. Path mapping: `docs/api/auth.md` → `.kb/index/docs/api/auth/`.
 
+## Input / Output
+
+```yaml
+Input:
+- repo_url: string          # Git URL to clone/pull; empty if using local {kb_path}
+- kb_path: string           # Knowledge base root, relative to project root (default: knowledge_repo)
+- source_rel_path?: string  # Markdown file path inside {kb_path}; omit for batch/repo init
+
+Output:
+- metadata.yaml: document record (doc_id, title, domain, source_path, summary, ingested_at)
+- tree.json: heading hierarchy with LLM-filled summary/keywords
+- manifest.json: updated global routing table
+```
+
+## Failure handling
+
+- Source file missing → stop and ask the user to check the path
+- Heading hierarchy incomplete or skipped levels → return to Step 2 and ask the user to fix Markdown
+- `tree.json` validation fails → inspect source headings, regenerate, then re-fill
+- Git unavailable → report clearly and do not leave `.kb/` uncommitted
+
 ## Available scripts
 
 Deterministic subtasks use scripts; semantic tasks must be done by the LLM. Both scripts support `--help`, emit JSON to stdout, and progress to stderr.

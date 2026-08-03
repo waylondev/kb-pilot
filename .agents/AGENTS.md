@@ -39,7 +39,7 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 
 ## SKILL design principles
 
-SKILLs **must** follow the [official Agent Skills guides](https://agentskills.io/skill-creation/quickstart). Do not improvise — read the guides, then implement. Key points adapted to this project:
+SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guides. Do not improvise — read the guides, then implement. Key points adapted to this project:
 
 - **Frontmatter uses only official fields** — `name`, `description`, `compatibility`, `metadata`, `license`, `allowed-tools`. No custom fields like `config`. Project tunables (`repo_url`, `kb_path`) go in `metadata`
 - **Add what the agent lacks, omit what it knows** — Only write what the LLM wouldn't figure out on its own
@@ -63,11 +63,11 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
 
 | Guide | What it covers | URL |
 |-------|---------------|-----|
-| Quickstart | SKILL.md basic structure (name + description + body), how discovery/activation/execution works | https://agentskills.io/skill-creation/quickstart |
-| Best practices | Spending context wisely, calibrating control, patterns for effective instructions (Gotchas, Templates, Checklists, Validation loops) | https://agentskills.io/skill-creation/best-practices |
+| Quickstart | `SKILL.md` basic structure, discovery / activation / execution | https://agentskills.io/skill-creation/quickstart |
+| Best practices | Spending context wisely, calibrating control, patterns for effective instructions | https://agentskills.io/skill-creation/best-practices |
 | Optimizing descriptions | How to write the `description` field so the SKILL triggers on the right prompts | https://agentskills.io/skill-creation/optimizing-descriptions |
-| Specification | Complete format reference for SKILL.md (frontmatter fields, progressive disclosure, file layout) | https://agentskills.io/specification |
-| Using scripts in skills | When to bundle scripts, how to design CLI interfaces, stdout/stderr conventions | https://agentskills.io/skill-creation/using-scripts |
+| Specification | Complete format reference for `SKILL.md` (frontmatter fields, progressive disclosure, file layout) | https://agentskills.io/specification |
+| Using scripts in skills | When to bundle scripts, CLI interfaces, stdout / stderr conventions | https://agentskills.io/skill-creation/using-scripts |
 | Example skills | Real-world SKILLs on GitHub for reference | https://github.com/anthropics/skills |
 
 ## File map
@@ -81,8 +81,10 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
     │   └── scripts/
     │       ├── build_tree.py      # Markdown → tree.json skeleton (deterministic)
     │       └── build_manifest.py  # metadata.yaml × N → manifest.json (deterministic)
-    └── kb-chat/
-        └── SKILL.md               # QA workflow (7 steps: route → localize → read → correct → answer → self-verify)
+    ├── kb-chat/                   # QA workflow (7 steps: route → localize → read → answer → self-verify)
+    │   └── SKILL.md
+    └── kb-correct/                # correction persistence
+        └── SKILL.md
 ```
 
 ## Optimization directions

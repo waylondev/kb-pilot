@@ -11,7 +11,7 @@ flowchart LR
     C[".kb/memory/corrections/<br/>correction records"] -.-> A
 ```
 
-**Core insight**: The LLM is sufficiently intelligent — it only needs **a precise TOC and the full source text**, not vector embeddings, chunk splitting, or entity-relationship graphs. Scripts constrain the skeleton; the LLM fills the content. See [AGENTS.md](.agents/AGENTS.md) for design principles.
+**Core insight**: The LLM is sufficiently intelligent — it only needs **a precise TOC and the full source text**, not vector embeddings, chunk splitting, or entity-relationship graphs. Scripts constrain the skeleton; the LLM fills the content. See [AGENTS.md](./AGENTS.md) for design principles.
 
 **Zero intrusion**: Original documents stay where they are. All metadata (index, corrections) lives under `.kb/` in a mirrored layout. Delete `.kb/` to fully uninstall — user files are untouched.
 
@@ -136,8 +136,7 @@ graph TB
 
 ```
 kb-pilot/
-├── .agents/
-│   ├── AGENTS.md           # design principles — scripts constrain skeleton, LLM fills content
+├── AGENTS.md           # design principles — scripts constrain skeleton, LLM fills content
 │   └── skills/             # Agent SKILL definitions
 │       ├── kb-ingest/      # document ingestion
 │       │   ├── SKILL.md

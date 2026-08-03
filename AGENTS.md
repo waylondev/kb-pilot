@@ -74,7 +74,6 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
 
 ```
 .agents/
-├── AGENTS.md                      # this file — design principles for all agents
 └── skills/
     ├── kb-ingest/
     │   ├── SKILL.md               # ingest workflow (9 steps: clone → tree → LLM fill → manifest → commit)

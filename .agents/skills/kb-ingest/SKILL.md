@@ -1,11 +1,11 @@
 ---
 name: kb-ingest
 description: >-
-  Use when the user wants to ingest a Markdown document into the knowledge base,
-  initialize a knowledge base from a Git repo, or batch-ingest all .md files in a directory.
-  Triggers on "ingest document", "add to knowledge base", "initialize knowledge base",
-  "ingest entire directory", even without explicit "kb-pilot" or ".kb" mention.
-  Markdown only — PDF/Word/HTML conversion is the user's responsibility.
+  Use when the user wants to add a Markdown document to the knowledge base, ingest
+  a whole directory of .md files, or initialize the knowledge base from a Git repo.
+  Triggers on "ingest this doc", "add to knowledge base", "import these markdown
+  files", "set up the knowledge base from this repo" — even when the user doesn't
+  name the underlying system. Markdown only; PDF/Word/HTML conversion is the user's job.
 config:
   repo_url: ""
   kb_path: knowledge_repo
@@ -29,22 +29,18 @@ Progress:
 - [ ] **2. Locate source** — Confirm `{kb_path}/{source_rel_path}` exists; check heading hierarchy (`#`–`######`) is complete. If missing, ask the user to fix the document and retry
 - [ ] **3. Assign doc_id** — Scan all metadata.yaml under `.kb/index/`, take max sequence + 1 (e.g. `doc_007`). Never rely on memory
 - [ ] **4. Create metadata.yaml** — In `.kb/index/{source_rel_dir}/`, with doc_id, title (from H1), domain (user-specified or inferred from top-level directory), source_path, ingested_at
-- [ ] **5. Generate tree.json skeleton** — Run `scripts/build_tree.py` (see below) to parse heading hierarchy
+- [ ] **5. Generate tree.json skeleton** — Run:
+  ```bash
+  python scripts/build_tree.py {kb_path}/{source_rel_path} \
+    {kb_path}/.kb/index/{source_rel_dir}/tree.json \
+    --doc-id {doc_id} --title "{title}"
+  ```
+  `{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`)
 - [ ] **6. Validate skeleton** — Check tree.json: node count > 0, top-level nodes have children where expected, start_line/end_line are sane. On failure, go back to Step 2 and inspect heading hierarchy
 - [ ] **7. LLM fills summary and keywords** — Read each section's content and fill every node. (**Cannot be replaced by a rule-based script** — it would destroy routing accuracy)
 - [ ] **8. Update manifest.json** — Run `scripts/build_manifest.py {kb_path}` to aggregate all documents
 - [ ] **9. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
 - [ ] **10. Report to user** — doc_id, source path, tree.json node count
-
-### Step 5 script invocation
-
-```bash
-python scripts/build_tree.py {kb_path}/{source_rel_path} \
-  {kb_path}/.kb/index/{source_rel_dir}/tree.json \
-  --doc-id {doc_id} --title "{title}"
-```
-
-`{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`).
 
 ## Batch ingest
 

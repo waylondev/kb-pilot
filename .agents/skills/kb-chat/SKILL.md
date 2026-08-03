@@ -2,10 +2,9 @@
 name: kb-chat
 description: >-
   Use when the user asks a question that should be answered from the knowledge base,
-  or wants to compare/cross-reference content across documents. Triggers on any question
-  about ingested content, even without "kb-pilot", "knowledge base", or ".kb" mention.
-  Also handles corrections: when the user says "that's wrong", "should be", "correct this",
-  persist the correction.
+  wants to compare content across documents, or corrects a previous answer. Triggers
+  on questions about ingested content and on corrections like "that's wrong",
+  "should be", "correct this" — even when the user doesn't name the underlying system.
 config:
   repo_url: ""
   kb_path: knowledge_repo
@@ -26,11 +25,13 @@ Progress:
 - [ ] **2. Document routing** — Read `.kb/manifest.json`, locate the most relevant document via **semantic matching** of domain/title/summary/tags
   - If Top 1 is clearly better → select it
   - If multiple documents are hard to distinguish → list candidates and let the user choose; do not guess
+  - If no document can be located → list Top 2–3 candidates (title + summary) and let the user choose; do not guess
 - [ ] **3. Section localization** — Read the hit document's `tree.json`, locate the most precise section via **semantic matching** of node title/summary/keywords. Recurse into children until specific enough
 - [ ] **4. Content extraction** — Read the line range [start_line, end_line] of the hit section from the source file
   - If the answer may span nodes, proactively expand the read range (adjacent nodes or lines)
   - If a child node is insufficient, fall back to the parent's range for fuller context
   - Record the line range read, for citation
+  - For cross-document comparison: run Steps 2–4 independently per document; cite each source separately; do not mix routing or localization results
 - [ ] **5. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance:
   - Duplicate records (same correct_answer) = multi-user consensus; boosts confidence; do not dedupe
   - conflicted status = conflicting answers; show all versions side by side; do not adjudicate
@@ -61,14 +62,6 @@ When the user says "that's wrong", "should be", "correct this":
   ```
 - [ ] 3. When different users give different answers to the same question, mark status as conflicted
 - [ ] 4. Commit to Git: `git add .kb/memory/ && git commit && git push`
-
-## Cross-document comparison
-
-Run QA workflow Steps 2–4 independently for each document. Generate a comparison answer citing each source separately. Do not mix routing or localization results across documents.
-
-## Ambiguous questions
-
-When the document cannot be located, list Top 2–3 candidates (title + summary) and let the user choose. Do not guess.
 
 ## Gotchas
 

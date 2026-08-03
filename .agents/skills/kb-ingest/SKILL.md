@@ -22,7 +22,7 @@ Original files stay in place. Metadata lives under `.kb/` in a mirrored path lay
 Input:
 - repo_url: string          # Git URL to clone/pull; empty for local {kb_path}
 - kb_path: string           # Knowledge base root, relative to project root (default: knowledge_repo)
-- source_rel_path: string   # Markdown file path inside {kb_path}; omit for batch/repo init
+- source_rel_path?: string  # Markdown file path inside {kb_path}; omit for batch/repo init
 
 Output:
 - metadata.yaml: document record (doc_id, title, domain, source_path, summary, ingested_at)
@@ -66,7 +66,7 @@ Progress:
   ```
   `{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`)
 - [ ] **5. Validate skeleton** — Check tree.json: node count > 0, top-level nodes have children where expected, start_line/end_line are sane. On failure, go back to Step 2 and inspect heading hierarchy
-- [ ] **6. LLM fills summary and keywords, then self-verifies** — Read each section's full content, then autonomously distill a concise summary and keywords. Also write a one-sentence document-level summary into the `summary` field of metadata.yaml. Then re-read each filled entry against its source: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — stop when every node's filling holds up against its source. (**Cannot be replaced by a rule-based script** — scripts cannot understand semantics, and would destroy routing accuracy)
+- [ ] **6. LLM fills summary and keywords, then self-verifies** — Read each section's full content, then autonomously distill a concise summary and keywords. Also write a one-sentence document-level summary into the `summary` field of metadata.yaml. Then re-read each filled entry against its source: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — stop when every node's filling holds up against its source
 - [ ] **7. Update manifest.json** — Run `scripts/build_manifest.py {kb_path}` to aggregate all documents
 - [ ] **8. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
 - [ ] **9. Report to user** — doc_id, source path, tree.json node count
@@ -95,6 +95,3 @@ When a source file is heavily modified, detect drift via `source_sha256` in tree
 - **doc_id sequence** — Always scan metadata.yaml files under `.kb/index/` to confirm the max sequence; do not rely on memory
 - **source_path field** — A typo in source_path makes the document unanswerable, because build_manifest.py uses it for the manifest's path field and kb-chat uses it to read the source
 - **Heading hierarchy** — H1 is the document title and does not enter the tree; the tree starts at H2. Source files without H2 headings will produce an empty tree.json
-- **summary/keywords cannot be scripted** — Rule-based scripts cannot understand semantics and would break kb-chat's routing accuracy. Even if it looks like "just keyword extraction", the LLM must fill each node
-- **Concurrency** — When multiple users ingest simultaneously, file conflicts under `.kb/` are resolved by Git merge; no application-layer locking
-- **Scale boundary** — When a single repo exceeds a few hundred documents, split by team or domain into separate Git repos; no physical sharding

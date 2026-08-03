@@ -4,6 +4,7 @@ description: >-
   Use when the user corrects a previous answer that came from the knowledge base.
   Triggers on "that's wrong", "should be", "correct this", "update the answer" —
   even when the user doesn't name the underlying system.
+compatibility: Requires Git
 metadata:
   repo_url: ""
   kb_path: knowledge_repo
@@ -20,7 +21,7 @@ Input:
 - question: string       # the original question
 - correct_answer: string # the user's corrected answer
 - doc_id: string         # document that provided the original answer
-- ch_id: string          # optional; chapter/section id, if known
+- ch_id?: string         # optional; chapter/section id, if known
 - session_id: string     # current conversation id
 
 Output:
@@ -49,5 +50,3 @@ Progress:
 ## Gotchas
 
 - **Append-only** — Never edit or delete existing correction records; duplicates signal consensus, conflicts are shown side-by-side
-- **Status semantics** — `active` when it agrees with the majority view; `conflicted` when contradictory corrections exist
-- **kb-chat reads these records** — The correction has no effect until a future question routes to the same doc_id

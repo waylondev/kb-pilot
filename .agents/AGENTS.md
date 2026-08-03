@@ -41,6 +41,7 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 
 SKILLs **must** follow the [official Agent Skills guides](https://agentskills.io/skill-creation/quickstart). Do not improvise — read the guides, then implement. Key points adapted to this project:
 
+- **Frontmatter uses only official fields** — `name`, `description`, `compatibility`, `metadata`, `license`, `allowed-tools`. No custom fields like `config`. Project tunables (`repo_url`, `kb_path`) go in `metadata`
 - **Add what the agent lacks, omit what it knows** — Only write what the LLM wouldn't figure out on its own
 - **Match specificity to fragility** — Be prescriptive for fragile operations (path mapping, doc_id); give freedom where multiple approaches are valid
 - **Favor procedures over declarations** — Teach *how to approach*, not *what to produce*
@@ -50,6 +51,7 @@ SKILLs **must** follow the [official Agent Skills guides](https://agentskills.io
 
 ## Script design principles
 
+- **Self-contained with PEP 723 inline dependencies** — Declare external deps (e.g. `# /// script\n# dependencies = ["pyyaml"]\n# ///`) so scripts run without separate install steps
 - **argparse CLI with `--help`** — Examples and exit codes in the epilog
 - **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
 - **Single responsibility** — One script does one deterministic thing

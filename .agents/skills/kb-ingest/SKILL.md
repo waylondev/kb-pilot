@@ -6,7 +6,8 @@ description: >-
   Triggers on "ingest this doc", "add to knowledge base", "import these markdown
   files", "set up the knowledge base from this repo" — even when the user doesn't
   name the underlying system. Markdown only; PDF/Word/HTML conversion is the user's job.
-config:
+compatibility: Requires Python 3.10+, Git, and PyYAML
+metadata:
   repo_url: ""
   kb_path: knowledge_repo
 ---
@@ -34,6 +35,7 @@ Progress:
   title: "{title from H1}"
   domain: "{user-specified or inferred from top-level directory}"
   source_path: {source_rel_path}
+  summary: ""  # filled by LLM in Step 7
   ingested_at: "{ISO timestamp}"
   ```
 - [ ] **5. Generate tree.json skeleton** — Run:
@@ -44,7 +46,7 @@ Progress:
   ```
   `{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`)
 - [ ] **6. Validate skeleton** — Check tree.json: node count > 0, top-level nodes have children where expected, start_line/end_line are sane. On failure, go back to Step 2 and inspect heading hierarchy
-- [ ] **7. LLM fills summary and keywords** — Read each section's full content, then autonomously distill a concise summary and keywords that capture its essence. Trust the LLM's understanding — no templates, no extraction rules, no keyword algorithms. (**Cannot be replaced by a rule-based script** — scripts cannot understand semantics, and would destroy routing accuracy)
+- [ ] **7. LLM fills summary and keywords** — Read each section's full content, then autonomously distill a concise summary and keywords that capture its essence. Also write a one-sentence document-level summary into the `summary` field of metadata.yaml. Trust the LLM's understanding — no templates, no extraction rules, no keyword algorithms. (**Cannot be replaced by a rule-based script** — scripts cannot understand semantics, and would destroy routing accuracy)
 - [ ] **8. Self-verify fillings** — Re-read each filled summary/keywords against its source section: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — a short section may need one glance, a complex one may need re-reading and refining. Stop when every node's filling holds up against its source
 - [ ] **9. Update manifest.json** — Run `scripts/build_manifest.py {kb_path}` to aggregate all documents
 - [ ] **10. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`

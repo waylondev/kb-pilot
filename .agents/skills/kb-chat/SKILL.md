@@ -5,7 +5,7 @@ description: >-
   wants to compare content across documents, or corrects a previous answer. Triggers
   on questions about ingested content and on corrections like "that's wrong",
   "should be", "correct this" — even when the user doesn't name the underlying system.
-config:
+metadata:
   repo_url: ""
   kb_path: knowledge_repo
 ---

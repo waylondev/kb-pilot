@@ -24,17 +24,15 @@ Progress:
 - [ ] **1. Routing preferences** — Read `.kb/memory/route_preferences.json` (if present) as a weak prior. Only honor preferences the user explicitly expressed
 - [ ] **2. Document routing** — Read `.kb/manifest.json`, locate the most relevant document via **semantic matching** of domain/title/summary/tags. When uncertain, list a few candidates and let the user choose
 - [ ] **3. Section localization** — Read the hit document's `tree.json`, locate the most precise section via **semantic matching** of node title/summary/keywords. Recurse into children until specific enough
-- [ ] **4. Content extraction** — Read the line range [start_line, end_line] of the hit section from the source file. Expand the read range when the answer may span nodes; fall back to the parent range when a child is insufficient. Record the line range read for citation
+- [ ] **4. Content extraction** — Use start_line/end_line as navigation anchors; read the source starting from there. The LLM decides how much to read — expand to parent, siblings, or the full document as judgment dictates. Record the actual lines read for citation
 - [ ] **5. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance: duplicate records (same correct_answer) signal multi-user consensus and boost confidence; conflicted records show all versions side by side
-- [ ] **6. Generate answer** — Based on extracted source text, using the template below. If the user explicitly expresses a domain preference, write it to route_preferences.json
+- [ ] **6. Generate answer** — Organize the answer autonomously based on extracted source text. If the user explicitly expresses a domain preference, write it to route_preferences.json
 
-## Answer format template
+## Answer requirements
 
-```markdown
-[Direct conclusion, one sentence]
+The LLM organizes the answer freely — the only hard requirement is **every claim carries a traceable citation**:
 
-[Elaboration, quoting key fragments from the source]
-
+```
 Source: {doc_id} {ch_id} {path}#L{start}-L{end}
 ```
 

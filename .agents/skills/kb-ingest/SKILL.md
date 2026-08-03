@@ -37,7 +37,7 @@ Progress:
   ```
   `{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`)
 - [ ] **6. Validate skeleton** — Check tree.json: node count > 0, top-level nodes have children where expected, start_line/end_line are sane. On failure, go back to Step 2 and inspect heading hierarchy
-- [ ] **7. LLM fills summary and keywords** — Read each section's content and fill every node. (**Cannot be replaced by a rule-based script** — it would destroy routing accuracy)
+- [ ] **7. LLM fills summary and keywords** — Read each section's full content, then autonomously distill a concise summary and keywords that capture its essence. Trust the LLM's understanding — no templates, no extraction rules, no keyword algorithms. (**Cannot be replaced by a rule-based script** — scripts cannot understand semantics, and would destroy routing accuracy)
 - [ ] **8. Update manifest.json** — Run `scripts/build_manifest.py {kb_path}` to aggregate all documents
 - [ ] **9. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
 - [ ] **10. Report to user** — doc_id, source path, tree.json node count

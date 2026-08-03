@@ -11,7 +11,7 @@ flowchart LR
     C[".kb/memory/corrections/<br/>correction records"] -.-> A
 ```
 
-**Core insight**: The LLM needs **a precise TOC and the full source text**, not vector embeddings, chunk splitting, or entity-relationship graphs.
+**Core insight**: The LLM is sufficiently intelligent — it only needs **a precise TOC and the full source text**, not vector embeddings, chunk splitting, or entity-relationship graphs. Scripts constrain the skeleton; the LLM fills the content. See [AGENTS.md](.agents/AGENTS.md) for design principles.
 
 **Zero intrusion**: Original documents stay where they are. All metadata (index, corrections) lives under `.kb/` in a mirrored layout. Delete `.kb/` to fully uninstall — user files are untouched.
 
@@ -134,14 +134,16 @@ graph TB
 
 ```
 kb-pilot/
-├── .agents/skills/         # Agent SKILL definitions
-│   ├── kb-ingest/          # document ingestion
-│   │   ├── SKILL.md
-│   │   └── scripts/        # deterministic scripts (--help for usage; stdout JSON; stderr progress)
-│   │       ├── build_tree.py
-│   │       └── build_manifest.py
-│   └── kb-chat/            # knowledge Q&A
-│       └── SKILL.md
+├── .agents/
+│   ├── AGENTS.md           # design principles — scripts constrain skeleton, LLM fills content
+│   └── skills/             # Agent SKILL definitions
+│       ├── kb-ingest/      # document ingestion
+│       │   ├── SKILL.md
+│       │   └── scripts/    # deterministic scripts (--help for usage; stdout JSON; stderr progress)
+│       │       ├── build_tree.py
+│       │       └── build_manifest.py
+│       └── kb-chat/        # knowledge Q&A
+│           └── SKILL.md
 └── knowledge_repo/         # knowledge base data (example, not committed)
 ```
 
@@ -150,6 +152,7 @@ kb-pilot/
 | Principle | Meaning |
 |------|------|
 | **TOC + source = knowledge base** | The LLM is smart enough; it only needs a precise TOC and the full source — no vectors, chunks, or graphs |
+| **Trust the LLM** | Scripts only constrain the skeleton (headings, line numbers); summary, keywords, routing, and answers are all LLM-autonomous — no templates, no extraction algorithms |
 | **LLM is the routing engine** | Locates documents via semantic understanding of title/summary/keywords, not keyword matching |
 | **Zero intrusion** | User's source stays in place; metadata centralized under `.kb/`; delete to uninstall |
 | **Deterministic skeleton + semantic flesh** | Skeleton (heading hierarchy, line numbers) is script-generated; flesh (summary, keywords) is LLM-injected |

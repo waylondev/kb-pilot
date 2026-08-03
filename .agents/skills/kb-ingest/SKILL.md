@@ -39,7 +39,7 @@ Output:
 
 ## Available scripts
 
-Deterministic subtasks use scripts; semantic tasks must be done by the LLM. See [AGENTS.md](../../AGENTS.md) for the design boundary. Both scripts support `--help`, emit JSON to stdout, and progress to stderr.
+Deterministic subtasks use scripts; semantic tasks must be done by the LLM — scripts never touch semantics, the LLM never touches structure parsing. Both scripts support `--help`, emit JSON to stdout, and progress to stderr.
 
 - **`scripts/build_tree.py`** — Parses Markdown heading hierarchy to produce a tree.json skeleton (summary/keywords left empty for LLM to fill)
 - **`scripts/build_manifest.py`** — Scans all metadata.yaml files and aggregates them into .kb/manifest.json

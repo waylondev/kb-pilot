@@ -137,25 +137,26 @@ kb-pilot/
 ├── .trae/skills/           # Agent SKILL 定义
 │   ├── kb-ingest/          # 文档入库
 │   │   ├── SKILL.md
-│   │   └── scripts/
+│   │   └── scripts/        # 可选的确定性脚本
 │   │       ├── build_tree.py
 │   │       └── build_manifest.py
 │   └── kb-chat/            # 知识问答
 │       └── SKILL.md
-├── docs/                   # 项目文档
-│   ├── architecture.md     # 架构设计
-│   ├── workflow.md         # 执行流程
-│   └── rag-comparison.md   # 与主流 RAG 方案对比
 └── knowledge_repo/         # 知识库数据（示例，不入库）
 ```
 
-## 文档导航
+## 设计哲学
 
-| 文档 | 内容 |
+| 原则 | 含义 |
 |------|------|
-| [architecture.md](docs/architecture.md) | 设计哲学、边界、取舍、核心组件 |
-| [workflow.md](docs/workflow.md) | 入库流程、问答流程、纠错流程 |
-| [rag-comparison.md](docs/rag-comparison.md) | vs SAG / LightRAG / GraphRAG / Dify / FastGPT / LlamaIndex |
+| **目录 + 原文 = 知识库** | LLM 足够聪明，只需精准的目录和完整原文，不需要向量、Chunk、图谱 |
+| **LLM 是路由引擎** | 语义理解 title/summary/keywords 定位文档，不是 keyword 匹配 |
+| **零侵入** | 用户原文留在原位，元数据集中在 `.kb/`，删除即卸载 |
+| **确定性骨架 + 语义血肉** | 骨架（章节层级、行号）脚本生成；血肉（summary、keywords）LLM 注入 |
+| **Git 即真理** | 所有元数据是文本文件，版本/协作/同步/冲突都靠 Git |
+| **行级溯源** | 答案标注 `docs/api/auth.md#L16`，可追溯可验证 |
+| **对话即纠错** | 用户纠正持久化为 jsonl，重复=共识，冲突并列展示 |
+| **少即是多** | 不做向量、不做 Chunk、不做图谱、不做分片、不做格式转换 |
 
 ## License
 

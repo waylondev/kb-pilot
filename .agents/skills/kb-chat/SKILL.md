@@ -18,7 +18,7 @@ Path calculation: manifest entry `path: docs/api/auth.md` → tree.json at `.kb/
 ```yaml
 Input:
 - question: string           # user question
-- domain_preference?: string # optional; from route_preferences.json
+- domain_preference?: string # optional; user-specified domain as a routing hint
 
 Output:
 - answer: string             # grounded in source, with traceable citations

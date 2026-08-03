@@ -92,6 +92,5 @@ When a source file is heavily modified, detect drift via `source_sha256` in tree
 
 ## Gotchas
 
-- **doc_id sequence** — Always scan metadata.yaml files under `.kb/index/` to confirm the max sequence; do not rely on memory
 - **source_path field** — A typo in source_path makes the document unanswerable, because build_manifest.py uses it for the manifest's path field and kb-chat uses it to read the source
 - **Heading hierarchy** — H1 is the document title and does not enter the tree; the tree starts at H2. Source files without H2 headings will produce an empty tree.json

@@ -4,79 +4,80 @@ description: >-
   Use when the user asks a question that should be answered from the knowledge base,
   or wants to compare/cross-reference content across documents. Triggers on any question
   about ingested content, even without "kb-pilot", "knowledge base", or ".kb" mention.
-  Also handles corrections: when the user says "不对", "应该是", "纠正", persist the correction.
+  Also handles corrections: when the user says "that's wrong", "should be", "correct this",
+  persist the correction.
 config:
   repo_url: ""
   kb_path: knowledge_repo
 ---
 
-# kb-chat — 像人一样翻书回答
+# kb-chat — Answer like a human flipping through a book
 
-LLM 是路由引擎，不是 keyword 匹配器。通过语义理解 title/summary/keywords 定位文档和章节，读原文回答，标注出处。所有答案必须有原文依据，找不到就说"文档中未提及"。
+The LLM is the routing engine, not a keyword matcher. It locates documents and sections by semantically understanding title/summary/keywords, reads the source, and answers with citations. Every answer must be grounded in the source text; if not found, say "not mentioned in the documents".
 
-路径计算：manifest 条目 `path: docs/api/auth.md` → tree.json 在 `.kb/index/docs/api/auth/`，源文件在 `{kb_path}/docs/api/auth.md`。
+Path calculation: manifest entry `path: docs/api/auth.md` → tree.json at `.kb/index/docs/api/auth/`, source file at `{kb_path}/docs/api/auth.md`.
 
-## 问答流程
+## QA workflow
 
-像人翻书：先查目录定位章节，再读原文回答，标注出处。LLM 根据问题难度自主决定每步深入程度。
+Like a human flipping through a book: look up the TOC to locate the section, read the source, answer with citations. The LLM decides how deep to go at each step based on question difficulty.
 
 Progress:
-- [ ] **1. 路由偏好** — 读 `.kb/memory/route_preferences.json`（如存在），作为路由弱先验。仅采纳用户明确表达的偏好，不从对话历史推断
-- [ ] **2. 文档路由** — 读 `.kb/manifest.json`，通过 domain/title/summary/tags 的**语义匹配**定位最相关文档
-  - Top 1 明显优于其他 → 直接选定
-  - 多个文档难以区分 → 列出候选让用户选择，不要猜测
-- [ ] **3. 章节定位** — 读命中文档的 `tree.json`，通过节点 title/summary/keywords 的**语义匹配**定位最精确章节，递归深入 children 直到足够具体
-- [ ] **4. 内容截取** — 按命中章节的 start_line/end_line 从源文件读对应行范围
-  - 答案可能跨节点时，自主扩大读取范围（前后节点或相邻行）
-  - 子节点信息不足时，回退读父节点范围获取更完整上下文
-  - 明确记录读取的行号范围，用于答案溯源
-- [ ] **5. 纠错加载** — 读 `.kb/memory/corrections/{doc_id}.jsonl`（如有），附加到上下文。LLM 自行判断相关性：
-  - 重复记录（相同 correct_answer）= 多人共识，提升可信度，不去重
-  - conflicted 状态 = 答案冲突，并列展示所有版本，不自行裁决
-- [ ] **6. 生成答案** — 基于截取原文生成答案，使用下方模板。用户明确表达领域偏好时，写入 route_preferences.json
+- [ ] **1. Routing preferences** — Read `.kb/memory/route_preferences.json` (if present) as a weak prior. Only honor preferences the user explicitly expressed; never infer from conversation history
+- [ ] **2. Document routing** — Read `.kb/manifest.json`, locate the most relevant document via **semantic matching** of domain/title/summary/tags
+  - If Top 1 is clearly better → select it
+  - If multiple documents are hard to distinguish → list candidates and let the user choose; do not guess
+- [ ] **3. Section localization** — Read the hit document's `tree.json`, locate the most precise section via **semantic matching** of node title/summary/keywords. Recurse into children until specific enough
+- [ ] **4. Content extraction** — Read the line range [start_line, end_line] of the hit section from the source file
+  - If the answer may span nodes, proactively expand the read range (adjacent nodes or lines)
+  - If a child node is insufficient, fall back to the parent's range for fuller context
+  - Record the line range read, for citation
+- [ ] **5. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance:
+  - Duplicate records (same correct_answer) = multi-user consensus; boosts confidence; do not dedupe
+  - conflicted status = conflicting answers; show all versions side by side; do not adjudicate
+- [ ] **6. Generate answer** — Based on extracted source text, using the template below. If the user explicitly expresses a domain preference, write it to route_preferences.json
 
-## 答案格式模板
+## Answer format template
 
 ```markdown
-[直接结论，一句话]
+[Direct conclusion, one sentence]
 
-[展开说明，引用原文关键片段]
+[Elaboration, quoting key fragments from the source]
 
-来源：{doc_id} {ch_id} {path}#L{start}-L{end}
+Source: {doc_id} {ch_id} {path}#L{start}-L{end}
 ```
 
-- 纠错与原文矛盾时：说明"原文为 X，纠错记录为 Y"
-- 文档无相关信息时：只说"文档中未提及"，不编造
-- 跨文档对比时：分别标注两个文档来源
+- When a correction contradicts the source: state "source says X, correction says Y"
+- When the documents contain no relevant info: say only "not mentioned in the documents"; do not fabricate
+- For cross-document comparison: cite both document sources separately
 
-## 纠错流程
+## Correction flow
 
-当用户说"不对"、"应该是"、"纠正"时：
+When the user says "that's wrong", "should be", "correct this":
 
-- [ ] 1. 定位当前问题的 doc_id 和 ch_id
-- [ ] 2. 追加记录到 `.kb/memory/corrections/{doc_id}.jsonl`：
+- [ ] 1. Locate the doc_id and ch_id of the current question
+- [ ] 2. Append a record to `.kb/memory/corrections/{doc_id}.jsonl`:
   ```json
-  {"question": "问题", "correct_answer": "用户纠正的答案", "ch_id": "ch_x", "session_id": "xxx", "timestamp": "ISO时间", "status": "active"}
+  {"question": "the question", "correct_answer": "user's corrected answer", "ch_id": "ch_x", "session_id": "xxx", "timestamp": "ISO timestamp", "status": "active"}
   ```
-- [ ] 3. 不同用户对同一问题给出不同答案时，status 标记为 conflicted
-- [ ] 4. 提交 Git：`git add .kb/memory/ && git commit && git push`
+- [ ] 3. When different users give different answers to the same question, mark status as conflicted
+- [ ] 4. Commit to Git: `git add .kb/memory/ && git commit && git push`
 
-## 跨文档对比
+## Cross-document comparison
 
-分别对每个文档独立执行问答流程 Step 2-4，生成对比答案，标注各自来源。不要混用路由和定位结果。
+Run QA workflow Steps 2–4 independently for each document. Generate a comparison answer citing each source separately. Do not mix routing or localization results across documents.
 
-## 模糊提问
+## Ambiguous questions
 
-无法定位文档时，列出 Top 2-3 候选（标题 + 摘要）让用户选择，不要猜测。
+When the document cannot be located, list Top 2–3 candidates (title + summary) and let the user choose. Do not guess.
 
 ## Gotchas
 
-- **不凭训练数据编造** — 找不到就说"文档中未提及"，禁止凭模型记忆回答
-- **不做 keyword 硬匹配** — 路由靠语义理解 title/summary/keywords，不靠词频/字面匹配
-- **path 字段是关键** — manifest 条目的 path 是源文件相对仓库根的路径，据此读取原文；tree.json 在 `.kb/index/` 镜像目录下
-- **纠错冲突**：conflicted 状态必须展示所有版本，不能自行裁决
-- **纠错重复**：不同 session_id 的相同答案是共识信号，不要去重
-- **跨文档对比**：各文档分别独立执行路由和定位，不要混用
-- **路由偏好**：仅存储用户明确表达的偏好，不要从对话历史中推断
-- **大规模知识库**：单库超过几百篇文档时，按认知边界拆分 Git 仓库，不做物理分片
-- **{kb_path} 占位符**：执行时替换为实际知识库路径，默认 `knowledge_repo`
+- **Never fabricate from training data** — If not found, say "not mentioned in the documents"; never answer from model memory
+- **No keyword hard-matching** — Routing relies on semantic understanding of title/summary/keywords, not term frequency or literal matching
+- **path field is critical** — The manifest entry's path is the source file path relative to the repo root; the source is read from there. tree.json lives under the `.kb/index/` mirrored directory
+- **Correction conflicts** — conflicted records must show all versions; never adjudicate unilaterally
+- **Correction duplicates** — Same answer across different session_ids is a consensus signal; do not dedupe
+- **Cross-document comparison** — Run routing and localization independently per document; do not mix
+- **Routing preferences** — Store only preferences the user explicitly expressed; never infer from conversation history
+- **Scale boundary** — When a single repo exceeds a few hundred documents, split by team or domain into separate Git repos; no physical sharding
+- **{kb_path} placeholder** — Replace with the actual knowledge base path at runtime; defaults to `knowledge_repo`

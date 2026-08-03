@@ -1,162 +1,162 @@
 # kb-pilot
 
-> 目录 + 原文 = 知识库。让 LLM 像人一样阅读，而不是把书切碎喂给向量数据库。
+> TOC + source = knowledge base. Let the LLM read like a human, instead of shredding books into a vector database.
 
 ```mermaid
 flowchart LR
-    Q["问题"] --> M[".kb/manifest.json<br/>书目卡片"]
-    M --> T[".kb/index/.../tree.json<br/>章节目录"]
-    T --> S["源文件<br/>完整原文"]
-    S --> A["LLM 阅读<br/>+ 回答"]
-    C[".kb/memory/corrections/<br/>纠错记录"] -.-> A
+    Q["Question"] --> M[".kb/manifest.json<br/>library card catalog"]
+    M --> T[".kb/index/.../tree.json<br/>chapter TOC"]
+    T --> S["Source file<br/>full original text"]
+    S --> A["LLM reads<br/>+ answers"]
+    C[".kb/memory/corrections/<br/>correction records"] -.-> A
 ```
 
-**核心洞察**：LLM 需要的是**精准的目录和完整的原文**，而不是向量嵌入、Chunk 切分、实体关系图。
+**Core insight**: The LLM needs **a precise TOC and the full source text**, not vector embeddings, chunk splitting, or entity-relationship graphs.
 
-**零侵入**：原始文档留在用户目录原位不动，所有元数据（索引、纠错）集中在 `.kb/` 下，镜像用户目录结构。删除 `.kb/` 即可完全移除，用户文件毫发无损。
+**Zero intrusion**: Original documents stay where they are. All metadata (index, corrections) lives under `.kb/` in a mirrored layout. Delete `.kb/` to fully uninstall — user files are untouched.
 
 ---
 
-## 为什么选 kb-pilot？
+## Why kb-pilot?
 
-| | 传统 RAG | kb-pilot |
+| | Traditional RAG | kb-pilot |
 |---|---|---|
-| 文档处理 | 切碎成 Chunk → 向量化 | 保留完整原文，零修改 |
-| 检索方式 | 语义相似度（概率性） | 目录索引（确定性） |
-| 基础设施 | Embedding 模型 + 向量数据库 + GPU | 文件系统 + Git |
-| 答案溯源 | "某个 Chunk 附近" | `docs/api/auth.md#L16` 行级精确 |
-| 纠错 | 需额外系统 | 对话即纠错，jsonl 持久化 |
-| 部署成本 | 高（GPU、向量库） | **零** |
-| 用户目录侵入 | 需迁移到指定结构 | **零侵入**，元数据存 `.kb/` |
+| Document processing | Shred into chunks → vectorize | Keep full source, zero modification |
+| Retrieval | Semantic similarity (probabilistic) | TOC index (deterministic) |
+| Infrastructure | Embedding model + vector DB + GPU | Filesystem + Git |
+| Answer tracing | "somewhere near a chunk" | `docs/api/auth.md#L16` line-level precision |
+| Corrections | Requires a separate system | Conversation-as-correction, jsonl-persisted |
+| Deployment cost | High (GPU, vector DB) | **Zero** |
+| User directory intrusion | Must migrate to a required layout | **Zero intrusion**, metadata in `.kb/` |
 
 ---
 
-## 快速开始
+## Quick start
 
-**前置条件**：Python 3.10+、Git、PyYAML
+**Prerequisites**: Python 3.10+, Git, PyYAML
 
 ```bash
 pip install pyyaml
 ```
 
-### 接入文档
+### Ingest a document
 
-将任意位置的 Markdown 文件接入知识库（文件留在原位）：
-
-```
-Use Skill: kb-ingest 将 docs/api/auth.md 接入知识库
-```
-
-### 提问
+Add a Markdown file from anywhere into the knowledge base (the file stays in place):
 
 ```
-Use Skill: kb-chat Docker 容器和虚拟机有什么区别？
+Use Skill: kb-ingest to ingest docs/api/auth.md into the knowledge base
 ```
 
-### 纠错
+### Ask a question
 
 ```
-User: 不对，Docker 20.10 启动时间应该是 1.5s，不是 1.2s
+Use Skill: kb-chat What's the difference between Docker containers and VMs?
 ```
 
-系统自动记录纠错，后续相同问题优先使用纠正后的答案。多人对同一事实给出相同答案时，重复记录视为共识信号，强化可信度。并发写入冲突由 Git 合并机制解决。
-
-### 从现有 Git 仓库初始化
+### Correct an answer
 
 ```
-Use Skill: kb-ingest 从 https://github.com/org/docs.git 初始化知识库
+User: That's wrong — Docker 20.10 startup time should be 1.5s, not 1.2s
 ```
 
-### 大规模怎么办
+The system persists the correction automatically; subsequent identical questions prefer the corrected answer. When multiple users give the same answer to the same fact, duplicate records are treated as a consensus signal, reinforcing confidence. Concurrent write conflicts are resolved by Git merge.
 
-一个知识库 = 一个 Git 仓库 = 一个认知边界。单库超过几百篇文档时，按团队/领域拆分仓库，不做分片。
+### Initialize from an existing Git repo
 
-- 技术团队知识库 → 一个 Git 仓库
-- 财务团队知识库 → 另一个 Git 仓库
+```
+Use Skill: kb-ingest to initialize the knowledge base from https://github.com/org/docs.git
+```
+
+### Scaling
+
+One knowledge base = one Git repo = one cognitive boundary. When a single repo exceeds a few hundred documents, split by team or domain. No sharding.
+
+- Engineering team knowledge base → one Git repo
+- Finance team knowledge base → another Git repo
 
 ---
 
-## 知识库目录结构
+## Knowledge base layout
 
 ```
-{kb_path}/                          # Git 仓库根目录
-├── .kb/                            # kb-pilot 元数据（集中存放）
-│   ├── manifest.json               # 全局路由表（脚本生成）
+{kb_path}/                          # Git repo root
+├── .kb/                            # kb-pilot metadata (centralized)
+│   ├── manifest.json               # global routing table (script-generated)
 │   ├── memory/
-│   │   ├── corrections/            # 纠错记录
+│   │   ├── corrections/            # correction records
 │   │   └── route_preferences.json
-│   └── index/                      # 镜像目录
+│   └── index/                      # mirrored directory
 │       └── docs/
 │           └── api/
-│               └── auth/           # 对应 docs/api/auth.md
+│               └── auth/           # corresponds to docs/api/auth.md
 │                   ├── metadata.yaml
 │                   └── tree.json
-├── docs/                           # 用户原始文档（任意结构，不动）
+├── docs/                           # user's original documents (any structure, untouched)
 │   └── api/
 │       └── auth.md
 └── README.md
 ```
 
-路径映射：源文件 `docs/api/auth.md` → 元数据 `.kb/index/docs/api/auth/`。
+Path mapping: source file `docs/api/auth.md` → metadata directory `.kb/index/docs/api/auth/`.
 
 ---
 
-## 架构一览
+## Architecture overview
 
 ```mermaid
 graph TB
     subgraph Agent["Agent (LLM)"]
-        INGEST["kb-ingest<br/>为文档建目录"]
-        CHAT["kb-chat<br/>阅读目录 + 回答问题"]
+        INGEST["kb-ingest<br/>build a TOC for a document"]
+        CHAT["kb-chat<br/>read the TOC + answer questions"]
     end
 
-    subgraph KB["知识库（Git 仓库）"]
+    subgraph KB["Knowledge base (Git repo)"]
         direction TB
-        subgraph Meta[".kb/ 元数据"]
-            MANIFEST["manifest.json<br/>全局书目卡片"]
-            TREE["tree.json<br/>章节目录 + keywords"]
-            MEMORY["memory/<br/>纠错 + 偏好"]
+        subgraph Meta[".kb/ metadata"]
+            MANIFEST["manifest.json<br/>global card catalog"]
+            TREE["tree.json<br/>chapter TOC + keywords"]
+            MEMORY["memory/<br/>corrections + preferences"]
         end
-        SOURCE["docs/.../*.md<br/>用户原文（不动）"]
+        SOURCE["docs/.../*.md<br/>user's source (untouched)"]
     end
 
     INGEST -->|"build_tree.py"| TREE
     INGEST -->|"build_manifest.py"| MANIFEST
-    CHAT -->|"1. 路由"| MANIFEST
-    CHAT -->|"2. 定位"| TREE
-    CHAT -->|"3. 阅读"| SOURCE
-    CHAT -->|"4. 纠错"| MEMORY
+    CHAT -->|"1. route"| MANIFEST
+    CHAT -->|"2. localize"| TREE
+    CHAT -->|"3. read"| SOURCE
+    CHAT -->|"4. correct"| MEMORY
 ```
 
 ---
 
-## 项目结构
+## Project structure
 
 ```
 kb-pilot/
-├── .agents/skills/         # Agent SKILL 定义
-│   ├── kb-ingest/          # 文档入库
+├── .agents/skills/         # Agent SKILL definitions
+│   ├── kb-ingest/          # document ingestion
 │   │   ├── SKILL.md
-│   │   └── scripts/        # 确定性脚本（--help 查看用法，stdout JSON，stderr 进度）
+│   │   └── scripts/        # deterministic scripts (--help for usage; stdout JSON; stderr progress)
 │   │       ├── build_tree.py
 │   │       └── build_manifest.py
-│   └── kb-chat/            # 知识问答
+│   └── kb-chat/            # knowledge Q&A
 │       └── SKILL.md
-└── knowledge_repo/         # 知识库数据（示例，不入库）
+└── knowledge_repo/         # knowledge base data (example, not committed)
 ```
 
-## 设计哲学
+## Design philosophy
 
-| 原则 | 含义 |
+| Principle | Meaning |
 |------|------|
-| **目录 + 原文 = 知识库** | LLM 足够聪明，只需精准的目录和完整原文，不需要向量、Chunk、图谱 |
-| **LLM 是路由引擎** | 语义理解 title/summary/keywords 定位文档，不是 keyword 匹配 |
-| **零侵入** | 用户原文留在原位，元数据集中在 `.kb/`，删除即卸载 |
-| **确定性骨架 + 语义血肉** | 骨架（章节层级、行号）脚本生成；血肉（summary、keywords）LLM 注入 |
-| **Git 即真理** | 所有元数据是文本文件，版本/协作/同步/冲突都靠 Git |
-| **行级溯源** | 答案标注 `docs/api/auth.md#L16`，可追溯可验证 |
-| **对话即纠错** | 用户纠正持久化为 jsonl，重复=共识，冲突并列展示 |
-| **少即是多** | 不做向量、不做 Chunk、不做图谱、不做分片、不做格式转换 |
+| **TOC + source = knowledge base** | The LLM is smart enough; it only needs a precise TOC and the full source — no vectors, chunks, or graphs |
+| **LLM is the routing engine** | Locates documents via semantic understanding of title/summary/keywords, not keyword matching |
+| **Zero intrusion** | User's source stays in place; metadata centralized under `.kb/`; delete to uninstall |
+| **Deterministic skeleton + semantic flesh** | Skeleton (heading hierarchy, line numbers) is script-generated; flesh (summary, keywords) is LLM-injected |
+| **Git is the source of truth** | All metadata is text files; versioning, collaboration, sync, and conflicts all go through Git |
+| **Line-level tracing** | Answers cite `docs/api/auth.md#L16` — traceable and verifiable |
+| **Conversation-as-correction** | User corrections persist as jsonl; duplicates = consensus; conflicts shown side by side |
+| **Less is more** | No vectors, no chunks, no graphs, no sharding, no format conversion |
 
 ## License
 

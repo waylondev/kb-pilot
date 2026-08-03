@@ -27,6 +27,7 @@ Progress:
 - [ ] **4. Content extraction** — Use start_line/end_line as navigation anchors; read the source starting from there. The LLM decides how much to read — expand to parent, siblings, or the full document as judgment dictates. Record the actual lines read for citation
 - [ ] **5. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance: duplicate records (same correct_answer) signal multi-user consensus and boost confidence; conflicted records show all versions side by side
 - [ ] **6. Generate answer** — Organize the answer autonomously based on extracted source text. If the user explicitly expresses a domain preference, write it to route_preferences.json
+- [ ] **7. Self-verify** — Before delivering, re-read your own answer against the source: every claim grounded in the cited lines? Did you actually answer the question? The LLM decides how many rounds — a simple fact may need one glance, complex cross-document reasoning may need several. If a gap is found, go back to Step 4 and re-read, then re-verify. Stop when you can stand behind every claim; if the source still doesn't support it after re-reading, say "not mentioned in the documents"
 
 ## Answer requirements
 

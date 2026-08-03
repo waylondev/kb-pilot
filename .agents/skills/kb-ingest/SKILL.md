@@ -28,7 +28,14 @@ Progress:
 - [ ] **1. Prepare repo** — If `{kb_path}` does not exist, `git clone {repo_url} {kb_path}`; otherwise `git pull`. Ensure `.kb/index/` and `.kb/memory/corrections/` exist
 - [ ] **2. Locate source** — Confirm `{kb_path}/{source_rel_path}` exists; check heading hierarchy (`#`–`######`) is complete. If missing, ask the user to fix the document and retry
 - [ ] **3. Assign doc_id** — Scan all metadata.yaml under `.kb/index/`, take max sequence + 1 (e.g. `doc_007`). Never rely on memory
-- [ ] **4. Create metadata.yaml** — In `.kb/index/{source_rel_dir}/`, with doc_id, title (from H1), domain (user-specified or inferred from top-level directory), source_path, ingested_at
+- [ ] **4. Create metadata.yaml** — In `.kb/index/{source_rel_dir}/`:
+  ```yaml
+  doc_id: {doc_id}
+  title: "{title from H1}"
+  domain: "{user-specified or inferred from top-level directory}"
+  source_path: {source_rel_path}
+  ingested_at: "{ISO timestamp}"
+  ```
 - [ ] **5. Generate tree.json skeleton** — Run:
   ```bash
   python scripts/build_tree.py {kb_path}/{source_rel_path} \
@@ -38,9 +45,10 @@ Progress:
   `{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`)
 - [ ] **6. Validate skeleton** — Check tree.json: node count > 0, top-level nodes have children where expected, start_line/end_line are sane. On failure, go back to Step 2 and inspect heading hierarchy
 - [ ] **7. LLM fills summary and keywords** — Read each section's full content, then autonomously distill a concise summary and keywords that capture its essence. Trust the LLM's understanding — no templates, no extraction rules, no keyword algorithms. (**Cannot be replaced by a rule-based script** — scripts cannot understand semantics, and would destroy routing accuracy)
-- [ ] **8. Update manifest.json** — Run `scripts/build_manifest.py {kb_path}` to aggregate all documents
-- [ ] **9. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
-- [ ] **10. Report to user** — doc_id, source path, tree.json node count
+- [ ] **8. Self-verify fillings** — Re-read each filled summary/keywords against its source section: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — a short section may need one glance, a complex one may need re-reading and refining. Stop when every node's filling holds up against its source
+- [ ] **9. Update manifest.json** — Run `scripts/build_manifest.py {kb_path}` to aggregate all documents
+- [ ] **10. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
+- [ ] **11. Report to user** — doc_id, source path, tree.json node count
 
 ## Batch ingest
 
@@ -58,8 +66,8 @@ When a source file is heavily modified, detect drift via `source_sha256` in tree
 
 - [ ] 1. Compare `source_sha256` in tree.json against the source file's current SHA256
 - [ ] 2. If equal → skip; if not → re-run ingest workflow Step 5 (the script preserves existing summary/keywords where possible)
-- [ ] 3. If structure changed, re-run Step 7 (old summary/keywords may not match new sections)
-- [ ] 4. Run Step 8 to update manifest, Step 9 to commit
+- [ ] 3. If structure changed, re-run Step 7 and Step 8 (old summary/keywords may not match new sections; re-fill and re-verify)
+- [ ] 4. Run Step 9 to update manifest, Step 10 to commit
 
 ## Gotchas
 

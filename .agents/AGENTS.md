@@ -23,6 +23,7 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 - **Let the LLM judge corrections** — It decides whether a correction is relevant, whether duplicates signal consensus, whether conflicts need side-by-side display
 - **Keep scripts minimal** — Parse structure, aggregate metadata, compute hashes. That is all
 - **When uncertain, consult the user** — The LLM asks rather than guesses, just like a librarian
+- **Let the LLM reflect on its own answer** — Before delivering, it re-checks every claim against the source and decides for itself how many rounds it needs. No fixed round count, no score threshold — the stop condition is "I can stand behind every claim". This is not a constraint; it is the LLM using its own judgment, like a human double-checking notes before answering
 
 ## What not to do
 
@@ -38,20 +39,34 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 
 ## SKILL design principles
 
-1. **Description focuses on user intent** — Triggers are natural phrases ("ingest this doc", "what's the difference"), not project names or implementation terms
-2. **Checklist, not decision tree** — Steps are progress markers, not if-else branches. The LLM decides how to execute each step
-3. **Gotchas are positive guidance** — "Answers must be grounded in source text" is better than "Never fabricate"
-4. **Progressive disclosure** — Core logic in SKILL.md; script details in `--help`. Do not dump everything into the SKILL
-5. **Config block declares tunables** — `repo_url`, `kb_path` are in frontmatter, not hardcoded in steps
+SKILLs **must** follow the [official Agent Skills guides](https://agentskills.io/skill-creation/quickstart). Do not improvise — read the guides, then implement. Key points adapted to this project:
+
+- **Add what the agent lacks, omit what it knows** — Only write what the LLM wouldn't figure out on its own
+- **Match specificity to fragility** — Be prescriptive for fragile operations (path mapping, doc_id); give freedom where multiple approaches are valid
+- **Favor procedures over declarations** — Teach *how to approach*, not *what to produce*
+- **Checklists, not decision trees** — Steps are progress markers, not if-else branches
+- **Validation loops** — Validate after fragile operations (kb-ingest Step 6 + Step 8, kb-chat Step 7)
+- **Bundling reusable scripts** — Deterministic logic lives in `scripts/`; the LLM handles semantics
 
 ## Script design principles
 
-1. **argparse CLI with `--help`** — Examples and exit codes in the epilog
-2. **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
-3. **Single responsibility** — `build_tree.py` parses headings; `build_manifest.py` aggregates entries. No god scripts
-4. **Exit codes are meaningful** — 0 success, 1 unexpected, 2 file-not-found, 3 dependency-missing
-5. **Preserve LLM work on rebuild** — When source changes, keep existing summary/keywords where structure still matches
-6. **No magic numbers without comments** — Every constant gets a one-line explanation
+- **argparse CLI with `--help`** — Examples and exit codes in the epilog
+- **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
+- **Single responsibility** — One script does one deterministic thing
+- **Preserve LLM work on rebuild** — Keep existing summary/keywords where structure still matches
+
+## Official references
+
+When creating or modifying SKILLs, **read these first** — do not write SKILLs from scratch based on guesswork:
+
+| Guide | What it covers | URL |
+|-------|---------------|-----|
+| Quickstart | SKILL.md basic structure (name + description + body), how discovery/activation/execution works | https://agentskills.io/skill-creation/quickstart |
+| Best practices | Spending context wisely, calibrating control, patterns for effective instructions (Gotchas, Templates, Checklists, Validation loops) | https://agentskills.io/skill-creation/best-practices |
+| Optimizing descriptions | How to write the `description` field so the SKILL triggers on the right prompts | https://agentskills.io/skill-creation/optimizing-descriptions |
+| Specification | Complete format reference for SKILL.md (frontmatter fields, progressive disclosure, file layout) | https://agentskills.io/specification |
+| Using scripts in skills | When to bundle scripts, how to design CLI interfaces, stdout/stderr conventions | https://agentskills.io/skill-creation/using-scripts |
+| Example skills | Real-world SKILLs on GitHub for reference | https://github.com/anthropics/skills |
 
 ## File map
 
@@ -60,12 +75,12 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 ├── AGENTS.md                      # this file — design principles for all agents
 └── skills/
     ├── kb-ingest/
-    │   ├── SKILL.md               # ingest workflow (10 steps: clone → tree → LLM fill → manifest → commit)
+    │   ├── SKILL.md               # ingest workflow (11 steps: clone → tree → LLM fill → self-verify → manifest → commit)
     │   └── scripts/
     │       ├── build_tree.py      # Markdown → tree.json skeleton (deterministic)
     │       └── build_manifest.py  # metadata.yaml × N → manifest.json (deterministic)
     └── kb-chat/
-        └── SKILL.md               # QA workflow (6 steps: route → localize → read → correct → answer)
+        └── SKILL.md               # QA workflow (7 steps: route → localize → read → correct → answer → self-verify)
 ```
 
 ## Optimization directions

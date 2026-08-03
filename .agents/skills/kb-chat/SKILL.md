@@ -18,23 +18,14 @@ Path calculation: manifest entry `path: docs/api/auth.md` → tree.json at `.kb/
 
 ## QA workflow
 
-Like a human flipping through a book: look up the TOC to locate the section, read the source, answer with citations. The LLM decides how deep to go at each step based on question difficulty.
+Like a human flipping through a book: look up the TOC to locate the section, read the source, answer with citations. The LLM navigates autonomously — pick the most relevant document, dive into the section, expand the read range when needed. When uncertain between documents, consult the user rather than guess.
 
 Progress:
-- [ ] **1. Routing preferences** — Read `.kb/memory/route_preferences.json` (if present) as a weak prior. Only honor preferences the user explicitly expressed; never infer from conversation history
-- [ ] **2. Document routing** — Read `.kb/manifest.json`, locate the most relevant document via **semantic matching** of domain/title/summary/tags
-  - If Top 1 is clearly better → select it
-  - If multiple documents are hard to distinguish → list candidates and let the user choose; do not guess
-  - If no document can be located → list Top 2–3 candidates (title + summary) and let the user choose; do not guess
+- [ ] **1. Routing preferences** — Read `.kb/memory/route_preferences.json` (if present) as a weak prior. Only honor preferences the user explicitly expressed
+- [ ] **2. Document routing** — Read `.kb/manifest.json`, locate the most relevant document via **semantic matching** of domain/title/summary/tags. When uncertain, list a few candidates and let the user choose
 - [ ] **3. Section localization** — Read the hit document's `tree.json`, locate the most precise section via **semantic matching** of node title/summary/keywords. Recurse into children until specific enough
-- [ ] **4. Content extraction** — Read the line range [start_line, end_line] of the hit section from the source file
-  - If the answer may span nodes, proactively expand the read range (adjacent nodes or lines)
-  - If a child node is insufficient, fall back to the parent's range for fuller context
-  - Record the line range read, for citation
-  - For cross-document comparison: run Steps 2–4 independently per document; cite each source separately; do not mix routing or localization results
-- [ ] **5. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance:
-  - Duplicate records (same correct_answer) = multi-user consensus; boosts confidence; do not dedupe
-  - conflicted status = conflicting answers; show all versions side by side; do not adjudicate
+- [ ] **4. Content extraction** — Read the line range [start_line, end_line] of the hit section from the source file. Expand the read range when the answer may span nodes; fall back to the parent range when a child is insufficient. Record the line range read for citation
+- [ ] **5. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance: duplicate records (same correct_answer) signal multi-user consensus and boost confidence; conflicted records show all versions side by side
 - [ ] **6. Generate answer** — Based on extracted source text, using the template below. If the user explicitly expresses a domain preference, write it to route_preferences.json
 
 ## Answer format template
@@ -48,8 +39,8 @@ Source: {doc_id} {ch_id} {path}#L{start}-L{end}
 ```
 
 - When a correction contradicts the source: state "source says X, correction says Y"
-- When the documents contain no relevant info: say only "not mentioned in the documents"; do not fabricate
-- For cross-document comparison: cite both document sources separately
+- When the documents contain no relevant info: say only "not mentioned in the documents"
+- For cross-document comparison: cite each source separately
 
 ## Correction flow
 
@@ -65,12 +56,11 @@ When the user says "that's wrong", "should be", "correct this":
 
 ## Gotchas
 
-- **Never fabricate from training data** — If not found, say "not mentioned in the documents"; never answer from model memory
-- **No keyword hard-matching** — Routing relies on semantic understanding of title/summary/keywords, not term frequency or literal matching
+- **Answers must be grounded in source text** — If not found, say "not mentioned in the documents"
+- **Routing is semantic, not lexical** — Match title/summary/keywords by meaning, not term frequency
 - **path field is critical** — The manifest entry's path is the source file path relative to the repo root; the source is read from there. tree.json lives under the `.kb/index/` mirrored directory
-- **Correction conflicts** — conflicted records must show all versions; never adjudicate unilaterally
-- **Correction duplicates** — Same answer across different session_ids is a consensus signal; do not dedupe
-- **Cross-document comparison** — Run routing and localization independently per document; do not mix
-- **Routing preferences** — Store only preferences the user explicitly expressed; never infer from conversation history
-- **Scale boundary** — When a single repo exceeds a few hundred documents, split by team or domain into separate Git repos; no physical sharding
+- **Corrections are append-only** — Duplicate answers = consensus (keep them); conflicting answers = show all versions (let the user decide)
+- **Cross-document comparison** — Run routing and localization independently per document
+- **Routing preferences** — Store only preferences the user explicitly expressed
+- **Scale boundary** — When a single repo exceeds a few hundred documents, split by team or domain into separate Git repos
 - **{kb_path} placeholder** — Replace with the actual knowledge base path at runtime; defaults to `knowledge_repo`

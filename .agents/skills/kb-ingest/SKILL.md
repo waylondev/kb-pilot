@@ -68,7 +68,7 @@ When a source file is heavily modified, detect drift via `source_sha256` in tree
 - **Heading hierarchy** — Source files must have a complete `#`–`######` hierarchy; this is the foundation of tree.json. H1 is the document title and does not enter the tree; the tree starts at H2
 - **summary/keywords cannot be scripted** — Rule-based scripts cannot understand semantics and would break kb-chat's routing accuracy. Even if it looks like "just keyword extraction", the LLM must fill each node
 - **Markdown only** — PDF/Word/HTML conversion is the user's responsibility
-- **No vectors / chunks / graphs** — This is kb-pilot's core boundary; violating it departs from the design
+- **No vectors / chunks / graphs** — This is the core design boundary; the LLM only needs a TOC and the full source text
 - **No metadata in user directories** — All metadata lives under `.kb/`; deleting it uninstalls cleanly
 - **Concurrency** — When multiple users ingest simultaneously, file conflicts under `.kb/` are resolved by Git merge; no application-layer locking
 - **Scale boundary** — When a single repo exceeds a few hundred documents, split by team or domain into separate Git repos; no physical sharding

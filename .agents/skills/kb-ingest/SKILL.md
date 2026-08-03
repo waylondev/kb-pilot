@@ -58,7 +58,7 @@ When the user says "ingest entire directory", "scan all md files", or "initializ
 
 - [ ] 1. `git clone {repo_url} {kb_path}` (if not present)
 - [ ] 2. Recursively scan `{kb_path}` for all `.md` files, excluding `.kb/` and `.git/`
-- [ ] 3. For each file without a metadata.yaml, run ingest workflow from Step 4
+- [ ] 3. For each file without a metadata.yaml, run ingest workflow from Step 3 (assign doc_id, create metadata.yaml, generate tree.json, fill, verify)
 - [ ] 4. Finally run `scripts/build_manifest.py {kb_path}` once
 - [ ] 5. Single Git commit + push
 

@@ -2,7 +2,7 @@
 build_tree.py — 单遍扫描解析器 (PageIndex 风格)
 逐行读取 Markdown，遇 `#` 标题即创建节点，累积行号。
 纯正则解析，确定性输出，不调用 LLM。
-输出 tree.json 骨架（id、level、title、anchor、start_line、end_line、page_range、children）。
+输出 tree.json 骨架（id、level、title、summary、keywords、start_line、end_line、children）。
 """
 import json
 import re
@@ -15,11 +15,11 @@ def compute_sha256(filepath: Path) -> str:
     return hashlib.sha256(filepath.read_bytes()).hexdigest()
 
 
-def parse_headings(source_path: Path, page_lines: int = 50) -> dict:
+def parse_headings(source_path: Path) -> dict:
     lines = source_path.read_text(encoding="utf-8").splitlines()
     total_lines = len(lines)
 
-    heading_pattern = re.compile(r"^(#{1,4})\s+(.+)$")
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.+)$")
     nodes = []
     stack = []
 
@@ -32,8 +32,6 @@ def parse_headings(source_path: Path, page_lines: int = 50) -> dict:
         title = m.group(2).strip()
         line_num = i + 1
 
-        if level > 4:
-            level = 4
         if level == 1:
             continue
 
@@ -41,21 +39,16 @@ def parse_headings(source_path: Path, page_lines: int = 50) -> dict:
             "id": "",
             "level": level,
             "title": title,
-            "anchor": f"{'#' * level} {title}",
             "summary": "",
             "keywords": [],
             "start_line": line_num,
             "end_line": 0,
-            "page_range": [line_num // page_lines + 1, 0],
             "children": []
         }
 
         while stack and stack[-1]["level"] >= level:
             prev = stack.pop()
             prev["end_line"] = line_num - 1
-            prev["page_range"][1] = (line_num - 1) // page_lines + 1
-            if prev["page_range"][1] < prev["page_range"][0]:
-                prev["page_range"][1] = prev["page_range"][0]
 
         if stack:
             parent = stack[-1]
@@ -71,9 +64,6 @@ def parse_headings(source_path: Path, page_lines: int = 50) -> dict:
     while stack:
         prev = stack.pop()
         prev["end_line"] = total_lines
-        prev["page_range"][1] = total_lines // page_lines + 1
-        if prev["page_range"][1] < prev["page_range"][0]:
-            prev["page_range"][1] = prev["page_range"][0]
 
     nodes = _apply_constraints(nodes)
 
@@ -165,17 +155,16 @@ def preserve_existing_data(new_tree: dict, existing_path: Path) -> dict:
     return new_tree
 
 
-def build(source_path: str, output_path: str | None = None,
-          doc_id: str = "", title: str = "", ai_fill: dict | None = None) -> str:
+def build(source_path: str, output_path: str,
+          doc_id: str = "", title: str = "") -> str:
     """
-    主入口：构建 tree.json。
+    主入口：构建 tree.json 骨架。
 
     Args:
         source_path: Markdown 源文件路径
-        output_path: tree.json 输出路径，默认与 source.md 同目录
-        doc_id: 文档 ID（如 doc_001），为空则从目录名推断（兼容旧结构）
-        title: 文档标题，为空则从 H1 或文件名推断
-        ai_fill: AI 填充的 summary 和 keywords
+        output_path: tree.json 输出路径（必须指定，写入 .kb/index/ 镜像目录）
+        doc_id: 文档 ID（如 doc_001）
+        title: 文档标题
     """
     source = Path(source_path)
     if not source.exists():
@@ -183,13 +172,9 @@ def build(source_path: str, output_path: str | None = None,
 
     tree = parse_headings(source)
 
-    # doc_id 和 title：优先用传入参数，否则从目录名/文件名推断
+    # doc_id 和 title：优先用传入参数，否则从 H1/文件名推断
     if doc_id:
         tree["doc_id"] = doc_id
-    else:
-        dir_name = source.parent.name
-        parts = dir_name.split("_", 2)
-        tree["doc_id"] = parts[0] + "_" + parts[1] if len(parts) >= 2 else dir_name
 
     if title:
         tree["title"] = title
@@ -202,14 +187,7 @@ def build(source_path: str, output_path: str | None = None,
         if not tree["title"]:
             tree["title"] = source.stem
 
-    if ai_fill:
-        tree = merge_summary_keywords(tree, ai_fill)
-
-    if output_path is None:
-        output_path = source.parent / "tree.json"
-    else:
-        output_path = Path(output_path)
-
+    output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     tree = preserve_existing_data(tree, output_path)
@@ -226,12 +204,12 @@ def build(source_path: str, output_path: str | None = None,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python build_tree.py <source.md path> [output path] [doc_id] [title]")
+    if len(sys.argv) < 3:
+        print("Usage: python build_tree.py <source.md path> <output path> [doc_id] [title]")
         sys.exit(1)
 
     source = sys.argv[1]
-    output = sys.argv[2] if len(sys.argv) > 2 else None
+    output = sys.argv[2]
     did = sys.argv[3] if len(sys.argv) > 3 else ""
     ttl = sys.argv[4] if len(sys.argv) > 4 else ""
     build(source, output, did, ttl)

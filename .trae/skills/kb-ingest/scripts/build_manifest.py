@@ -35,7 +35,7 @@ def build(repo_root: str) -> str:
             "domain": metadata.get("domain", ""),
             "summary": "",
             "tags": [],
-            "updated_at": str(metadata.get("converted_at", "")),
+            "updated_at": str(metadata.get("ingested_at", "")),
             "path": metadata.get("source_path", ""),
         }
 
@@ -44,14 +44,17 @@ def build(repo_root: str) -> str:
             summaries = [n["summary"] for n in tree.get("nodes", []) if n.get("summary")]
             entry["summary"] = "; ".join(summaries[:3]) if summaries else metadata.get("title", "")
 
-            all_keywords = set()
+            all_keywords = []
+            seen = set()
             def collect(nodes):
                 for n in nodes:
                     for kw in n.get("keywords", []):
-                        all_keywords.add(kw)
+                        if kw not in seen:
+                            seen.add(kw)
+                            all_keywords.append(kw)
                     collect(n.get("children", []))
             collect(tree.get("nodes", []))
-            entry["tags"] = sorted(all_keywords)[:50]
+            entry["tags"] = all_keywords[:50]
 
         entries.append(entry)
         print(f"[build_manifest] {entry['doc_id']}: {entry['title']} ({entry['domain']})")

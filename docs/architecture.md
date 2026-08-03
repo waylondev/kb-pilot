@@ -69,7 +69,7 @@ LLM 足够聪明，你不需要把书切碎、向量化、建图谱。你只需�
 ```
 
 - `path`：源文件相对仓库根的路径（**关键**，kb-chat 据此定位原文）
-- `summary`：从 tree.json 根节点 summary 自动拼接
+- `summary`：从 tree.json 顶层节点 summary 自动拼接（前 3 个，分号连接）
 - `tags`：从 tree.json 所有节点 keywords 自动收集
 - 由 `build_manifest.py` 脚本自动生成，不人工维护
 
@@ -83,7 +83,7 @@ title: "API 认证接口"
 domain: api
 source_path: docs/api/auth.md
 source_format: markdown
-converted_at: "2026-08-02"
+ingested_at: "2026-08-02"
 ```
 
 - `source_path`：源文件相对于仓库根的路径
@@ -117,7 +117,7 @@ converted_at: "2026-08-02"
 - 骨架由 `build_tree.py` 脚本确定性生成（解析 Markdown 标题层级）
 - `summary` 和 `keywords` 由 LLM 填充
 - `source_sha256`：源文件哈希，用于检测变更
-- 节点数上限 50，超过自动压缩 H3 及以下
+- 节点数上限 50，超过时自动展平所有子节点（保留顶层结构，丢弃嵌套层级）
 
 ### corrections/ — 纠错记录
 
@@ -177,16 +177,18 @@ converted_at: "2026-08-02"
 1. 接收源文件路径和 domain
 2. 在 `.kb/index/` 镜像路径创建 metadata.yaml
 3. 运行 build_tree.py 生成 tree.json 骨架（输出到镜像路径）
-4. LLM 填充 summary 和 keywords
+4. LLM 逐节点填充 summary 和 keywords（不可用规则脚本替代）
 5. 运行 build_manifest.py 更新 `.kb/manifest.json`
 6. Git commit + push
+
+文档大幅修改时，通过 `source_sha256` 漂移检测判断是否需要重建 tree.json。
 
 ### kb-chat：知识问答
 
 1. 读 `.kb/memory/route_preferences.json`
 2. 读 `.kb/manifest.json` → 语义匹配定位 doc_id
 3. 读 `.kb/index/.../tree.json` → 语义匹配定位 ch_id
-4. 按 source_path 读源文件行范围
+4. 按 manifest path 读源文件行范围
 5. 读 `.kb/memory/corrections/{doc_id}.jsonl`
 6. 生成答案 + 标注行号引用
 

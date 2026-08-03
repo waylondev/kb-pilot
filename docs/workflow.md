@@ -8,7 +8,7 @@ flowchart TD
     B -->|否| C[创建 .kb/ 目录结构]
     B -->|是| D[定位源文件]
     C --> D
-    D --> E[检查标题层级 #/##/###]
+    D --> E[检查标题层级 # ~ ######]
     E --> F[分配 doc_id<br/>扫描 .kb/index/ 取最大序号+1]
     F --> G[计算镜像元数据目录<br/>.kb/index/{path 去掉 .md}/]
     G --> H[创建 metadata.yaml<br/>含 source_path]
@@ -40,9 +40,9 @@ flowchart TD
     S2a -->|是| S3[3. 章节定位<br/>读 .kb/index/.../tree.json<br/>语义匹配 ch_id]
     S2a -->|否| S2b[列出候选让用户选择]
     S2b --> S3
-    S3 --> S4[4. 内容截取<br/>按 source_path 读源文件<br/>读取 start_line-end_line]
+    S3 --> S4[4. 内容截取<br/>按 manifest path 读源文件<br/>读取 start_line-end_line]
     S4 --> S5[5. 纠错加载<br/>读 .kb/memory/corrections/{doc_id}.jsonl<br/>LLM 判断相关性]
-    S5 --> S6[6. 生成答案<br/>基于截取内容<br/>标注 doc_id + ch_id + source_path#L行号]
+    S5 --> S6[6. 生成答案<br/>基于截取内容<br/>标注 doc_id + ch_id + path#L行号]
 ```
 
 ### 路径计算（问答时）
@@ -53,7 +53,7 @@ manifest 条目.path = "docs/api/auth.md"
 meta_dir = ".kb/index/" + path 去掉 ".md" = ".kb/index/docs/api/auth/"
   ↓
 tree.json = {kb_path}/{meta_dir}/tree.json
-source.md = {kb_path}/{path} = {kb_path}/docs/api/auth.md
+源文件 = {kb_path}/{path} = {kb_path}/docs/api/auth.md
 ```
 
 ## 3. 纠错流程
@@ -88,7 +88,10 @@ flowchart TD
 源文件大幅修改时：
 
 1. 读取 `.kb/index/.../metadata.yaml` 获取 doc_id 和 title
-2. 重新运行 build_tree.py（自动保留已有 summary/keywords）
-3. 重新填充 summary 和 keywords（如果结构变了）
-4. 运行 build_manifest.py 更新
-5. Git commit + push
+2. 对比 tree.json 中 `source_sha256` 与源文件当前 SHA256：
+   - 一致 → 跳过（无需重建）
+   - 不一致 → 源文件已变更，继续重建
+3. 重新运行 build_tree.py（自动保留已有 summary/keywords）
+4. 重新填充 summary 和 keywords（如果结构变了）
+5. 运行 build_manifest.py 更新
+6. Git commit + push

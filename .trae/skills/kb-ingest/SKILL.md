@@ -11,6 +11,11 @@ config:
 > - **不侵入用户目录**：原始 Markdown 留在原位，元数据（metadata.yaml、tree.json）统一存放在 `.kb/index/` 下镜像路径。
 > - 删除知识库 = 删除 `.kb/` 目录，用户文件毫发无损。
 
+> **前置条件**：
+> - Python 3.10+
+> - PyYAML（`pip install pyyaml`）
+> - Git
+
 ## 知识库目录结构
 
 知识库是一个 Git 仓库，克隆到本地 `{kb_path}` 目录。用户原始文档可以在仓库任意位置，`.kb/` 是 kb-pilot 的元数据目录：
@@ -51,7 +56,7 @@ config:
 - [ ] **Step 3: 定位源文件与元数据目录**
   - 源文件路径：`{kb_path}/{source_rel_path}`（如 `{kb_path}/docs/api/auth.md`）
   - 检查源文件是否存在
-  - 检查 Markdown 结构：标题层级是否完整（#、##、###）
+  - 检查 Markdown 结构：标题层级是否完整（# ~ ######），层级缺失时提示用户完善后重新入库
   - 元数据目录：`{kb_path}/.kb/index/{source_rel_path 去掉 .md}/`（如 `.kb/index/docs/api/auth/`）
   - 自动创建元数据目录
 
@@ -66,7 +71,7 @@ config:
     domain: api
     source_path: docs/api/auth.md
     source_format: markdown
-    converted_at: "2026-08-02"
+    ingested_at: "2026-08-02"
     ```
 
 - [ ] **Step 5: 构建 tree.json 骨架**
@@ -80,10 +85,11 @@ config:
   - 其中 `{source_rel_dir}` 是 source_rel_path 去掉 `.md` 后缀（如 `docs/api/auth`）
   - 脚本自动在元数据目录生成 tree.json 骨架
 
-- [ ] **Step 6: 填充 summary 和 keywords**
+- [ ] **Step 6: 填充 summary 和 keywords（LLM 驱动）**
   - 读取源文件原文和 tree.json 骨架
-  - 为每个节点生成：summary（≤20字）、keywords（3~8个）
-  - 将填充结果写入 tree.json（调用 build_tree.py 的 merge 逻辑或直接编辑 JSON）
+  - 为**每个节点**生成：summary（≤20字，概括该节内容）、keywords（3~8个，含表格字段名/mermaid节点名/关键术语）
+  - **必须由 LLM 逐个节点填充**，不能用规则脚本自动生成（规则脚本无法理解内容语义）
+  - 将填充结果写入 tree.json（直接编辑 JSON 文件，保留骨架中的 id/level/title/start_line/end_line）
 
 - [ ] **Step 7: 更新 manifest.json**
   - 运行脚本：`python .trae/skills/kb-ingest/scripts/build_manifest.py {kb_path}`
@@ -99,44 +105,32 @@ config:
 
 ## 批量接入
 
-当用户说"接入整个目录"或"扫描仓库中的所有 md 文件"时：
+当用户说"接入整个目录"、"扫描仓库中的所有 md 文件"或"从现有 Git 仓库初始化"时：
 
-1. 递归扫描 `{kb_path}` 下所有 `.md` 文件
-2. 排除 `.kb/` 目录和 `.git/` 目录
-3. 对每个尚无 metadata.yaml 的文件，从 Step 4 开始执行
-4. 最后统一执行 Step 7 更新 manifest.json
+1. 若 `{kb_path}` 不存在，先 `git clone {repo_url} {kb_path}`
+2. 递归扫描 `{kb_path}` 下所有 `.md` 文件
+3. 排除 `.kb/` 目录和 `.git/` 目录
+4. 对每个尚无 metadata.yaml 的文件，从 Step 4 开始执行
+5. 最后统一执行 Step 7 更新 manifest.json
 
 ## 文档重建
 
 用户说"重建 tree.json"或文档有大幅修改时：
 
 1. 读取源文件和对应的 metadata.yaml 获取 doc_id 和 title
-2. 重新运行 Step 5 脚本（会自动保留已有 summary/keywords）
-3. 重新填充 Step 6（大幅修改时）
-4. 执行 Step 7 更新 manifest.json
-
-## 从现有 Git 仓库初始化
-
-当用户提供一个已有 Markdown 文件的 Git 仓库时：
-
-1. `git clone {repo_url} {kb_path}`
-2. 创建 `.kb/` 目录结构
-3. 执行批量接入流程
-
-## 质量检查
-
-- 检查源文件是否有完整标题层级（#、##、###）
-- 检查 tree.json 节点数是否合理（通常 10~30 个节点）
-- 标题层级缺失时，提示用户完善 Markdown 结构后重新入库
+2. 对比现有 tree.json 中的 `source_sha256` 与源文件当前 SHA256：
+   - 一致 → 跳过（无需重建）
+   - 不一致 → 源文件已变更，继续重建
+3. 重新运行 Step 5 脚本（会保留原有 summary/keywords，但建议检查布局变化后重新填充）
+4. 重新填充 Step 6（结构变化时，旧 summary/keywords 可能不匹配新章节，应重新生成）
+5. 执行 Step 7 更新 manifest.json
+6. 执行 Step 8 提交到 Git
 
 ## 常见陷阱（Gotchas）
 
 - **doc_id 序号**：必须扫描 `.kb/index/` 下已有 metadata.yaml 确认最大序号，不要依赖记忆
-- **标题层级**：源文件必须有完整的标题层级（#、##、###），这是 tree.json 构建的基础
-- **tree.json 输出路径**：必须输出到 `.kb/index/` 镜像目录，不要写到源文件同目录
-- **source_path**：metadata.yaml 中的 source_path 是相对于仓库根的路径，kb-chat 据此定位源文件
-- **manifest.json 路径**：在 `.kb/manifest.json`，不在仓库根目录
-- **不修改源文件**：除了将文件放入正确位置，不要对源文件做任何修改
+- **标题层级**：源文件必须有完整的标题层级（# ~ ######），这是 tree.json 构建的基础
+- **source_path 映射**：metadata.yaml 中的 source_path 是相对于仓库根的路径，build_manifest.py 据此生成 manifest 的 path 字段
 - **并发协作**：多人同时入库时，`.kb/` 下的文件冲突由 Git 合并机制解决，不在应用层加锁
-- **大规模知识库**：单库超过几百篇文档时，按认知边界拆分 Git 仓库，不要在单库内做分片
+- **大规模知识库**：单库超过几百篇文档时，按认知边界拆分 Git 仓库，不要在单库内做物理分片
 - **{kb_path} 占位符**：执行时替换为实际知识库路径，默认为 `knowledge_repo`

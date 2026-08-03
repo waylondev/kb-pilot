@@ -33,6 +33,8 @@ flowchart LR
 
 ## 快速开始
 
+**前置条件**：Python 3.10+、Git、PyYAML
+
 ```bash
 pip install pyyaml
 ```

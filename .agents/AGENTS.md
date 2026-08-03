@@ -46,7 +46,7 @@ SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guide
 - **Match specificity to fragility** — Be prescriptive for fragile operations (path mapping, doc_id); give freedom where multiple approaches are valid
 - **Favor procedures over declarations** — Teach *how to approach*, not *what to produce*
 - **Checklists, not decision trees** — Steps are progress markers, not if-else branches
-- **Validation loops** — Validate after fragile operations (kb-ingest Step 6 + Step 8, kb-chat Step 7)
+- **Validation loops** — Validate after fragile operations (kb-ingest Step 5 + Step 6, kb-chat Step 6)
 - **Bundling reusable scripts** — Deterministic logic lives in `scripts/`; the LLM handles semantics
 
 ## Script design principles

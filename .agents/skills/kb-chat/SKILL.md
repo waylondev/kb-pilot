@@ -4,6 +4,7 @@ description: >-
   Use when the user asks a question that should be answered from the knowledge base
   or wants to compare content across documents. Triggers on questions about ingested
   content — even when the user doesn't name the underlying system.
+compatibility: Requires Git and an initialized knowledge base (run kb-ingest first)
 metadata:
   repo_url: ""
   kb_path: knowledge_repo

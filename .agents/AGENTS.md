@@ -77,11 +77,11 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
 ├── AGENTS.md                      # this file — design principles for all agents
 └── skills/
     ├── kb-ingest/
-    │   ├── SKILL.md               # ingest workflow (11 steps: clone → tree → LLM fill → self-verify → manifest → commit)
+    │   ├── SKILL.md               # ingest workflow (9 steps: clone → tree → LLM fill → manifest → commit)
     │   └── scripts/
     │       ├── build_tree.py      # Markdown → tree.json skeleton (deterministic)
     │       └── build_manifest.py  # metadata.yaml × N → manifest.json (deterministic)
-    ├── kb-chat/                   # QA workflow (7 steps: route → localize → read → answer → self-verify)
+    ├── kb-chat/                   # QA workflow (6 steps: route → localize → read → answer → self-verify)
     │   └── SKILL.md
     └── kb-correct/                # correction persistence
         └── SKILL.md

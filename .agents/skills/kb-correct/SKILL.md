@@ -17,11 +17,11 @@ When the user disagrees with an answer, record the corrected answer as append-on
 
 ```yaml
 Input:
-- question: string           # the original question
-- correct_answer: string     # the user's corrected answer
-- doc_id: string             # document that provided the original answer
-- ch_id?: string             # chapter/section id, if known
-- session_id: string         # current conversation id
+- question: string       # the original question
+- correct_answer: string # the user's corrected answer
+- doc_id: string         # document that provided the original answer
+- ch_id: string          # optional; chapter/section id, if known
+- session_id: string     # current conversation id
 
 Output:
 - appended record in .kb/memory/corrections/{doc_id}.jsonl
@@ -51,4 +51,3 @@ Progress:
 - **Append-only** — Never edit or delete existing correction records; duplicates signal consensus, conflicts are shown side-by-side
 - **Status semantics** — `active` when it agrees with the majority view; `conflicted` when contradictory corrections exist
 - **kb-chat reads these records** — The correction has no effect until a future question routes to the same doc_id
-- **{kb_path} placeholder** — Replace with the actual knowledge base path at runtime; defaults to `knowledge_repo`

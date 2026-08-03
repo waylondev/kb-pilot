@@ -28,7 +28,7 @@ Output:
 ## Workflow
 
 Progress:
-- [ ] **1. Document routing** — Read `.kb/manifest.json` (and `.kb/memory/route_preferences.json` if present, as a weak prior). Locate the most relevant document via **semantic matching** of domain/title/summary/tags. When uncertain, list a few candidates and let the user choose
+- [ ] **1. Document routing** — Read `.kb/manifest.json` (and `.kb/memory/route_preferences.json` if present, as a weak prior). If `domain_preference` is provided, use it as a strong routing hint. Locate the most relevant document via **semantic matching** of domain/title/summary/tags. When uncertain, list a few candidates and let the user choose
 - [ ] **2. Section localization** — Read the hit document's `tree.json`, locate the most precise section via **semantic matching** of node title/summary/keywords. Recurse into children until specific enough
 - [ ] **3. Content extraction** — Use start_line/end_line as navigation anchors; read the source starting from there. The LLM decides how much to read — expand to parent, siblings, or the full document as judgment dictates. Record the actual lines read for citation
 - [ ] **4. Correction loading** — Read `.kb/memory/corrections/{doc_id}.jsonl` (if present) and attach to context. The LLM judges relevance: duplicate records (same correct_answer) signal multi-user consensus and boost confidence; conflicted records show all versions side by side

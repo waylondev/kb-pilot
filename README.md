@@ -134,10 +134,10 @@ graph TB
 
 ```
 kb-pilot/
-├── .trae/skills/           # Agent SKILL 定义
+├── .agents/skills/         # Agent SKILL 定义
 │   ├── kb-ingest/          # 文档入库
 │   │   ├── SKILL.md
-│   │   └── scripts/        # 可选的确定性脚本
+│   │   └── scripts/        # 确定性脚本（--help 查看用法，stdout JSON，stderr 进度）
 │   │       ├── build_tree.py
 │   │       └── build_manifest.py
 │   └── kb-chat/            # 知识问答

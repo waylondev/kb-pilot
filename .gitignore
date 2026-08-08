@@ -223,4 +223,5 @@ data/
 
 # kb-pilot: test scripts and temporary tools (not source code)
 tests/
+RAG-Multi-Corpus/
 

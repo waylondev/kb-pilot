@@ -1,0 +1,49 @@
+{
+  "doc_id": "doc_072",
+  "title": "ZX Bank ATMs in Bhutan",
+  "source_sha256": "8b673234b39032daf72d81c81c370d8a381ab16ff230ea2581d302cab57400d1",
+  "total_lines": 33,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "ZX Bank offers convenient access to its digital banking services in Bhutan through a network of ATM locations. Below are the details of our available ATMs across the country (*dummy addresses for representative purposes*).",
+      "summary": "ZX Bank has 15 ATM locations across 11 cities and towns in Bhutan: Thimphu (2 ATMs), Paro (2 ATMs), Punakha, Phuentsholing (2 ATMs), Wangdue, Bumthang, Samdrup Jongkhar, Trongsa, Trashigang, Mongar, Gelephu, and Haa. Each entry lists the location/branch name and address.",
+      "keywords": [
+        "bhutan",
+        "atm locations",
+        "thimphu",
+        "paro",
+        "phuentsholing",
+        "punakha",
+        "wangdue",
+        "bumthang",
+        "samdrup jongkhar",
+        "trongsa",
+        "trashigang",
+        "mongar",
+        "gelephu",
+        "haa"
+      ],
+      "start_line": 3,
+      "end_line": 24,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Total ZX Bank ATMs in Bhutan: 15",
+      "summary": "All ZX Bank ATMs in Bhutan offer 24/7 cash withdrawal, balance inquiry, mini-statement printing, and cardless QR withdrawals via the ZX Bank Asia app. For the latest information visit www.zxbank.asia.",
+      "keywords": [
+        "bhutan",
+        "atm services",
+        "24/7 withdrawal",
+        "cardless qr",
+        "balance inquiry"
+      ],
+      "start_line": 25,
+      "end_line": 33,
+      "children": []
+    }
+  ]
+}

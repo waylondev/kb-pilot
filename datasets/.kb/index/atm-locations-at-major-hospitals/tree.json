@@ -1,0 +1,332 @@
+{
+  "doc_id": "doc_007",
+  "title": "ZX Bank ATM Locations at Major Hospitals",
+  "source_sha256": "e6fcf9f1486994b4eff882317f9662c43fcc3e9390e0780ef635011647e7f2c8",
+  "total_lines": 187,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai, Maharashtra",
+      "summary": "ATMs at Lilavati Hospital & Research Centre (A-791, Bandra Reclamation, Bandra West) and Kokilaben Dhirubhai Ambani Hospital (Four Bungalows, Andheri West), Mumbai.",
+      "keywords": [
+        "mumbai",
+        "lilavati hospital",
+        "kokilaben dhirubhai ambani",
+        "bandra west",
+        "andheri west",
+        "hospital atm"
+      ],
+      "start_line": 7,
+      "end_line": 15,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi, National Capital Territory",
+      "summary": "ATMs at AIIMS (Sri Aurobindo Marg, Ansari Nagar) and Apollo Hospital (Mathura Road, Sarita Vihar), New Delhi.",
+      "keywords": [
+        "delhi",
+        "aiims",
+        "apollo hospital",
+        "sarita vihar",
+        "hospital atm"
+      ],
+      "start_line": 16,
+      "end_line": 24,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru), Karnataka",
+      "summary": "ATMs at Manipal Hospital (98, HAL Old Airport Road, Kodihalli) and St. John's Medical College Hospital (Sarjapur Road, Koramangala), Bengaluru.",
+      "keywords": [
+        "bangalore",
+        "manipal hospital",
+        "st john's medical college",
+        "kodihalli",
+        "koramangala",
+        "hospital atm"
+      ],
+      "start_line": 25,
+      "end_line": 33,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad, Telangana",
+      "summary": "ATMs at Apollo Hospitals Jubilee Hills (Road No 72) and Osmania General Hospital (Afzal Gunj), Hyderabad.",
+      "keywords": [
+        "hyderabad",
+        "apollo jubilee hills",
+        "osmania",
+        "afzal gunj",
+        "hospital atm"
+      ],
+      "start_line": 34,
+      "end_line": 42,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai, Tamil Nadu",
+      "summary": "ATMs at Apollo Hospitals Greams Road (21, Greams Lane) and Government General Hospital (EVR Periyar Salai, Park Town), Chennai.",
+      "keywords": [
+        "chennai",
+        "apollo greams road",
+        "government general hospital",
+        "park town",
+        "hospital atm"
+      ],
+      "start_line": 43,
+      "end_line": 51,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata, West Bengal",
+      "summary": "ATMs at Apollo Gleneagles Hospitals (58, Canal Circular Road, Kadapara) and Fortis Hospital (730, E M Bypass Road, Anandapur), Kolkata.",
+      "keywords": [
+        "kolkata",
+        "apollo gleneagles",
+        "fortis hospital",
+        "anandapur",
+        "hospital atm"
+      ],
+      "start_line": 52,
+      "end_line": 60,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune, Maharashtra",
+      "summary": "ATMs at Ruby Hall Clinic (40, Sassoon Road) and Jehangir Hospital (32, Sassoon Road), Pune.",
+      "keywords": [
+        "pune",
+        "ruby hall clinic",
+        "jehangir hospital",
+        "sassoon road",
+        "hospital atm"
+      ],
+      "start_line": 61,
+      "end_line": 69,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad, Gujarat",
+      "summary": "ATMs at CIMS Hospital (off Science City Road, Sola) and Civil Hospital (Civil Hospital Road, Asarwa), Ahmedabad.",
+      "keywords": [
+        "ahmedabad",
+        "cims hospital",
+        "civil hospital",
+        "sola",
+        "asarwa",
+        "hospital atm"
+      ],
+      "start_line": 70,
+      "end_line": 78,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat, Gujarat",
+      "summary": "ATMs at New Civil Hospital (Majura Gate, Ring Road) and Apple Hospital (Udhna Magdalla Road, Bhimrad), Surat.",
+      "keywords": [
+        "surat",
+        "new civil hospital",
+        "apple hospital",
+        "ring road",
+        "hospital atm"
+      ],
+      "start_line": 79,
+      "end_line": 87,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur, Rajasthan",
+      "summary": "ATMs at SMS Hospital (Sawai Man Singh, Jawahar Lal Nehru Marg) and Fortis Escorts Hospital (Malviya Nagar), Jaipur.",
+      "keywords": [
+        "jaipur",
+        "sms hospital",
+        "fortis escorts",
+        "malviya nagar",
+        "hospital atm"
+      ],
+      "start_line": 88,
+      "end_line": 96,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow, Uttar Pradesh",
+      "summary": "ATMs at SGPGIMS (Raebareli Road) and King George's Medical University Hospital (Chowk), Lucknow.",
+      "keywords": [
+        "lucknow",
+        "sgpgims",
+        "kgmu",
+        "chowk",
+        "hospital atm"
+      ],
+      "start_line": 97,
+      "end_line": 105,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur, Uttar Pradesh",
+      "summary": "ATMs at Regency Hospital (A-2, Sarvodaya Nagar) and Lala Lajpat Rai Hospital (Swaroop Nagar), Kanpur.",
+      "keywords": [
+        "kanpur",
+        "regency hospital",
+        "lala lajpat rai",
+        "sarvodaya nagar",
+        "hospital atm"
+      ],
+      "start_line": 106,
+      "end_line": 114,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur, Maharashtra",
+      "summary": "ATMs at Government Medical College & Hospital (Medical Square, Hanuman Nagar) and Wockhardt Hospital (1642, Central Bazar Road, Ramdaspeth), Nagpur.",
+      "keywords": [
+        "nagpur",
+        "government medical college",
+        "wockhardt hospital",
+        "ramdaspeth",
+        "hospital atm"
+      ],
+      "start_line": 115,
+      "end_line": 123,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore, Madhya Pradesh",
+      "summary": "ATMs at Bombay Hospital (Ring Road) and CHL Hospital (A.B. Road, L.I.G. Square), Indore.",
+      "keywords": [
+        "indore",
+        "bombay hospital",
+        "chl hospital",
+        "ring road",
+        "hospital atm"
+      ],
+      "start_line": 124,
+      "end_line": 132,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal, Madhya Pradesh",
+      "summary": "ATMs at AIIMS Bhopal (Saket Nagar) and Bansal Hospital (Shahpura), Bhopal.",
+      "keywords": [
+        "bhopal",
+        "aiims",
+        "bansal hospital",
+        "saket nagar",
+        "hospital atm"
+      ],
+      "start_line": 133,
+      "end_line": 141,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam, Andhra Pradesh",
+      "summary": "ATMs at Apollo Hospitals Health City (Arilova) and King George Hospital (Maharanipeta), Visakhapatnam.",
+      "keywords": [
+        "visakhapatnam",
+        "apollo health city",
+        "king george hospital",
+        "maharanipeta",
+        "hospital atm"
+      ],
+      "start_line": 142,
+      "end_line": 150,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna, Bihar",
+      "summary": "ATMs at IGIMS (Sheikhpura) and Paras HMRI Hospital (NH 30, Bailey Road), Patna.",
+      "keywords": [
+        "patna",
+        "igims",
+        "paras hmri",
+        "bailey road",
+        "hospital atm"
+      ],
+      "start_line": 151,
+      "end_line": 159,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda), Gujarat",
+      "summary": "ATMs at Sterling Hospital (Race Course Circle) and S.S.G. Hospital (Jail Road, opposite Kirti Mandir), Vadodara.",
+      "keywords": [
+        "vadodara",
+        "sterling hospital",
+        "ssg hospital",
+        "kirti mandir",
+        "hospital atm"
+      ],
+      "start_line": 160,
+      "end_line": 168,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana, Punjab",
+      "summary": "ATMs at Dayanand Medical College and Hospital (Civil Lines, Tagore Nagar) and Fortis Hospital (Chandigarh Road), Ludhiana.",
+      "keywords": [
+        "ludhiana",
+        "dmch",
+        "dayanand",
+        "fortis hospital",
+        "chandigarh road",
+        "hospital atm"
+      ],
+      "start_line": 169,
+      "end_line": 177,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore, Tamil Nadu",
+      "summary": "ATMs at Kovai Medical Center and Hospital (Avinashi Road) and PSG Hospitals (Peelamedu), Coimbatore.",
+      "keywords": [
+        "coimbatore",
+        "kmch",
+        "psg hospitals",
+        "avinashi road",
+        "hospital atm"
+      ],
+      "start_line": 178,
+      "end_line": 187,
+      "children": []
+    }
+  ]
+}

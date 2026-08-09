@@ -1,0 +1,327 @@
+{
+  "doc_id": "doc_062",
+  "title": "ZX Bank ATM Network at Major Parks – India",
+  "source_sha256": "82d21add18edd82de118b6ef08939ee1992f9841d028f635fd0a6cec21039f3b",
+  "total_lines": 443,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai – Maharashtra",
+      "summary": "Six ZX Bank ATMs in Mumbai at Shivaji Park, Jijamata Udyan (Byculla Zoo), Sanjay Gandhi National Park, Hanging Gardens, Priyadarshini Park, and Five Gardens.",
+      "keywords": [
+        "mumbai",
+        "shivaji park",
+        "byculla zoo",
+        "hanging gardens",
+        "atm"
+      ],
+      "start_line": 5,
+      "end_line": 26,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi – National Capital Territory",
+      "summary": "Six ZX Bank ATMs in Delhi at Lodhi Gardens, Deer Park, Nehru Park, Central Park, Japanese Park, and Indraprastha Park.",
+      "keywords": [
+        "delhi",
+        "lodhi gardens",
+        "deer park",
+        "nehru park",
+        "atm"
+      ],
+      "start_line": 27,
+      "end_line": 48,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru) – Karnataka",
+      "summary": "Six ZX Bank ATMs in Bengaluru at Cubbon Park, Lalbagh Botanical Garden, JP Park, Bannerghatta Biological Park, Freedom Park, and Bugle Rock Park.",
+      "keywords": [
+        "bangalore",
+        "cubbon park",
+        "lalbagh",
+        "bannerghatta",
+        "atm"
+      ],
+      "start_line": 49,
+      "end_line": 70,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad – Telangana",
+      "summary": "Six ZX Bank ATMs in Hyderabad at Indira Park, KBR National Park, Lumbini Park, Sanjeevaiah Park, NTR Gardens, and Mir Alam Tank Park.",
+      "keywords": [
+        "hyderabad",
+        "indira park",
+        "kbr national park",
+        "ntr gardens",
+        "atm"
+      ],
+      "start_line": 71,
+      "end_line": 92,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai – Tamil Nadu",
+      "summary": "Six ZX Bank ATMs in Chennai at Semmozhi Poonga, Guindy National Park, Anna Nagar Tower Park, Natesan Park, Tholkappia Poonga (Adyar Eco Park), and Chetpet EcoPark.",
+      "keywords": [
+        "chennai",
+        "semmozhi poonga",
+        "guindy",
+        "anna nagar",
+        "atm"
+      ],
+      "start_line": 93,
+      "end_line": 114,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata – West Bengal",
+      "summary": "Six ZX Bank ATMs in Kolkata at Maidan, Eco Park, Rabindra Sarovar Park, Millennium Park, Deshapriya Park, and Hedge Park.",
+      "keywords": [
+        "kolkata",
+        "maidan",
+        "eco park",
+        "rabindra sarovar",
+        "atm"
+      ],
+      "start_line": 115,
+      "end_line": 136,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune – Maharashtra",
+      "summary": "Six ZX Bank ATMs in Pune at Shaniwar Wada Garden, Pune-Okayama Friendship Garden, Empress Botanical Garden, Sarasbaug Garden, Bund Garden, and Vetal Tekdi Park.",
+      "keywords": [
+        "pune",
+        "shaniwar wada",
+        "empress garden",
+        "bund garden",
+        "atm"
+      ],
+      "start_line": 137,
+      "end_line": 158,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad – Gujarat",
+      "summary": "Six ZX Bank ATMs in Ahmedabad at Law Garden, Parimal Garden, Kankaria Lake Park, Riverfront Park, Vastrapur Lake Park, and Sundarvan Nature Discovery Centre.",
+      "keywords": [
+        "ahmedabad",
+        "law garden",
+        "kankaria",
+        "riverfront",
+        "atm"
+      ],
+      "start_line": 159,
+      "end_line": 180,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat – Gujarat",
+      "summary": "Six ZX Bank ATMs in Surat at Gopi Talav Park, Sarthana Nature Park, VR Mall Garden, Indira Gandhi Garden, Science Centre Park, and Pal Lake Garden.",
+      "keywords": [
+        "surat",
+        "gopi talav",
+        "sarthana",
+        "pal lake",
+        "atm"
+      ],
+      "start_line": 181,
+      "end_line": 202,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur – Rajasthan",
+      "summary": "Six ZX Bank ATMs in Jaipur at Central Park, Jawahar Circle Garden, Kanak Vrindavan Garden, Sisodiya Rani Ka Bagh, Ram Niwas Garden, and Vidyadhar Garden.",
+      "keywords": [
+        "jaipur",
+        "jawahar circle",
+        "sisodiya rani ka bagh",
+        "atm"
+      ],
+      "start_line": 203,
+      "end_line": 224,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow – Uttar Pradesh",
+      "summary": "Six ZX Bank ATMs in Lucknow at Janeshwar Mishra Park, Gomti Riverfront Park, Ambedkar Park, Dr. Ram Manohar Lohia Park, Nawab Wajid Ali Shah Zoological Garden, and Lohia Path Park.",
+      "keywords": [
+        "lucknow",
+        "janeshwar mishra park",
+        "ambedkar park",
+        "zoological garden",
+        "atm"
+      ],
+      "start_line": 225,
+      "end_line": 246,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur – Uttar Pradesh",
+      "summary": "Six ZX Bank ATMs in Kanpur at Nana Rao Park, Phool Bagh Park, Moti Jheel Park, JK Temple Garden, Kamala Retreat Park, and Maheshwari Park.",
+      "keywords": [
+        "kanpur",
+        "nana rao park",
+        "phool bagh",
+        "moti jheel",
+        "atm"
+      ],
+      "start_line": 247,
+      "end_line": 268,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur – Maharashtra",
+      "summary": "Six ZX Bank ATMs in Nagpur at Ambazari Lake Garden, Futala Lake Park, Japanese Rose Garden, Sambhaji Park, Telankhedi Garden, and Children's Traffic Park.",
+      "keywords": [
+        "nagpur",
+        "ambazari",
+        "futala",
+        "sambhaji park",
+        "atm"
+      ],
+      "start_line": 269,
+      "end_line": 290,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore – Madhya Pradesh",
+      "summary": "Six ZX Bank ATMs in Indore at Pipliyapala Regional Park, Meghdoot Garden, Sirpur Lake Park, Nehru Park, Gommatgiri Park, and Chhatri Bagh.",
+      "keywords": [
+        "indore",
+        "pipliyapala",
+        "sirpur",
+        "gommatgiri",
+        "atm"
+      ],
+      "start_line": 291,
+      "end_line": 312,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal – Madhya Pradesh",
+      "summary": "Six ZX Bank ATMs in Bhopal at Van Vihar National Park, Kamla Park, Rose Garden, Sair Sapata Park, Kerwa Dam Park, and Shahpura Lake Garden.",
+      "keywords": [
+        "bhopal",
+        "vavihar",
+        "rose garden",
+        "kerwa dam",
+        "atm"
+      ],
+      "start_line": 313,
+      "end_line": 334,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam – Andhra Pradesh",
+      "summary": "Six ZX Bank ATMs in Visakhapatnam at Kailasagiri Park, VUDA City Central Park, Indira Gandhi Zoological Park, Tenneti Park, Matsyadarshini Aquarium Park, and Bheemili Beach Park.",
+      "keywords": [
+        "visakhapatnam",
+        "kailasagiri",
+        "vuda",
+        "tenneti park",
+        "atm"
+      ],
+      "start_line": 335,
+      "end_line": 356,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna – Bihar",
+      "summary": "Six ZX Bank ATMs in Patna at Sanjay Gandhi Biological Park, Eco Park, Buddha Smriti Park, Gandhi Maidan, Rajdhani Vatika Park, and Shahid Pir Ali Park.",
+      "keywords": [
+        "patna",
+        "sanjay gandhi biological park",
+        "buddha smriti park",
+        "gandhi maidan",
+        "atm"
+      ],
+      "start_line": 357,
+      "end_line": 378,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda) – Gujarat",
+      "summary": "Six ZX Bank ATMs in Vadodara at Sayaji Baug (Kamati Baug), Akota Garden, Ajwa Garden, Lakshmi Vilas Palace Garden, Gotri Garden, and Bansal Park.",
+      "keywords": [
+        "vadodara",
+        "sayaji baug",
+        "akota",
+        "lakshmi vilas",
+        "atm"
+      ],
+      "start_line": 379,
+      "end_line": 400,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana – Punjab",
+      "summary": "Six ZX Bank ATMs in Ludhiana at Nehru Rose Garden, PAU Botanical Garden, Rakh Bagh Park, Hardy's World Park, Guru Nanak Bhawan Park, and Mini Rose Garden.",
+      "keywords": [
+        "ludhiana",
+        "nehru rose garden",
+        "rakh bagh",
+        "pau botanical",
+        "atm"
+      ],
+      "start_line": 401,
+      "end_line": 422,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore – Tamil Nadu",
+      "summary": "Six ZX Bank ATMs in Coimbatore at VOC Park, Singanallur Lake Eco Park, TNAU Botanical Garden, Race Course Park, Gandhipuram Children's Park, and R.S. Puram Lake View Park.",
+      "keywords": [
+        "coimbatore",
+        "voc park",
+        "singanallur",
+        "race course",
+        "atm"
+      ],
+      "start_line": 423,
+      "end_line": 443,
+      "children": []
+    }
+  ]
+}

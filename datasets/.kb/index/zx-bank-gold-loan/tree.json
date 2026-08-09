@@ -1,0 +1,105 @@
+{
+  "doc_id": "doc_070",
+  "title": "ZX Bank Gold Loan",
+  "source_sha256": "e94503a90978eaf15a27ddfec437e8eb07846481d32ee077c5a1d703b75b43b0",
+  "total_lines": 65,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "**Features of ZX Bank Gold Loan**",
+      "summary": "Gold loan features: fast processing with walk-in disbursal, minimal paperwork, and instant approval; gold jewelry stored securely in bank vaults; flexible repayment with choice of tenure; and digital tracking and repayment via the ZX Bank Asia mobile app.",
+      "keywords": [
+        "gold loan",
+        "fast processing",
+        "secure storage",
+        "vault",
+        "instant approval",
+        "tracking"
+      ],
+      "start_line": 7,
+      "end_line": 14,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "**Interest Rate**",
+      "summary": "Gold loan interest starts at 9.5% per annum (floating, subject to change), with a processing fee of 0.25% of the loan amount or ₹250, whichever is higher; actual rates vary based on gold purity, market rates, and loan amount.",
+      "keywords": [
+        "interest rate",
+        "floating",
+        "roi",
+        "processing fee",
+        "gold purity"
+      ],
+      "start_line": 15,
+      "end_line": 23,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "**Maximum Loan Amount**",
+      "summary": "Maximum gold loan amount is up to ₹50 lakhs in India and equivalent local currency up to the regulatory maximum in Sri Lanka, Nepal, Bhutan, and Bangladesh, with a loan-to-value (LTV) of up to 75% of the gold's market value per RBI regulations.",
+      "keywords": [
+        "loan amount",
+        "lakh",
+        "ltv",
+        "rbi",
+        "loan to value"
+      ],
+      "start_line": 24,
+      "end_line": 31,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "**Documents Required**",
+      "summary": "Documents needed for a gold loan: identity proof (Aadhaar, Passport, Voter ID, or Driving License), address proof (Aadhaar, utility bill not older than 3 months, or Passport), a recent passport-sized photograph, and the gold jewelry or ornament to be pledged (hallmarked jewelry only).",
+      "keywords": [
+        "documents",
+        "identity proof",
+        "address proof",
+        "photograph",
+        "gold jewelry"
+      ],
+      "start_line": 32,
+      "end_line": 50,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "**How to Apply**",
+      "summary": "Apply for a gold loan by visiting any ZX Bank branch with gold ornaments and documents, or apply online via the ZX Bank Asia mobile app for a digital pre-approval and appointment; the loan amount is credited in minutes after gold valuation and documentation.",
+      "keywords": [
+        "how to apply",
+        "branch",
+        "mobile app",
+        "disbursal",
+        "pre-approval"
+      ],
+      "start_line": 51,
+      "end_line": 58,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "**Contact Us**",
+      "summary": "For more information, visit www.zxbank.asia or use the ZX Bank Asia mobile app to chat with the Zia AI assistant; loan approval is subject to gold assay, purity, and documentation verification.",
+      "keywords": [
+        "contact",
+        "zia",
+        "website",
+        "terms",
+        "disclaimer"
+      ],
+      "start_line": 59,
+      "end_line": 65,
+      "children": []
+    }
+  ]
+}

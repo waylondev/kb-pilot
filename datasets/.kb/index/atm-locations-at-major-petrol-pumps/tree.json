@@ -1,0 +1,337 @@
+{
+  "doc_id": "doc_009",
+  "title": "ZX Bank ATM Locations at Major Petrol Pumps (By City)",
+  "source_sha256": "1bbf591bbec515d3a98e91f2589df51ae7cce74280d3585b3481f3d452279ffc",
+  "total_lines": 686,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai – Maharashtra",
+      "summary": "ATMs at the following petrol pumps in Mumbai: Indian Oil (Bandra Kurla Complex, Worli, Colaba), HPCL (Cuffe Parade, Sion Circle, Chembur, Dadar) and BPCL (Andheri West, Powai, Borivali East) across BKC, Cuffe Parade, Veera Desai Road, Powai, Sion, Chembur, Colaba, Borivali and Dadar.",
+      "keywords": [
+        "mumbai",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl",
+        "atm"
+      ],
+      "start_line": 6,
+      "end_line": 39,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi – NCT",
+      "summary": "ATMs at the following petrol pumps in Delhi (NCT): Indian Oil (Connaught Place, Dwarka Sector 12, Rohini Sector 7 ), HPCL (South Extension, Karol Bagh, Preet Vihar, Janakpuri) and BPCL (Lajpat Nagar, Vasant Kunj, Saket), across CP, Janakpuri and Rohini.",
+      "keywords": [
+        "delhi",
+        "delhi nct",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 40,
+      "end_line": 73,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru) – Karnataka",
+      "summary": "ATMs at the following petrol pumps in Bangalore: Indian Oil (MG Road, Whitefield, Bannerghatta Road), HPCL (Koramangala, Indiranagar, Malleshwaram, Yeshwanthpur) and BPCL (Jayanagar, Rajajinagar, HSR Layout).",
+      "keywords": [
+        "bangalore",
+        "bengaluru",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 74,
+      "end_line": 107,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad – Telangana",
+      "summary": "ATMs at the following petrol pumps in Hyderabad: Indian Oil (Banjara Hills, Begumpet, Gachibowli), HPCL (Jubilee Hills, Miyapur, Uppal, Madhapur) and BPCL (Ameerpet, Secunderabad, Kukatpally).",
+      "keywords": [
+        "hyderabad",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl",
+        "secunderabad"
+      ],
+      "start_line": 108,
+      "end_line": 141,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai – Tamil Nadu",
+      "summary": "ATMs at the following petrol pumps in Chennai: Indian Oil (T Nagar, Velachery, Porur), HPCL (Anna Salai, Nungambakkam, Mylapore, Alandur) and BPCL (Adyar, Vadapalani, Koyambedu).",
+      "keywords": [
+        "chennai",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl",
+        "koyambedu"
+      ],
+      "start_line": 142,
+      "end_line": 175,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata – West Bengal",
+      "summary": "ATMs at the following petrol pumps in Kolkata: Indian Oil (Park Street, Howrah, Behala), HPCL (Salt Lake, New Town, Shyambazar, Esplanade) and BPCL (Gariahat, Ballygunge, Dum Dum).",
+      "keywords": [
+        "kolkata",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl",
+        "howrah"
+      ],
+      "start_line": 176,
+      "end_line": 209,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune – Maharashtra",
+      "summary": "ATMs at the following petrol pumps in Pune: Indian Oil (Senapati Bapat Road, Kothrud, Vimannagar), HPCL (Koregaon Park, Hadapsar, Sinhagad Road, Camp) and BPCL (Aundh, Baner, Bibwewadi).",
+      "keywords": [
+        "pune",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl",
+        "kothrud"
+      ],
+      "start_line": 210,
+      "end_line": 243,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad – Gujarat",
+      "summary": "ATMs at the following petrol pumps in Ahmedabad: Indian Oil (CG Road, Maninagar, Vastrapur), HPCL (Satellite Road, SG Highway, Bopal, Naroda) and BPCL (Ashram Road, Navrangpura, Paldi).",
+      "keywords": [
+        "ahmedabad",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 244,
+      "end_line": 277,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat – Gujarat",
+      "summary": "ATMs at the following petrol pumps in Surat: Indian Oil (City Light, Varachha, Katargam), HPCL (Athwalines, Udhna, Piplod, Althan) and BPCL (Adajan, Bhatar, Surat Railway Station).",
+      "keywords": [
+        "surat",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 278,
+      "end_line": 311,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur – Rajasthan",
+      "summary": "ATMs at the following petrol pumps in Jaipur: Indian Oil (MI Road, Malviya Nagar, Ajmer Road), HPCL (C Scheme, Vaishali Nagar, Mansarovar, Sanganer) and BPCL (Raja Park, JLN Marg, Bani Park).",
+      "keywords": [
+        "jaipur",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 312,
+      "end_line": 345,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow – Uttar Pradesh",
+      "summary": "ATMs at the following petrol pumps in Lucknow: Indian Oil (Hazratganj, Indira Nagar, Jankipuram), HPCL (Gomti Nagar, Charbagh, Mahanagar, Aliganj) and BPCL (Alambagh, Chowk, Rajajipuram).",
+      "keywords": [
+        "lucknow",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 346,
+      "end_line": 379,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur – Uttar Pradesh",
+      "summary": "ATMs at the following petrol pumps in Kanpur: Indian Oil (Swaroop Nagar, Govind Nagar, Panki), HPCL (Mall Road, Civil Lines, Kalyanpur, Lal Bangla) and BPCL (Kakadeo, Shastri Nagar, Barra).",
+      "keywords": [
+        "kanpur",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 380,
+      "end_line": 413,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur – Maharashtra",
+      "summary": "ATMs at the following petrol pumps in Nagpur: Indian Oil (Sadar, Dharampeth, Hingna Road), HPCL (Civil Lines, Wardha Road, Pratap Nagar, Itwari) and BPCL (Sitabuldi, Ganeshpeth, Manish Nagar).",
+      "keywords": [
+        "nagpur",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 414,
+      "end_line": 447,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore – Madhya Pradesh",
+      "summary": "ATMs at the following petrol pumps in Indore: Indian Oil (AB Road, Rajendra Nagar, Annapurna), HPCL (Vijay Nagar, MG Road, Ring Road, Khajrana) and BPCL (Palasia, Sapna Sangeeta, Sudama Nagar).",
+      "keywords": [
+        "indore",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 448,
+      "end_line": 481,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal – Madhya Pradesh",
+      "summary": "ATMs at the following petrol pumps in Bhopal: Indian Oil (MP Nagar, Govindpura, TT Nagar), HPCL (Arera Colony, Hoshangabad Road, Kolar Road, Lalghati) and BPCL (New Market, Bittan Market, Saket Nagar).",
+      "keywords": [
+        "bhopal",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 482,
+      "end_line": 515,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam – Andhra Pradesh",
+      "summary": "ATMs at the following petrol pumps in Visakhapatnam: Indian Oil (RK Beach Road, Gajuwaka, Seethammadara), HPCL (MVP Colony, NAD Junction, Maddilapalem, Pendurthi) and BPCL (Dwaraka Nagar, Siripuram, Gopalapatnam).",
+      "keywords": [
+        "visakhapatnam",
+        "vizag",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 516,
+      "end_line": 549,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna – Bihar",
+      "summary": "ATMs at the following petrol pumps in Patna: Indian Oil (Boring Road, Patliputra, Danapur), HPCL (Frazer Road, Kankarbagh, Exhibition Road, Ashiana Digha Road) and BPCL (Bailey Road, Rajendra Nagar, Saguna More).",
+      "keywords": [
+        "patna",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 550,
+      "end_line": 583,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda) – Gujarat",
+      "summary": "ATMs at the following petrol pumps in Vadodara: Indian Oil (Alkapuri, Gorwa, Gotri), HPCL (Fatehgunj, Sayajigunj, Karelibaug, Makarpura) and BPCL (Akota, Manjalpur, Harni Road).",
+      "keywords": [
+        "vadodara",
+        "baroda",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 584,
+      "end_line": 617,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana – Punjab",
+      "summary": "ATMs at the following petrol pumps in Ludhiana: Indian Oil (Ferozepur Road, Gill Road, Shimlapuri), HPCL (Model Town, Dugri, Pakhowal Road, Clock Tower) and BPCL (Sarabha Nagar, Jagraon Bridge, Old GT Road).",
+      "keywords": [
+        "ludhiana",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 618,
+      "end_line": 651,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore – Tamil Nadu",
+      "summary": "ATMs at the following petrol pumps in Coimbatore: Indian Oil (Gandhipuram, Peelamedu, Ukkadam), HPCL (RS Puram, Saibaba Colony, Vadavalli, Ganapathy) and BPCL (Avinashi Road, Selvapuram, Singanallur).",
+      "keywords": [
+        "coimbatore",
+        "petrol pump",
+        "indian oil",
+        "hpcl",
+        "bpcl"
+      ],
+      "start_line": 652,
+      "end_line": 686,
+      "children": []
+    }
+  ]
+}

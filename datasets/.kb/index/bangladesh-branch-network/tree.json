@@ -1,0 +1,89 @@
+{
+  "doc_id": "doc_019",
+  "title": "ZX Bank Bangladesh Branch Network",
+  "source_sha256": "c9b2b3118bd5530c9688848a74cacc3b6a4f2ab569eb702f0a87b7a0a329c506",
+  "total_lines": 58,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Dhaka Region",
+      "summary": "Dhaka region branches (IFSC ZXIN0011201–1205) at Motijheel, Gulshan-2, Dhanmondi Road 27, Mirpur Road (Shyamoli) and Banani Road 11.",
+      "keywords": [
+        "bangladesh",
+        "dhaka",
+        "motijheel",
+        "gulshan",
+        "dhanmondi",
+        "banani"
+      ],
+      "start_line": 7,
+      "end_line": 18,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Chittagong Region",
+      "summary": "Chittagong in branches (ZXIN1301–1304) at Agrabad Commercial Area, CDA Avenue (Nasirabad), GEC Circle and Station Road.",
+      "keywords": [
+        "bangladesh",
+        "chittagong",
+        "agrabad",
+        "gec circle",
+        "station road"
+      ],
+      "start_line": 19,
+      "end_line": 29,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Khulna Region",
+      "summary": "Khulna in branches (ZXIN1401–1403) at KDA Avenue, Sher-e-Bangla Road (Khalishpur) and Babu Khan Road (Daulatpur).",
+      "keywords": [
+        "bangladesh",
+        "khulna",
+        "kda avenue",
+        "khalishpur",
+        "daulatpur"
+      ],
+      "start_line": 30,
+      "end_line": 39,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Rajshahi Region",
+      "summary": "Rajshahi branches (ZXIN1501–1503) at Saheb Bazar, Nowhata Road (Rajpara) and New Market Area.",
+      "keywords": [
+        "bangladesh",
+        "rajshahi",
+        "saheb bazar",
+        "rajpara",
+        "new market"
+      ],
+      "start_line": 40,
+      "end_line": 49,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Sylhet Region",
+      "summary": "Sylhet branches (ZXIN1601–1603) at Zindabazar, Ambarkhana Lane and Subid Bazar Road.",
+      "keywords": [
+        "bangladesh",
+        "sylhet",
+        "zindabazar",
+        "ambarkhana",
+        "subid bazar"
+      ],
+      "start_line": 50,
+      "end_line": 58,
+      "children": []
+    }
+  ]
+}

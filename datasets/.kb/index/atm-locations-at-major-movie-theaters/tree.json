@@ -1,0 +1,348 @@
+{
+  "doc_id": "doc_008",
+  "title": "ZX Bank – ATM Locations at Major Movie Theaters (2024)",
+  "source_sha256": "d7ae0250fd36da297ceaa571e4e940e1b9c78e996324de6fc89ff0cd69e1e757",
+  "total_lines": 421,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai – Maharashtra",
+      "summary": "ATMs at the following movie theaters in Mumbai: PVR ICON (Phoenix Mills, Lower Parel), INOX (CR2 Mall, Nariman Point), Carnival Cinemas (IMAX Dome, Bhakti Park, Wadala), Cinepolis (Viviana Mall, Thane), Regal Cinemas (Colaba Causeway, Colaba), and Movietime (Infiniti Mall, Malad).",
+      "keywords": [
+        "mumbai",
+        "movie theater",
+        "pvr",
+        "inox",
+        "cinepolis",
+        "regal cinemas"
+      ],
+      "start_line": 3,
+      "end_line": 23,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi – National Capital Territory",
+      "summary": "ATMs at the following movie theaters in Delhi: PVR Plaza (Connaught Place), INOX (Nehru Place), Cinepolis (DLF Place Saket), Carnival Cinemas (Netaji Subhash Place, Pitampura), PVR Priya (Vasant Vihar), and Wave Cinemas (EDM Mall, Kaushambi, Ghaziabad).",
+      "keywords": [
+        "delhi",
+        "delhi ncr",
+        "movie theater",
+        "pvr",
+        "connaught place",
+        "wave cinemas"
+      ],
+      "start_line": 24,
+      "end_line": 44,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru) – Karnataka",
+      "summary": "ATMs at the following movie theaters in Bangalore: PVR (Orion Mall), INOX (Garuda Mall), Cinepolis (Forum Mall, Koramangala), Gopalan Cinemas (Gopalan Grand Mall, Old Madras Road), INOX (Mantri Square Mall), and Carnival Cinemas (Rockline Mall, Jalahalli).",
+      "keywords": [
+        "bangalore",
+        "bengaluru",
+        "movie theater",
+        "pvr",
+        "inox",
+        "gopalan cinemas"
+      ],
+      "start_line": 45,
+      "end_line": 65,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad – Telangana",
+      "summary": "ATMs at the following movie theaters in Hyderabad: PVR Cinemas (Forum Sujana Mall, Kukatpally), INOX (GVK One Mall, Banjara Hills), Asian Radhika Multiplex (ECIL X Roads, Secunderabad), Cinepolis (Manjeera Mall, KPHB), Prasads Multiplex (Necklace Road), and Carnival Cinemas (MRC Centre Mall, Erragadda).",
+      "keywords": [
+        "hyderabad",
+        "movie theater",
+        "pvr",
+        "prasads multiplex",
+        "inox",
+        "carnival cinemas"
+      ],
+      "start_line": 66,
+      "end_line": 86,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai – Tamil Nadu",
+      "summary": "ATMs at the following movie theaters in Chennai: SPI Cinemas Sathyam (Royapettah), INOX Citi Centre (Mylapore), PVR (Ampa Skywalk Mall, Aminjikarai), AGS Cinemas (T Nagar), Cinepolis (The Forum Vijaya Mall, Vadapalani), and Escape (Express Avenue Mall, Royapettah).",
+      "keywords": [
+        "chennai",
+        "movie theater",
+        "spi cinemas",
+        "ags cinemas",
+        "inox",
+        "escape"
+      ],
+      "start_line": 87,
+      "end_line": 107,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata – West Bengal",
+      "summary": "ATMs at the following movie theaters in Kolkata: INOX (South City Mall, Jadavpur), PVR (Mani Square Mall, Maniktala), Cinepolis (Acropolis Mall, Kasba), Nandan Cinema (Bhowanipore), Carnival Cinemas (Avani Riverside Mall, Howrah), and INOX (Quest Mall, Ballygunge).",
+      "keywords": [
+        "kolkata",
+        "movie theater",
+        "pvr",
+        "inox",
+        "carnival cinemas",
+        "nandan"
+      ],
+      "start_line": 108,
+      "end_line": 128,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune – Maharashtra",
+      "summary": "ATMs at the following movie theaters in Pune: PVR (Phoenix Market City, Viman Nagar), INOX (SGS Mall, Camp), Cinepolis (Seasons Mall, Hadapsar), E-Square Cinemas (Shivaji Nagar), Carnival Cinemas (City One Mall, Chinchwad), and INOX (Westend Mall, Aundh).",
+      "keywords": [
+        "pune",
+        "movie theater",
+        "pvr",
+        "e-square",
+        "inox",
+        "cinepolis"
+      ],
+      "start_line": 129,
+      "end_line": 149,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad – Gujarat",
+      "summary": "ATMs at the following movie theaters in Ahmedabad: PVR (Acropolis Mall, Thaltej), INOX (Himalaya Mall, Memnagar), Wide Angle Multiplex (S.G. Highway, Satellite), Cinepolis (Ahmedabad One Mall, Vastrapur), Cinemax (Karnavati Club, Makarba), and Mukta A2 Cinemas (Kankaria, Maninagar).",
+      "keywords": [
+        "ahmedabad",
+        "movie theater",
+        "cinepolis",
+        "cinemax",
+        "wide angle",
+        "mukta a2"
+      ],
+      "start_line": 150,
+      "end_line": 170,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat – Gujarat",
+      "summary": "ATMs at the following movie theaters in Surat: INOX (VR Surat Mall, Magdalla), PVR (RahulRaj Mall), Cinepolis (Iscon Mall, Piplod), Valentine Multiplex (Dumas Road), INOX (Reliance Mega Mall, Varachha Road), and City Plus Multiplex (Ghod Dod Road).",
+      "keywords": [
+        "surat",
+        "movie theater",
+        "pvr",
+        "inox",
+        "cinepolis",
+        "valentine multiplex"
+      ],
+      "start_line": 171,
+      "end_line": 191,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur – Rajasthan",
+      "summary": "ATMs at the following movie theaters in Jaipur: INOX (Crystal Palm Mall, Bais Godam Circle), Raj Mandir Cinema (Ashok Nagar), PVR (GT Central Mall, Malviya Nagar), Cinepolis (World Trade Park, JLN Marg), Maharaja Cinema (Station Road, Sindhi Camp), and Inox (Pink Square Mall, Raja Park).",
+      "keywords": [
+        "jaipur",
+        "movie theater",
+        "raj mandir",
+        "cinepolis",
+        "pvr",
+        "maharaja cinema"
+      ],
+      "start_line": 192,
+      "end_line": 212,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow – Uttar Pradesh",
+      "summary": "ATMs at the following movie theaters in Lucknow: INOX (One Awadh Center, Gomtinagar), PVR (Phoenix United Mall, Alambagh), SRS Cinemas (City Mall, Gomti Nagar), Wave Cinemas (Sahara Ganj Mall, Hazratganj), Carnival Cinemas (Singar Nagar, Alambagh), and INOX (Riverside Mall, Gomti Nagar).",
+      "keywords": [
+        "lucknow",
+        "movie theater",
+        "wave cinemas",
+        "srs cinemas",
+        "carnival cinemas",
+        "pvr"
+      ],
+      "start_line": 213,
+      "end_line": 233,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur – Uttar Pradesh",
+      "summary": "ATMs at the following movie theaters in Kanpur: INOX (Z Square Mall, Mall Road), PVR (Rave Moti Mall, Rawatpur), Wave Cinemas (South X Mall, Kidwai Nagar), PVR (Rave 3 Mall), Celebration Multiplex (The Mall, Swaroop Nagar), and Big Cinemas Jalwa (Shastri Nagar).",
+      "keywords": [
+        "kanpur",
+        "movie theater",
+        "wave cinemas",
+        "pvr",
+        "inox",
+        "big cinemas"
+      ],
+      "start_line": 234,
+      "end_line": 254,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur – Maharashtra",
+      "summary": "ATMs at the following movie theaters in Nagpur: PVR (Empress City Mall, Gandhibagh), Cinepolis (Eternity Mall, Sitabuldi), INOX (Jaswant Tuli Mall, Kamptee Road), Cineplex (Sadar Bazar), PVR (Trillium Mall, Medical Square), and Big Cinemas Poonam (Central Avenue).",
+      "keywords": [
+        "nagpur",
+        "movie theater",
+        "pvr",
+        "cinepolis",
+        "inox",
+        "big cinemas"
+      ],
+      "start_line": 255,
+      "end_line": 275,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore – Madhya Pradesh",
+      "summary": "ATMs at the following movie theaters in Indore: INOX (Central Mall, RNT Marg), PVR (Treasure Island Mall, MG Road), Carnival Cinemas (C21 Mall, Vijay Nagar), Cinepolis (Mangal City Mall, Vijay Nagar), INOX (Sapna Sangeeta), and Velocity 3 (Transport Nagar, Dewas Naka).",
+      "keywords": [
+        "indore",
+        "movie theater",
+        "pvr",
+        "cinepolis",
+        "inox",
+        "velocity"
+      ],
+      "start_line": 276,
+      "end_line": 296,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal – Madhya Pradesh",
+      "summary": "ATMs at the following movie theaters in Bhopal: INOX (DB City Mall, Maharana Pratap Nagar), PVR (Aura Mall, E-8 Trilanga), People's Mall Multiplex (Raisen Road), Satyam Cineplex (Hamidia Road, Peer Gate), Multiplex (Ashima Mall, Hoshangabad Road), and Carnival Cinemas (MP Nagar).",
+      "keywords": [
+        "bhopal",
+        "movie theater",
+        "pvr",
+        "inox",
+        "satyam cineplex",
+        "carnival cinemas"
+      ],
+      "start_line": 297,
+      "end_line": 317,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam – Andhra Pradesh",
+      "summary": "ATMs at the following movie theaters in Visakhapatnam: INOX (Chitralaya Mall, Daba Gardens), Cinepolis (CMR Central, Maddilapalem), PVR (Vizag Central Mall, Suryabagh), MVR Multiplex (Siripuram), INOX (Varun Beach, Beach Road), and Jagadamba Theatre (Suryabagh).",
+      "keywords": [
+        "visakhapatnam",
+        "vizag",
+        "movie theater",
+        "pvr",
+        "cmr central",
+        "jagadamba"
+      ],
+      "start_line": 318,
+      "end_line": 338,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna – Bihar",
+      "summary": "ATMs at the following movie theaters in Patna: Cinepolis (P&M Mall, Kurji), Regent Fun Cinemas (Gandhi Maidan), INOX (Patna Central Mall, Frazer Road), Urbana Complex Cinemas (RPS More, Bailey Road), Rex Cinema (Exhibition Road), and Elphinstone Cinema (Kadam Kuan).",
+      "keywords": [
+        "patna",
+        "movie theater",
+        "cinepolis",
+        "inox",
+        "rex cinema",
+        "regent"
+      ],
+      "start_line": 339,
+      "end_line": 359,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda) – Gujarat",
+      "summary": "ATMs at the following movie theaters in Vadodara: INOX (Reliance Mall, Alkapuri), PVR (Eva Mall, Manjalpur), Cinepolis (Cinemall, Race Course Road), INOX (Centre Square Mall, Sarabhai Road), INOX (Seven Seas Mall, Fatehgunj), and Mukta A2 Cinemas (Ellora Park).",
+      "keywords": [
+        "vadodara",
+        "baroda",
+        "movie theater",
+        "pvr",
+        "cinepolis",
+        "mukta a2"
+      ],
+      "start_line": 360,
+      "end_line": 380,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana – Punjab",
+      "summary": "ATMs at the following movie theaters in Ludhiana: INOX (Silver Arc Mall, Ferozepur Road), Wave Cinemas (Westend Mall, Ferozepur Road), PVR (Pavilion Mall, Bhai Bala Chowk), Carnival Cinemas (MBD Neopolis Mall, Ferozepur Road), SRS Cinemas (Omaxe Plaza Mall, Pakhowal Road), and Big Cinemas (Flames Mall, GT Road).",
+      "keywords": [
+        "ludhiana",
+        "movie theater",
+        "wave cinemas",
+        "srs cinemas",
+        "big cinemas",
+        "pvr"
+      ],
+      "start_line": 381,
+      "end_line": 401,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore – Tamil Nadu",
+      "summary": "ATMs at the following movie theaters in Coimbatore: INOX (Prozone Mall, Sathy Road, Saravanampatti), Cinepolis (Fun Republic Mall, Avinashi Road, Peelamedu), Brookefields Mall Cinemas (RS Puram), KG Cinemas (Cross Cut Road, Gandhipuram), The Cinema (Prozone Mall), and Sathyam Cinemas (R.S. Puram, D.B. Road).",
+      "keywords": [
+        "coimbatore",
+        "movie theater",
+        "inox",
+        "cinepolis",
+        "kg cinemas",
+        "sathyam"
+      ],
+      "start_line": 402,
+      "end_line": 421,
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,309 @@
+{
+  "doc_id": "doc_063",
+  "title": "ZX Bank ATMs at Major Bus Stands (India)",
+  "source_sha256": "8ad3640b803639aba0d14d81369e5cabcc5557f096ac5bceb5366fa9ae4bfcdf",
+  "total_lines": 445,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai – Maharashtra",
+      "summary": "Six ZX Bank ATMs at Mumbai bus stands: Mumbai Central, Dadar TT, Borivali, Kurla Nehru, Andheri East.",
+      "keywords": [
+        "mumbai",
+        "dadar",
+        "borivali",
+        "bus stand",
+        "atm"
+      ],
+      "start_line": 7,
+      "end_line": 28,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi – National Capital Territory",
+      "summary": "Six ZX Bank ATMs at Delhi bus stands: ISBT Kashmere Gate, Anand Vihar, and Dwarka.",
+      "keywords": [
+        "delhi",
+        "isbt",
+        "kashmere gate",
+        "atm"
+      ],
+      "start_line": 29,
+      "end_line": 50,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru) – Karnataka",
+      "summary": "Six ZX Bank ATMs at Bengaluru bus stands: Majestic, Mysore Road, Peenya, and Yeshwanthpur.",
+      "keywords": [
+        "bangalore",
+        "majestic",
+        "peenya",
+        "atm"
+      ],
+      "start_line": 51,
+      "end_line": 72,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad – Telangana",
+      "summary": "Six ZX Bank ATMs at Hyderabad bus stands: MGBS, Jubilee, Ameerpet, and Dilsukhnagar.",
+      "keywords": [
+        "hyderabad",
+        "mgbs",
+        "jubilee",
+        "atm"
+      ],
+      "start_line": 73,
+      "end_line": 94,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai – Tamil Nadu",
+      "summary": "Six ZX Bank ATMs at Chennai bus stands: CMBT, Tambaram, Broadway, and Anna Nagar.",
+      "keywords": [
+        "chennai",
+        "cmbt",
+        "tambaram",
+        "atm"
+      ],
+      "start_line": 95,
+      "end_line": 116,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata – West Bengal",
+      "summary": "Six ZX Bank ATMs at Kolkata bus stands: Esplanade, Karunamoyee, Howrah, and Sealdah.",
+      "keywords": [
+        "kolkata",
+        "esplanade",
+        "howrah",
+        "atm"
+      ],
+      "start_line": 117,
+      "end_line": 138,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune – Maharashtra",
+      "summary": "Six ZX Bank ATMs at Pune bus stands: Swargate, Shivajinagar, Deccan, and Hadapsar.",
+      "keywords": [
+        "pune",
+        "swargate",
+        "shivajinagar",
+        "atm"
+      ],
+      "start_line": 139,
+      "end_line": 160,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad – Gujarat",
+      "summary": "Six ZX Bank ATMs at Ahmedabad bus stands: Gita Mandir, Maninagar, Kalupur, and Paldi.",
+      "keywords": [
+        "ahmedabad",
+        "gita mandir",
+        "maninagar",
+        "atm"
+      ],
+      "start_line": 161,
+      "end_line": 182,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat – Gujarat",
+      "summary": "Six ZX Bank ATMs at Surat bus stands: Central, Adajan, Udhna, and Ring Road.",
+      "keywords": [
+        "surat",
+        "adajan",
+        "udhna",
+        "atm"
+      ],
+      "start_line": 183,
+      "end_line": 204,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur – Rajasthan",
+      "summary": "Six ZX Bank ATMs at Jaipur bus stands: Sindhi Camp, Narayan Singh, Bais Godam, and Ajmeri Gate.",
+      "keywords": [
+        "jaipur",
+        "sindhi camp",
+        "bais godam",
+        "atm"
+      ],
+      "start_line": 205,
+      "end_line": 226,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow – Uttar Pradesh",
+      "summary": "Six ZX Bank ATMs at Lucknow bus stands: Kaiserbagh, Alambagh, Aminabad, and Charbagh.",
+      "keywords": [
+        "lucknow",
+        "kaiserbagh",
+        "alambagh",
+        "atm"
+      ],
+      "start_line": 227,
+      "end_line": 248,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur – Uttar Pradesh",
+      "summary": "Six ZX Bank ATMs at Kanpur bus stands: Jhakarkati, Fazalganj, and Govind Nagar.",
+      "keywords": [
+        "kanpur",
+        "jhakarkati",
+        "fazalganj",
+        "atm"
+      ],
+      "start_line": 249,
+      "end_line": 270,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur – Maharashtra",
+      "summary": "Six ZX Bank ATMs at Nagpur bus stands: Ganeshpeth, Mor Bhavan, and Sitabuldi.",
+      "keywords": [
+        "nagpur",
+        "ganeshpeth",
+        "sitabuldi",
+        "atm"
+      ],
+      "start_line": 271,
+      "end_line": 292,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore – Madhya Pradesh",
+      "summary": "Six ZX Bank ATMs at Indore bus stands: Sarwate, Gangwal, and Vijay Nagar.",
+      "keywords": [
+        "indore",
+        "sarwate",
+        "gangwal",
+        "atm"
+      ],
+      "start_line": 293,
+      "end_line": 314,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal – Madhya Pradesh",
+      "summary": "Six ZX Bank ATMs at Bhopal bus stands: ISBT, Nadra, and Board Office Square.",
+      "keywords": [
+        "bhopal",
+        "isbt",
+        "nadra",
+        "atm"
+      ],
+      "start_line": 315,
+      "end_line": 336,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam – Andhra Pradesh",
+      "summary": "Six ZX Bank ATMs at Visakhapatnam bus stands: RTC Complex, Gajuwaka, and Simhachalam.",
+      "keywords": [
+        "visakhapatnam",
+        "rtc complex",
+        "gajuwaka",
+        "atm"
+      ],
+      "start_line": 337,
+      "end_line": 358,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna – Bihar",
+      "summary": "Six ZX Bank ATMs at Patna bus stands: Gandhi Maidan, Phulwari, and Bailey Road.",
+      "keywords": [
+        "patna",
+        "gandhi maidan",
+        "phulwari",
+        "atm"
+      ],
+      "start_line": 359,
+      "end_line": 380,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda) – Gujarat",
+      "summary": "Six ZX Bank ATMs at Vadodara bus stands: Central, Makarpura, and Manjalpur.",
+      "keywords": [
+        "vadodara",
+        "central bus",
+        "makarpura",
+        "atm"
+      ],
+      "start_line": 381,
+      "end_line": 402,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana – Punjab",
+      "summary": "Six ZX Bank ATMs at Ludhiana bus stands: ISBT, Jagraon Bridge, and Gill Road.",
+      "keywords": [
+        "ludhiana",
+        "isbt",
+        "jagraon",
+        "atm"
+      ],
+      "start_line": 403,
+      "end_line": 424,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore – Tamil Nadu",
+      "summary": "Six ZX Bank ATMs at Coimbatore bus stands: Gandhipuram, Ukkadam, and Singanallur.",
+      "keywords": [
+        "coimbatore",
+        "gandhipuram",
+        "ukkedam",
+        "atm"
+      ],
+      "start_line": 425,
+      "end_line": 445,
+      "children": []
+    }
+  ]
+}

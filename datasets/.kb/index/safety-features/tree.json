@@ -1,0 +1,144 @@
+{
+  "doc_id": "doc_050",
+  "title": "ZX Bank – Safety Features Against Online Threats",
+  "source_sha256": "c5b9c74695f067dd8340e251d0685fd0909c4d7a5332350464c7a17d3d854be9",
+  "total_lines": 44,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "1. **Multi-Factor Authentication (MFA)**",
+      "summary": "Describes ZX Bank's MFA: biometric login via fingerprint or facial recognition on the ZX Bank Asia app, OTP verification for each transaction sent to the registered mobile/email, and verification steps when logging in from a new device.",
+      "keywords": [
+        "mfa",
+        "biometric login",
+        "otp",
+        "device registration"
+      ],
+      "start_line": 5,
+      "end_line": 9,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "2. **AI-driven Fraud Detection**",
+      "summary": "AI systems monitor account activity in real time, flag unusual behavior instantly, and immediately alert customers to any unauthorized or suspicious transaction attempts.",
+      "keywords": [
+        "fraud detection",
+        "ai",
+        "real-time monitoring",
+        "fraud alerts"
+      ],
+      "start_line": 10,
+      "end_line": 13,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "3. **End-to-End Encryption**",
+      "summary": "All communications and financial transactions are secured with industry-standard 256-bit SSL/TLS encryption, and sensitive customer data is encrypted both in transit and at rest.",
+      "keywords": [
+        "encryption",
+        "ssl",
+        "tls",
+        "secure storage",
+        "data security"
+      ],
+      "start_line": 14,
+      "end_line": 17,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "4. **Session Timeout & Auto-Logout**",
+      "summary": "User sessions automatically expire after periods of inactivity to prevent unauthorized access, and users get prompt warnings before app or online session expiry.",
+      "keywords": [
+        "session timeout",
+        "auto-logout",
+        "inactivity",
+        "session security"
+      ],
+      "start_line": 18,
+      "end_line": 21,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "5. **Secure Fund Transfer Controls**",
+      "summary": "Daily and per-transaction limits apply to transfers, especially for new payees or high-risk transactions, and adding new beneficiaries requires additional authentication.",
+      "keywords": [
+        "transaction limits",
+        "beneficiary verification",
+        "fund transfer",
+        "payee"
+      ],
+      "start_line": 22,
+      "end_line": 25,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "6. **Regular Security Updates**",
+      "summary": "The ZX Bank Asia mobile app receives frequent updates that patch vulnerabilities, and built-in app features detect phishing links and sites, alerting users to threats.",
+      "keywords": [
+        "app updates",
+        "patches",
+        "phishing detection",
+        "security updates"
+      ],
+      "start_line": 26,
+      "end_line": 29,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "7. **User Education**",
+      "summary": "Regular alerts and campaigns teach customers to recognize safe banking practices and scams, backed by a 24/7 helpline and the in-app AI assistant 'Zia' for security advice.",
+      "keywords": [
+        "financial literacy",
+        "scam awareness",
+        "24-7 support",
+        "zia"
+      ],
+      "start_line": 30,
+      "end_line": 33,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "8. **Transaction Notifications**",
+      "summary": "Customers receive instant alerts via SMS, email, and push notifications for every transaction and every change to account settings.",
+      "keywords": [
+        "transaction alerts",
+        "sms",
+        "push notifications",
+        "email alerts"
+      ],
+      "start_line": 34,
+      "end_line": 36,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "9. **Secure Remittance Corridors**",
+      "summary": "Cross-border services are offered only with verified financial partners, and select regional remittances additionally use blockchain-based authentication to prevent tampering and improve transparency.",
+      "keywords": [
+        "remittance",
+        "cross-border",
+        "blockchain",
+        "vetted partners"
+      ],
+      "start_line": 37,
+      "end_line": 44,
+      "children": []
+    }
+  ]
+}

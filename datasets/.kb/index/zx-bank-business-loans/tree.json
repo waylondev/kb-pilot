@@ -1,0 +1,181 @@
+{
+  "doc_id": "doc_065",
+  "title": "ZX Bank – Business Loans",
+  "source_sha256": "e9ea717017681de158e339ef4c086a1ad693d21a4a3f47a55997f985a9e251aa",
+  "total_lines": 65,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Why Choose ZX Bank for Business Loans?",
+      "summary": "Reasons to choose ZX Bank for business financing: pan-South Asia presence (India, Sri Lanka, Bangladesh, Bhutan, Nepal), fast approvals via e-KYC and a digital application process, customized products for SMEs, corporates, exporters, and women-led businesses, flexible repayment options matching cash flow, and full digital loan management through the ZX Bank Asia app or NetBanking.",
+      "keywords": [
+        "business loan",
+        "south asia",
+        "fast approval",
+        "sme",
+        "e-kyc",
+        "digital banking"
+      ],
+      "start_line": 7,
+      "end_line": 16,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Types of Business Loans Offered",
+      "summary": "Introduces the six business loan categories ZX Bank offers: working capital loans, term loans, SME loans, trade finance solutions, women empowerment loans, and green & sustainability loans.",
+      "keywords": [
+        "business loan types",
+        "working capital",
+        "term loan",
+        "sme loan",
+        "trade finance",
+        "women loan"
+      ],
+      "start_line": 17,
+      "end_line": 38,
+      "children": [
+        {
+          "id": "ch_2_1",
+          "level": 3,
+          "title": "1. **Working Capital Loans**",
+          "summary": "Working capital loans finance day-to-day expenses, inventory purchase, receivables coverage, and ongoing business operations.",
+          "keywords": [
+            "working capital",
+            "inventory",
+            "receivables",
+            "operations"
+          ],
+          "start_line": 19,
+          "end_line": 21,
+          "children": []
+        },
+        {
+          "id": "ch_2_2",
+          "level": 3,
+          "title": "2. **Term Loans**",
+          "summary": "Term loans support business expansion, asset purchase, or infrastructure development and are available with both short-term and long-term tenures.",
+          "keywords": [
+            "term loan",
+            "expansion",
+            "asset purchase",
+            "infrastructure"
+          ],
+          "start_line": 22,
+          "end_line": 24,
+          "children": []
+        },
+        {
+          "id": "ch_2_3",
+          "level": 3,
+          "title": "3. **SME Loans**",
+          "summary": "SME loans are a special category for micro, small, and medium enterprises offering minimal paperwork and attractive interest rates.",
+          "keywords": [
+            "sme loan",
+            "micro enterprise",
+            "msme",
+            "minimal paperwork"
+          ],
+          "start_line": 25,
+          "end_line": 27,
+          "children": []
+        },
+        {
+          "id": "ch_2_4",
+          "level": 3,
+          "title": "4. **Trade Finance Solutions**",
+          "summary": "Trade finance solutions include Letters of Credit, Bank Guarantees, Bill Discounting, and other export/import funding instruments.",
+          "keywords": [
+            "trade finance",
+            "letter of credit",
+            "bank guarantee",
+            "bill discounting",
+            "export import"
+          ],
+          "start_line": 28,
+          "end_line": 30,
+          "children": []
+        },
+        {
+          "id": "ch_2_5",
+          "level": 3,
+          "title": "5. **Women Empowerment Loans**",
+          "summary": "Women empowerment loans are tailored for women entrepreneurs and women-led businesses across South Asia.",
+          "keywords": [
+            "women loan",
+            "women entrepreneur",
+            "women-led business"
+          ],
+          "start_line": 31,
+          "end_line": 33,
+          "children": []
+        },
+        {
+          "id": "ch_2_6",
+          "level": 3,
+          "title": "6. **Green & Sustainability Loans**",
+          "summary": "Green and sustainability loans finance renewable energy, eco-friendly infrastructure, and climate-smart business initiatives.",
+          "keywords": [
+            "green loan",
+            "sustainability",
+            "renewable energy",
+            "eco-friendly"
+          ],
+          "start_line": 34,
+          "end_line": 38,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "How to Apply?",
+      "summary": "Application process for business loans: visit a branch or apply online via the ZX Bank Asia app; eligible entities include proprietorships, partnerships, private/public limited companies, start-ups, and women entrepreneurs meeting KYC and credit criteria; documents such as business proof, financial statements, KYC, and a project report are submitted digitally; approval is fast-tracked with doorstep service for eligible applicants and the loan is managed through the app.",
+      "keywords": [
+        "how to apply",
+        "eligibility",
+        "documents",
+        "approval",
+        "disbursal",
+        "track loan"
+      ],
+      "start_line": 39,
+      "end_line": 51,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Need Guidance?",
+      "summary": "Support available for business loan applicants: the Zia AI finance assistant in the ZX Bank Asia app instantly checks eligibility, required documents, and estimated EMIs, while dedicated relationship managers provide personalized solutions and on-ground support.",
+      "keywords": [
+        "zia",
+        "eligibility check",
+        "emi estimate",
+        "relationship manager",
+        "guidance"
+      ],
+      "start_line": 52,
+      "end_line": 58,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Empower Your Business With ZX Bank",
+      "summary": "Closing section positioning ZX Bank as the financing partner for startups and established corporates across India, Sri Lanka, Bangladesh, Bhutan, and Nepal, ending with an Apply Now call to action.",
+      "keywords": [
+        "apply now",
+        "startup",
+        "corporate",
+        "business growth"
+      ],
+      "start_line": 59,
+      "end_line": 65,
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "doc_id": "doc_037",
+  "title": "ZX Bank Ltd. – Kanpur Branch Network Overview",
+  "source_sha256": "599b8cace461cbd84113c78750bd10dbb19b4200ed167bce5f411243eaf2a76d",
+  "total_lines": 63,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "North Kanpur",
+      "summary": "5 branches in North Kanpur with addresses (Arya Nagar, GT Road Rawatpur, Govind Nagar, Kalyanpur, Shastri Nagar), IFSC codes ZXIN0001001–ZXIN0001005, and contacts 0512-2401101 / 0512-2450055 / 0512-2452345 / 0512-2321456 / 0512-2558877.",
+      "keywords": [
+        "North Kanpur",
+        "branch",
+        "IFSC",
+        "ZXIN0001001",
+        "ZXIN0001002",
+        "ZXIN0001003",
+        "ZXIN0001004",
+        "ZXIN0001005",
+        "Arya Nagar",
+        "Rawatpur",
+        "Govind Nagar",
+        "Kalyanpur",
+        "Shastri Nagar",
+        "contact",
+        "0512"
+      ],
+      "start_line": 7,
+      "end_line": 18,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "South Kanpur",
+      "summary": "5 branches in South Kanpur: Kidwai Nagar, Barra 8 Main Road, Yashoda Nagar, Krishna Nagar and Ratanlal Nagar, with IFSC codes ZXIN0002001–ZXIN0002005 and contacts 0512-2540944 / 0512-2697483 / 0512-2550023 / 0512-2534166 / 0512-2658765.",
+      "keywords": [
+        "South Kanpur",
+        "branch",
+        "IFSC",
+        "ZXIN0002001",
+        "ZXIN0002002",
+        "ZXIN0002003",
+        "ZXIN0002004",
+        "ZXIN0002005",
+        "Kidwai Nagar",
+        "Barra",
+        "Yashoda Nagar",
+        "Krishna Nagar",
+        "Ratanlal Nagar",
+        "contact"
+      ],
+      "start_line": 19,
+      "end_line": 30,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "East Kanpur",
+      "summary": "4 branches in East Kanpur: Vikas Nagar, Fazalganj, Jajmau Cantt Road and Jarauli Phase 2, with IFSC codes ZXIN0003001–ZXIN0003004 and contacts 0512-2581199 / 0512-2289440 / 0512-2467888 / 0512-2609147.",
+      "keywords": [
+        "East Kanpur",
+        "branch",
+        "IFSC",
+        "ZXIN0003001",
+        "ZXIN0003002",
+        "ZXIN0003003",
+        "ZXIN0003004",
+        "Vikas Nagar",
+        "Fazalganj",
+        "Jajmau",
+        "Jarauli",
+        "contact"
+      ],
+      "start_line": 31,
+      "end_line": 41,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "West Kanpur",
+      "summary": "5 branches in West Kanpur: Swaroop Nagar, Chakeri Road, Juhi Safeda, Naubasta and Vishnupuri, with IFSC codes ZXIN0004001–ZXIN0004005 and contacts 0512-2550198 / 0512-2678110 / 0512-2652151 / 0512-2569172 / 0512-2589112.",
+      "keywords": [
+        "West Kanpur",
+        "branch",
+        "IFSC",
+        "ZXIN0004001",
+        "ZXIN0004002",
+        "ZXIN0004003",
+        "ZXIN0004004",
+        "ZXIN0004005",
+        "Swaroop Nagar",
+        "Chakeri",
+        "Juhi",
+        "Naubasta",
+        "Vishnupuri",
+        "contact"
+      ],
+      "start_line": 42,
+      "end_line": 53,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Central Kanpur",
+      "summary": "4 branches in Central Kanpur: Civil Lines, Mall Road, Nayaganj and Birhana Road, with IFSC codes ZXIN0005001–ZXIN0005004 and contacts 0512-2301868 / 0512-2340192 / 0512-2365928 / 0512-2381411.",
+      "keywords": [
+        "Central Kanpur",
+        "branch",
+        "IFSC",
+        "ZXIN0005001",
+        "ZXIN0005002",
+        "ZXIN0005003",
+        "ZXIN0005004",
+        "Civil Lines",
+        "Mall Road",
+        "Nayaganj",
+        "Birhana Road",
+        "contact"
+      ],
+      "start_line": 54,
+      "end_line": 63,
+      "children": []
+    }
+  ]
+}

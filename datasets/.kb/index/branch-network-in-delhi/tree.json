@@ -1,0 +1,88 @@
+{
+  "doc_id": "doc_026",
+  "title": "ZX Bank Ltd. – Branch Network in Delhi",
+  "source_sha256": "849f73bd5ba235823084a6edf4749c290d020d6028fcd15f4717907004cdbdfc",
+  "total_lines": 90,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "North Delhi Branches",
+      "summary": "Ten North Delhi branches in Model Town, Shastri Nagar, Kamla Nagar, Ashok Vihar, Kingsway Camp/GTB Nagar, Punjabi Basti, Rana Pratap Bagh, Mukherjee Nagar, Timarpur and Azadpur, with IFSC codes ZXIN0000101 to ZXIN0000110.",
+      "keywords": [
+        "north delhi",
+        "model town",
+        "kamla nagar",
+        "ashok vihar",
+        "ifsc"
+      ],
+      "start_line": 7,
+      "end_line": 23,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "South Delhi Branches",
+      "summary": "Ten South Delhi branches in South Extension-II, Greater Kailash, Green Park, Vasant Vihar, Malviya Nagar, Panchsheel Park, Lajpat Nagar, Sarojini Nagar, Kalkaji/Nehru Place and Safdarjung Enclave, with IFSC codes ZXIN0000111 to ZXIN0000120.",
+      "keywords": [
+        "south delhi",
+        "greater kailash",
+        "vasant vihar",
+        "malviya nagar",
+        "ifsc"
+      ],
+      "start_line": 24,
+      "end_line": 40,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "East Delhi Branches",
+      "summary": "Ten East Delhi branches in Preet Vihar, Mayur Vihar, Laxmi Nagar, Anand Vihar, Krishna Nagar, Vivek Vihar, Karkardooma, Shahdara, Jhilmil Colony and Patparganj, with IFSC codes ZXIN0000121 to ZXIN0000130.",
+      "keywords": [
+        "east delhi",
+        "laxmi nagar",
+        "mayur vihar",
+        "shahdara",
+        "ifsc"
+      ],
+      "start_line": 41,
+      "end_line": 57,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "West Delhi Branches",
+      "summary": "Ten West Delhi branches in Rajouri Gardens, Janakpuri, Punjabi Bagh, Paschim Vihar, Kirti Nagar, Uttam Nagar, Tilak Nagar, Dwarka, Hari Nagar and Ramesh Nagar, with IFSC codes ZXIN0000131 to ZXIN0000140.",
+      "keywords": [
+        "west delhi",
+        "rajouri garden",
+        "janakpuri",
+        "punjabi bagh",
+        "ifsc"
+      ],
+      "start_line": 58,
+      "end_line": 74,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Central Delhi Branches",
+      "summary": "Ten Central Delhi branches in Connaught Place, Barakhamba Road, Karol Bagh, Darya Ganj, Connaught Circus, Paharganj, ITO, Mandi House, Rajendra Place and Chandni Chowk, with IFSC codes ZXIN0000141 to ZXIN0000150.",
+      "keywords": [
+        "central delhi",
+        "connaught place",
+        "karol bagh",
+        "chandni chowk",
+        "ifsc"
+      ],
+      "start_line": 75,
+      "end_line": 90,
+      "children": []
+    }
+  ]
+}

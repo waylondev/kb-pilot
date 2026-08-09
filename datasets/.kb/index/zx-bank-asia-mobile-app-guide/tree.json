@@ -1,0 +1,312 @@
+{
+  "doc_id": "doc_061",
+  "title": "ZX Bank Asia Mobile App Guide",
+  "source_sha256": "86b9d76e81c84b588fcf81d71370c3ddc80944538521da2e1b38239205b3171c",
+  "total_lines": 129,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Overview",
+      "summary": "The ZX Bank Asia mobile app supports Android and iOS and offers intuitive banking features, advanced security, and real-time assistance for managing finances on the go.",
+      "keywords": [
+        "mobile app",
+        "android",
+        "ios",
+        "banking"
+      ],
+      "start_line": 3,
+      "end_line": 8,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "1. How to Download the ZX Bank Asia App",
+      "summary": "Download the ZX Bank Asia app by searching for it in the Google Play Store (Android) or the Apple App Store (iOS) and tapping Download or Get.",
+      "keywords": [
+        "download",
+        "google play",
+        "app store"
+      ],
+      "start_line": 9,
+      "end_line": 22,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "2. How to Activate Mobile Banking",
+      "summary": "Activate mobile banking by registering with your registered mobile number and customer ID/account number, verifying via OTP, setting a login PIN or biometric (fingerprint/Face ID), and completing e-KYC if prompted.",
+      "keywords": [
+        "activate",
+        "register",
+        "otp",
+        "biometric",
+        "e-kyc"
+      ],
+      "start_line": 23,
+      "end_line": 33,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "3. How to Login",
+      "summary": "Log in by opening the app and entering your PIN or using biometric login (if enabled) to access your dashboard securely.",
+      "keywords": [
+        "login",
+        "pin",
+        "biometric"
+      ],
+      "start_line": 34,
+      "end_line": 41,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "4. App Features",
+      "summary": "The app covers account management, fund transfers (NEFT/IMPS/UPI) with payee management, bill payments and QR scanning, card management, loans, rewards, NRI and wealth services, and the Zia chatbot assistant.",
+      "keywords": [
+        "features",
+        "fund transfer",
+        "cards",
+        "loans",
+        "rewards"
+      ],
+      "start_line": 42,
+      "end_line": 103,
+      "children": [
+        {
+          "id": "ch_5_1",
+          "level": 3,
+          "title": "Account Management",
+          "summary": "Check savings/current account balances, view transaction history and mini statements, and track FD, RD, and loan details in real time.",
+          "keywords": [
+            "balance",
+            "transactions",
+            "mini statement",
+            "fd",
+            "rd"
+          ],
+          "start_line": 44,
+          "end_line": 49,
+          "children": []
+        },
+        {
+          "id": "ch_5_2",
+          "level": 3,
+          "title": "Fund Transfer",
+          "summary": "Transfer funds within ZX Bank or to other banks via NEFT, IMPS, or UPI by selecting or adding a payee, entering amount and remarks, and confirming with PIN/OTP.",
+          "keywords": [
+            "fund transfer",
+            "neft",
+            "imps",
+            "upi"
+          ],
+          "start_line": 50,
+          "end_line": 65,
+          "children": [
+            {
+              "id": "ch_5_2_1",
+              "level": 4,
+              "title": "**Within ZX Bank / Other Banks**",
+              "summary": "To transfer, tap Fund Transfer, choose ZX Bank or Other Bank (NEFT/IMPS/UPI), select or add a payee, enter the amount and remarks, and confirm with PIN/OTP.",
+              "keywords": [
+                "transfer",
+                "neft",
+                "imps",
+                "upi"
+              ],
+              "start_line": 52,
+              "end_line": 58,
+              "children": []
+            },
+            {
+              "id": "ch_5_2_2",
+              "level": 4,
+              "title": "**Add Payee**",
+              "summary": "Add a payee via Fund Transfer → Manage Payees by entering the payee's account info (name, bank details, IFSC) or UPI ID and verifying through OTP.",
+              "keywords": [
+                "payee",
+                "ifsc",
+                "upi",
+                "otp"
+              ],
+              "start_line": 59,
+              "end_line": 65,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "ch_5_3",
+          "level": 3,
+          "title": "Bill Payments & QR",
+          "summary": "Pay electricity, water, gas, mobile, and credit card bills, and scan QR codes at merchants or for quick money transfers.",
+          "keywords": [
+            "bill payment",
+            "qr",
+            "utilities"
+          ],
+          "start_line": 66,
+          "end_line": 70,
+          "children": []
+        },
+        {
+          "id": "ch_5_4",
+          "level": 3,
+          "title": "Cards",
+          "summary": "View, block, and manage credit/debit cards, apply for new cards, and set transaction limits for ATM, POS, online, and contactless usage.",
+          "keywords": [
+            "cards",
+            "block",
+            "pin",
+            "transaction limit"
+          ],
+          "start_line": 71,
+          "end_line": 83,
+          "children": [
+            {
+              "id": "ch_5_4_1",
+              "level": 4,
+              "title": "**Check, Apply & Manage Credit/Debit Cards**",
+              "summary": "View existing cards with usage summary, due dates, statements, and reward points; block cards instantly, reset card PINs, and apply for new credit or debit cards.",
+              "keywords": [
+                "cards",
+                "block card",
+                "reset pin",
+                "apply card"
+              ],
+              "start_line": 73,
+              "end_line": 78,
+              "children": []
+            },
+            {
+              "id": "ch_5_4_2",
+              "level": 4,
+              "title": "**Set Card Limits**",
+              "summary": "Set or adjust transaction limits on cards for ATM, POS, online, and contactless usage through Manage Cards.",
+              "keywords": [
+                "transaction limit",
+                "atm",
+                "pos",
+                "contactless"
+              ],
+              "start_line": 79,
+              "end_line": 83,
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "ch_5_5",
+          "level": 3,
+          "title": "Loans",
+          "summary": "View loans, EMIs, schedules, and statements, and apply for new home, personal, or vehicle loans by filling a form, uploading KYC, and tracking status.",
+          "keywords": [
+            "loans",
+            "emi",
+            "apply",
+            "kyc"
+          ],
+          "start_line": 84,
+          "end_line": 88,
+          "children": []
+        },
+        {
+          "id": "ch_5_6",
+          "level": 3,
+          "title": "Rewards",
+          "summary": "Check current reward points in the Rewards tab and redeem them instantly for vouchers, cashback, or gift cards.",
+          "keywords": [
+            "rewards",
+            "redeem",
+            "vouchers",
+            "cashback"
+          ],
+          "start_line": 89,
+          "end_line": 93,
+          "children": []
+        },
+        {
+          "id": "ch_5_7",
+          "level": 3,
+          "title": "NRI & Wealth",
+          "summary": "Access NRI services, mutual funds, wealth advisory, and initiate investments from the app.",
+          "keywords": [
+            "nri",
+            "mutual funds",
+            "wealth",
+            "investments"
+          ],
+          "start_line": 94,
+          "end_line": 97,
+          "children": []
+        },
+        {
+          "id": "ch_5_8",
+          "level": 3,
+          "title": "Chatbot – **Zia**",
+          "summary": "Ask Zia, the in-app chatbot, for help with account queries, product info, quick balance, and transaction support.",
+          "keywords": [
+            "chatbot",
+            "zia",
+            "assistant",
+            "support"
+          ],
+          "start_line": 98,
+          "end_line": 103,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "5. Security Options",
+      "summary": "Security options include biometric login (fingerprint/Face ID), dynamic device registration and OTP validation, and instant blocking of internet/mobile banking through the app.",
+      "keywords": [
+        "security",
+        "biometric",
+        "otp",
+        "device registration",
+        "blocking"
+      ],
+      "start_line": 104,
+      "end_line": 111,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "6. Other Popular Services",
+      "summary": "Other services include requesting a cheque book, updating contact details with OTP, viewing mini statements, locating branches/ATMs, and receiving real-time notifications for transactions and offers.",
+      "keywords": [
+        "cheque book",
+        "mini statement",
+        "branch locator",
+        "notifications"
+      ],
+      "start_line": 112,
+      "end_line": 121,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "7. Customer Support",
+      "summary": "Get support through in-app chat or helpline, email, or by scheduling branch appointments via the app.",
+      "keywords": [
+        "support",
+        "helpline",
+        "chat",
+        "appointment"
+      ],
+      "start_line": 122,
+      "end_line": 129,
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "doc_id": "doc_040",
+  "title": "ZX Bank – NetBanking Guide",
+  "source_sha256": "76c4cc39caacff402bee9a8afafdc769a1d8beaf6e05a0bd70998e63079af778",
+  "total_lines": 78,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "What is NetBanking?",
+      "summary": "ZX Bank NetBanking is a secure online banking platform for individuals and businesses to manage accounts, perform transactions, pay bills, and access banking services anytime, anywhere.",
+      "keywords": [
+        "NetBanking",
+        "online banking",
+        "secure",
+        "individuals",
+        "businesses",
+        "manage accounts",
+        "transactions",
+        "bill payments"
+      ],
+      "start_line": 3,
+      "end_line": 7,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Features",
+      "summary": "Features include account balance and statement viewing, fund transfers within ZX Bank and other banks, bill payments and mobile/DTH recharge, opening/closing Fixed and Recurring Deposits, loan and credit card management, and utility features such as stop cheque, cheque book request, and beneficiary management.",
+      "keywords": [
+        "features",
+        "account balance",
+        "statement",
+        "fund transfer",
+        "other banks",
+        "bill payment",
+        "recharge",
+        "fixed deposit",
+        "recurring deposit",
+        "loan",
+        "credit card",
+        "stop cheque",
+        "cheque book",
+        "beneficiaries"
+      ],
+      "start_line": 8,
+      "end_line": 17,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "How to Activate ZX Bank NetBanking",
+      "summary": "Three methods to activate NetBanking: self-registration online, activation via branch, and activation via the ZX Bank Asia mobile app.",
+      "keywords": [
+        "activate",
+        "registration",
+        "online",
+        "branch",
+        "mobile app",
+        "NetBanking"
+      ],
+      "start_line": 18,
+      "end_line": 42,
+      "children": [
+        {
+          "id": "ch_3_1",
+          "level": 3,
+          "title": "1. **Self-Registration (Online)**",
+          "summary": "Steps: visit the ZX Bank Asia website, click 'NetBanking Login' and select 'New User/Register', enter Customer ID (from passbook/statement) and registered mobile number, verify via OTP, set NetBanking username and password, then set transactional password and security questions.",
+          "keywords": [
+            "self registration",
+            "NetBanking Login",
+            "New User",
+            "Customer ID",
+            "mobile number",
+            "OTP",
+            "username",
+            "password",
+            "transactional password",
+            "security questions"
+          ],
+          "start_line": 20,
+          "end_line": 29,
+          "children": []
+        },
+        {
+          "id": "ch_3_2",
+          "level": 3,
+          "title": "2. **Activation via Branch**",
+          "summary": "Activation by visiting any branch: fill the NetBanking registration form, receive a welcome kit or activation link on mobile/email, then set login and transaction passwords.",
+          "keywords": [
+            "branch",
+            "activation",
+            "registration form",
+            "welcome kit",
+            "activation link",
+            "login password",
+            "transaction password"
+          ],
+          "start_line": 30,
+          "end_line": 35,
+          "children": []
+        },
+        {
+          "id": "ch_3_3",
+          "level": 3,
+          "title": "3. **Activation via Mobile App**",
+          "summary": "Download the ZX Bank Asia app (Android/iOS), select 'Register for NetBanking', and follow in-app instructions similar to the online self-registration process.",
+          "keywords": [
+            "mobile app",
+            "Android",
+            "iOS",
+            "Register for NetBanking",
+            "in-app"
+          ],
+          "start_line": 36,
+          "end_line": 42,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Daily Transaction Limits (Indicative)",
+      "summary": "Indicative daily limits: NEFT/RTGS ₹10,00,000; IMPS/UPI ₹2,00,000; bill payments ₹1,00,000; own ZX Bank account transactions ₹20,00,000. Corporate/priority customers may request higher limits via branch or customer support, subject to approval and enhanced security.",
+      "keywords": [
+        "Daily Transaction Limits",
+        "NEFT",
+        "RTGS",
+        "IMPS",
+        "UPI",
+        "bill payment",
+        "own transactions",
+        "corporate",
+        "priority customers",
+        "higher limits",
+        "indicative"
+      ],
+      "start_line": 43,
+      "end_line": 55,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Security Tips",
+      "summary": "Never share password or OTP, update password regularly, login only via the official website or ZX Bank Asia app, and enable two-factor authentication.",
+      "keywords": [
+        "security",
+        "password",
+        "OTP",
+        "two-factor authentication",
+        "official website",
+        "ZX Bank Asia app",
+        "update password"
+      ],
+      "start_line": 56,
+      "end_line": 63,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Support",
+      "summary": "Support channels: toll-free India 1800-123-4567, Sri Lanka +94-11-2345678, Bangladesh +880-17-12345678, Bhutan +975-2-123456, Nepal +977-1-1234567; email netbanking.support@zxbank.asia; 24x7 Zia AI chat via app/website; and in-person branch support.",
+      "keywords": [
+        "support",
+        "helpdesk",
+        "toll free",
+        "1800-123-4567",
+        "Sri Lanka",
+        "Bangladesh",
+        "Bhutan",
+        "Nepal",
+        "email",
+        "netbanking.support@zxbank.asia",
+        "Zia AI chat",
+        "branch support"
+      ],
+      "start_line": 64,
+      "end_line": 78,
+      "children": []
+    }
+  ]
+}

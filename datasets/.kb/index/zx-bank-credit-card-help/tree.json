@@ -1,0 +1,176 @@
+{
+  "doc_id": "doc_067",
+  "title": "How to Close Your ZX Bank Credit Card",
+  "source_sha256": "1806d3ae717f89a6c2a326d74d09f2081313797ffca7a9206be3b940e08db06f",
+  "total_lines": 67,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "1. **Clear Outstanding Dues**",
+      "summary": "First step in card closure: settle all outstanding amounts such as balances, fees, charges, or EMIs on the card, and download the final statement for future reference.",
+      "keywords": [
+        "clear dues",
+        "outstanding balance",
+        "pay emi",
+        "statement"
+      ],
+      "start_line": 7,
+      "end_line": 12,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "2. **Redeem Unused Rewards**",
+      "summary": "Second step: redeem all reward points, cashback, or benefits before closure, because unused rewards will be lost once the card is closed.",
+      "keywords": [
+        "redeem rewards",
+        "reward points",
+        "cashback",
+        "benefits"
+      ],
+      "start_line": 13,
+      "end_line": 17,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "3. **Cancel Auto-debits & Linked Payments**",
+      "summary": "Third step: deactivate standing instructions, auto-debits, or subscriptions that are linked to the card before closure.",
+      "keywords": [
+        "auto-debits",
+        "standing instruction",
+        "subscription",
+        "linked payments"
+      ],
+      "start_line": 18,
+      "end_line": 22,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "4. **Request Card Closure**",
+      "summary": "Fourth step: place a card closure request through any of the channels described - the ZX Bank Asia app, ZX NetBanking, customer care, or a branch visit.",
+      "keywords": [
+        "closure request",
+        "close credit card",
+        "channels",
+        "app",
+        "netbanking"
+      ],
+      "start_line": 23,
+      "end_line": 48,
+      "children": [
+        {
+          "id": "ch_4_1",
+          "level": 3,
+          "title": "a. **Via ZX Bank Mobile App (\"ZX Bank Asia\")**",
+          "summary": "In the ZX Bank Asia mobile app, login and go to Card Services to Credit Card Closure, select the card, and follow the on-screen prompts to close it.",
+          "keywords": [
+            "mobile app",
+            "card services",
+            "closure"
+          ],
+          "start_line": 26,
+          "end_line": 30,
+          "children": []
+        },
+        {
+          "id": "ch_4_2",
+          "level": 3,
+          "title": "b. **Through ZX NetBanking**",
+          "summary": "In ZX NetBanking, navigate to Cards, then Credit Cards, then Close Credit Card, select the card, and confirm the closure request.",
+          "keywords": [
+            "netbanking",
+            "close credit card",
+            "cards menu"
+          ],
+          "start_line": 31,
+          "end_line": 35,
+          "children": []
+        },
+        {
+          "id": "ch_4_3",
+          "level": 3,
+          "title": "c. **Customer Care**",
+          "summary": "Request closure over the phone with card details handy using the 24x7 helplines: India 1800-123-4567, Sri Lanka 011-2345678, and Bangladesh 0961-234567.",
+          "keywords": [
+            "customer care",
+            "24x7 helpline",
+            "india",
+            "sri lanka",
+            "bangladesh",
+            "phone"
+          ],
+          "start_line": 36,
+          "end_line": 42,
+          "children": []
+        },
+        {
+          "id": "ch_4_4",
+          "level": 3,
+          "title": "d. **Branch Visit**",
+          "summary": "Visit the nearest ZX Bank branch and submit a written request or fill out a card closure form.",
+          "keywords": [
+            "branch",
+            "written request",
+            "closure form"
+          ],
+          "start_line": 43,
+          "end_line": 48,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "5. **Destroy the Card**",
+      "summary": "After receiving confirmation, cut the card (including the chip and magnetic strip) and dispose of it securely.",
+      "keywords": [
+        "destroy card",
+        "cut card",
+        "chip",
+        "secure disposal"
+      ],
+      "start_line": 49,
+      "end_line": 53,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "6. **Obtain Closure Confirmation**",
+      "summary": "ZX Bank sends a closure confirmation letter or email within 7 working days; customers should also check their CIBIL or credit report to ensure the card appears as closed rather than settled.",
+      "keywords": [
+        "closure confirmation",
+        "closure letter",
+        "credit report",
+        "cibil",
+        "7 days"
+      ],
+      "start_line": 54,
+      "end_line": 59,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "#### Important Notes",
+      "summary": "Important notes: closing a credit card may affect the credit score, a closed card cannot be reactivated so a new application is required, and continuing charges after closure should be reported to ZX Bank immediately. Contact support through the app or www.zxbank.asia.",
+      "keywords": [
+        "credit score",
+        "no reactivation",
+        "new application",
+        "charges after closure",
+        "important notes"
+      ],
+      "start_line": 60,
+      "end_line": 67,
+      "children": []
+    }
+  ]
+}

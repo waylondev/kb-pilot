@@ -1,0 +1,348 @@
+{
+  "doc_id": "doc_014",
+  "title": "ZX Bank ATMs at Major Colleges & Universities (City-Wise)",
+  "source_sha256": "a1fd07eca8d5a495031ba032921c76a2b82006526ef82bb9f9e58753094981ae",
+  "total_lines": 185,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai, Maharashtra",
+      "summary": "ATMs at two Mumbai institutions: Indian Institute of Technology Bombay (IIT Bombay) at its Main Gate in Powai, and University of Mumbai (Kalina Campus) near the Administrative Block in Santacruz East.",
+      "keywords": [
+        "mumbai",
+        "college",
+        "university",
+        "iit bombay",
+        "university of mumbai",
+        "atm"
+      ],
+      "start_line": 7,
+      "end_line": 15,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi, National Capital Territory",
+      "summary": "ATMs at two Delhi institutions: University of Delhi (North Campus) outside the Central Library, and Jawaharlal Nehru University (JNU) near Sabarmati Hostel on New Mehrauli Road.",
+      "keywords": [
+        "delhi",
+        "college",
+        "university",
+        "delhi university",
+        "jnu",
+        "atm"
+      ],
+      "start_line": 16,
+      "end_line": 24,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru), Karnataka",
+      "summary": "ATMs at two Bangalore institutions: Indian Institute of Science (IISc) near the Main Canteen in Malleshwaram, and Christ University at the Main Entrance Gate on Hosur Road.",
+      "keywords": [
+        "bangalore",
+        "bengaluru",
+        "college",
+        "university",
+        "iisc",
+        "christ university"
+      ],
+      "start_line": 25,
+      "end_line": 33,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad, Telangana",
+      "summary": "ATMs at two Hyderabad institutions: Indian Institute of Technology (IIT Hyderabad) at the Hostel Block in Kandi, Sangareddy, and Osmania University on Arts College Road.",
+      "keywords": [
+        "hyderabad",
+        "college",
+        "university",
+        "iit hyderabad",
+        "osmania",
+        "atm"
+      ],
+      "start_line": 34,
+      "end_line": 42,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai, Tamil Nadu",
+      "summary": "ATMs at two Chennai institutions: Indian Institute of Technology Madras (IITM) near Himalaya Mess, and Loyola College at the Main Gate on Sterling Road, Nungambakkam.",
+      "keywords": [
+        "chennai",
+        "college",
+        "university",
+        "iit madras",
+        "loyola",
+        "atm"
+      ],
+      "start_line": 43,
+      "end_line": 51,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata, West Bengal",
+      "summary": "ATMs at two Kolkata institutions: Jadavpur University at Gate No. 4 on Raja S C Mallick Road, and University of Calcutta (College Street Campus) near the Main Auditorium at 87/1 College Street.",
+      "keywords": [
+        "kolkata",
+        "college",
+        "university",
+        "jadavpur",
+        "calcutta university",
+        "atm"
+      ],
+      "start_line": 52,
+      "end_line": 60,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune, Maharashtra",
+      "summary": "ATMs at two Pune institutions: Savitribai Phule Pune University at the Main Entrance in Ganeshkhind, and Symbiosis International University near the Library at its Viman Nagar Campus.",
+      "keywords": [
+        "pune",
+        "college",
+        "university",
+        "pune university",
+        "symbiosis",
+        "atm"
+      ],
+      "start_line": 61,
+      "end_line": 69,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad, Gujarat",
+      "summary": "ATMs at two Ahmedabad institutions: Indian Institute of Management Ahmedabad (IIMA) at Gate 1 in Vastrapur, and Gujarat University at the Vice-Chancellor Block.",
+      "keywords": [
+        "ahmedabad",
+        "college",
+        "university",
+        "iim ahmedabad",
+        "gujarat university",
+        "atm"
+      ],
+      "start_line": 70,
+      "end_line": 78,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat, Gujarat",
+      "summary": "ATMs at two Surat institutions: Sardar Vallabhbhai National Institute of Technology (SVNIT) at the Administrative Block in Ichchhanath, and Veer Narmad South Gujarat University (VNSGU) at the Main Gate on Udhna Magdalla Road.",
+      "keywords": [
+        "surat",
+        "college",
+        "university",
+        "svnit",
+        "vnsgu",
+        "atm"
+      ],
+      "start_line": 79,
+      "end_line": 87,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur, Rajasthan",
+      "summary": "ATMs at two Jaipur institutions: Malaviya National Institute of Technology (MNIT) at the Front Gate on JLN Marg, and University of Rajasthan near the Law College on JLN Marg.",
+      "keywords": [
+        "jaipur",
+        "college",
+        "university",
+        "mnit",
+        "rajasthan university",
+        "atm"
+      ],
+      "start_line": 88,
+      "end_line": 96,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow, Uttar Pradesh",
+      "summary": "ATMs at two Lucknow institutions: Indian Institute of Management Lucknow (IIML) at the Hostels Entrance in Prabandh Nagar on Sitapur Road, and University of Lucknow near the Main Library on University Road.",
+      "keywords": [
+        "lucknow",
+        "college",
+        "university",
+        "iim lucknow",
+        "lucknow university",
+        "atm"
+      ],
+      "start_line": 97,
+      "end_line": 105,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur, Uttar Pradesh",
+      "summary": "ATMs at two Kanpur institutions: Indian Institute of Technology Kanpur (IIT Kanpur) in the Hall of Residence Area at Kalyanpur, and Chhatrapati Shahu Ji Maharaj University (Kanpur University) at the Admin Block in Kalyanpur.",
+      "keywords": [
+        "kanpur",
+        "college",
+        "university",
+        "iit kanpur",
+        "kanpur university",
+        "atm"
+      ],
+      "start_line": 106,
+      "end_line": 114,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur, Maharashtra",
+      "summary": "ATMs at two Nagpur institutions: Visvesvaraya National Institute of Technology (VNIT) at the Main Gate on South Ambazari Road, and Rashtrasant Tukadoji Maharaj Nagpur University at the Vice-Chancellor's Office on Amravati Road.",
+      "keywords": [
+        "nagpur",
+        "college",
+        "university",
+        "vnit",
+        "nagpur university",
+        "atm"
+      ],
+      "start_line": 115,
+      "end_line": 123,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore, Madhya Pradesh",
+      "summary": "ATMs at two Indore institutions: Indian Institute of Technology Indore (IIT Indore) at the Hostel Complex on Khandwa Road, Simrol, and Devi Ahilya Vishwavidyalaya (DAVV) at the Takshila Campus on Khandwa Road.",
+      "keywords": [
+        "indore",
+        "college",
+        "university",
+        "iit indore",
+        "davv",
+        "atm"
+      ],
+      "start_line": 124,
+      "end_line": 132,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal, Madhya Pradesh",
+      "summary": "ATMs at two Bhopal institutions: Indian Institute of Science Education and Research (IISER) Bhopal at the Main Gate in Bhauri, and Barkatullah University at the Main Admin Office on Hoshangabad Road.",
+      "keywords": [
+        "bhopal",
+        "college",
+        "university",
+        "iiser",
+        "barkatullah",
+        "atm"
+      ],
+      "start_line": 133,
+      "end_line": 141,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam, Andhra Pradesh",
+      "summary": "ATMs at two Visakhapatnam institutions: Indian Institute of Management Visakhapatnam (IIM Vizag) at the Main Gate of Andhra University Campus, and GITAM (Gandhi Institute of Technology and Management) at the Main Building in Rushikonda.",
+      "keywords": [
+        "visakhapatnam",
+        "vizag",
+        "college",
+        "university",
+        "iim vizag",
+        "gitam"
+      ],
+      "start_line": 142,
+      "end_line": 150,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna, Bihar",
+      "summary": "ATMs at two Patna institutions: Indian Institute of Technology Patna (IIT Patna) at the Hostel Area in Bihta, and Patna University at the Main Campus Gate on Ashok Rajpath.",
+      "keywords": [
+        "patna",
+        "college",
+        "university",
+        "iit patna",
+        "patna university",
+        "atm"
+      ],
+      "start_line": 151,
+      "end_line": 159,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda), Gujarat",
+      "summary": "ATMs at two Vadodara institutions: The Maharaja Sayajirao University of Baroda at the Fatehgunj Main Gate on University Road, and Parul University at the Main Gate in Limda, Waghodia.",
+      "keywords": [
+        "vadodara",
+        "baroda",
+        "college",
+        "university",
+        "maharaja sayajirao",
+        "parul"
+      ],
+      "start_line": 160,
+      "end_line": 168,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana, Punjab",
+      "summary": "ATMs at two Ludhiana institutions: Punjab Agricultural University (PAU) near the Students' Counselling Centre, and Guru Nanak Dev Engineering College at the Main Admin Block near Gill Park on Gill Road.",
+      "keywords": [
+        "ludhiana",
+        "college",
+        "university",
+        "pau",
+        "guru nanak dev",
+        "atm"
+      ],
+      "start_line": 169,
+      "end_line": 177,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore, Tamil Nadu",
+      "summary": "ATMs at two Coimbatore institutions: PSG College of Technology at the Main Gate on Avinashi Road, Peelamedu, and Coimbatore Institute of Technology (CIT) at the Admin Block on Avinashi Road, Civil Aerodrome Post.",
+      "keywords": [
+        "coimbatore",
+        "college",
+        "university",
+        "psg",
+        "cit",
+        "atm"
+      ],
+      "start_line": 178,
+      "end_line": 185,
+      "children": []
+    }
+  ]
+}

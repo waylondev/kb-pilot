@@ -1,0 +1,91 @@
+{
+  "doc_id": "doc_004",
+  "title": "ZX Bank Ltd. – Ahmedabad Branch Network",
+  "source_sha256": "64033a31e2c8b1074f6775a03ea1fbd313d358ac5166f17484d03f7417c03b87",
+  "total_lines": 59,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "North Ahmedabad",
+      "summary": "North Ahmedabad branches: 21 Naranpura Main Road, Naranpura (ZXIN0001011); GF Surya Plaza, Sola Road, Chandlodia (ZXIN0001012); and 5 Shukan City, Ranip Bridge, Ranip (ZXIN0001013).",
+      "keywords": [
+        "north ahmedabad",
+        "naranpura",
+        "chandlodia",
+        "ranip",
+        "branch"
+      ],
+      "start_line": 7,
+      "end_line": 16,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "South Ahmedabad",
+      "summary": "South Ahmedabad branches: 101 Maninagar Station Road, Maninagar (ZXIN0001021); Shop 8, GIDC Estate, Vatva (ZXIN0001022); and 15 Avni Arcade, Isanpur Cross Road, Isanpur (ZXIN0001023).",
+      "keywords": [
+        "south ahmedabad",
+        "maninagar",
+        "vatva",
+        "gidc",
+        "isanpur",
+        "branch"
+      ],
+      "start_line": 17,
+      "end_line": 26,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "East Ahmedabad",
+      "summary": "East Ahmedabad branches: 7 Naroda Road, Hansol (ZXIN0001031); 112 Chintamani Nagar, Bapunagar (ZXIN0001032); Shop 2, Swaminarayan Avenue, Nikol (ZXIN0001033); and Shop 45, Nava Naroda Circle, Nava Naroda (ZXIN0001034).",
+      "keywords": [
+        "east ahmedabad",
+        "naroda",
+        "bapunagar",
+        "nikol",
+        "nava naroda",
+        "branch"
+      ],
+      "start_line": 27,
+      "end_line": 37,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "West Ahmedabad",
+      "summary": "West Ahmedabad branches: 23 Anandnagar Main Road, Satellite (ZXIN0001041); 711 Shyamal Cross Road, Vasna (ZXIN0001042); 15 Aryaman Complex, Bodakdev (ZXIN0001043); and Shop 3, S.G. Highway, Thaltej (ZXIN0001044).",
+      "keywords": [
+        "west ahmedabad",
+        "satellite",
+        "vasna",
+        "bodakdev",
+        "thaltej",
+        "s.g. highway"
+      ],
+      "start_line": 38,
+      "end_line": 48,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Central Ahmedabad",
+      "summary": "Central Ahmedabad branches: 1st Floor, City Heart, C.G. Road, Navrangpura (ZXIN0001051); Shop 17, Relief Road, Lal Darwaza (ZXIN0001052); and Ground Floor, Lotus Plaza, Ashram Road (ZXIN0001053).",
+      "keywords": [
+        "central ahmedabad",
+        "navrangpura",
+        "relief road",
+        "lal darwaza",
+        "ashram road"
+      ],
+      "start_line": 49,
+      "end_line": 59,
+      "children": []
+    }
+  ]
+}

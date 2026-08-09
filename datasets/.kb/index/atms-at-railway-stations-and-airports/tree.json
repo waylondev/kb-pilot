@@ -1,0 +1,326 @@
+{
+  "doc_id": "doc_015",
+  "title": "ZX Bank ATM Locations at Major Railway Stations and Airports",
+  "source_sha256": "6ecda478998d5a68aa506364b054f41191eeec1085079c3341cf5d24c0f94a0e",
+  "total_lines": 182,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "1. **Mumbai, Maharashtra**",
+      "summary": "24x7 ATMs at Mumbai railway stations Chhatrapati Shivaji Maharaj Terminus (CSMT), Mumbai Central, Dadar and Lokmanya Tilak Terminus, and at Chhatrapati Shivaji Maharaj International Airport (Terminals 1 & 2).",
+      "keywords": [
+        "mumbai",
+        "railway station",
+        "airport",
+        "csmt",
+        "mumbai central",
+        "dadar"
+      ],
+      "start_line": 7,
+      "end_line": 17,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "2. **Delhi, National Capital Territory**",
+      "summary": "24x7 ATMs at Delhi railway stations New Delhi (NDLS), Hazrat Nizamuddin (NZM), Old Delhi Junction (DLI) and Anand Vihar Terminal, and at Indira Gandhi International Airport (Terminals 1, 2, 3).",
+      "keywords": [
+        "delhi",
+        "railway station",
+        "airport",
+        "new delhi",
+        "nzm",
+        "igi"
+      ],
+      "start_line": 18,
+      "end_line": 28,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "3. **Bangalore (Bengaluru), Karnataka**",
+      "summary": "24x7 ATMs at Bangalore railway stations Krantivira Sangolli Rayanna (Bengaluru City Junction - SBC) and Yeshwanthpur Junction, and at Kempegowda International Airport.",
+      "keywords": [
+        "bangalore",
+        "bengaluru",
+        "railway station",
+        "airport",
+        "ksr",
+        "kempegowda"
+      ],
+      "start_line": 29,
+      "end_line": 37,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "4. **Hyderabad, Telangana**",
+      "summary": "24x7 ATMs at Hyderabad railway stations Secunderabad Junction (SC) and Hyderabad Deccan (Nampally) (HYB), and at Rajiv Gandhi International Airport.",
+      "keywords": [
+        "hyderabad",
+        "railway station",
+        "airport",
+        "secunderabad",
+        "nampally",
+        "rajiv gandhi"
+      ],
+      "start_line": 38,
+      "end_line": 46,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "5. **Chennai, Tamil Nadu**",
+      "summary": "24x7 ATMs at Chennai railway stations Chennai Central (MAS) and Chennai Egmore (MS), and at Chennai International Airport.",
+      "keywords": [
+        "chennai",
+        "railway station",
+        "airport",
+        "chennai central",
+        "egmore"
+      ],
+      "start_line": 47,
+      "end_line": 55,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "6. **Kolkata, West Bengal**",
+      "summary": "24x7 ATMs at Kolkata railway stations Howrah Junction (HWH), Sealdah (SDAH) and Kolkata Railway Station (KOAA), and at Netaji Subhas Chandra Bose International Airport.",
+      "keywords": [
+        "kolkata",
+        "railway station",
+        "airport",
+        "howrah",
+        "sealdah"
+      ],
+      "start_line": 56,
+      "end_line": 65,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "7. **Pune, Maharashtra**",
+      "summary": "24x7 ATMs at Pune Junction (PUNE) railway station and at Pune International Airport.",
+      "keywords": [
+        "pune",
+        "railway station",
+        "airport",
+        "pune junction"
+      ],
+      "start_line": 66,
+      "end_line": 73,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "8. **Ahmedabad, Gujarat**",
+      "summary": "24x7 ATMs at Ahmedabad Junction (ADI) railway station and at Sardar Vallabhbhai Patel International Airport.",
+      "keywords": [
+        "ahmedabad",
+        "railway station",
+        "airport",
+        "adi",
+        "sardar patel"
+      ],
+      "start_line": 74,
+      "end_line": 81,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "9. **Surat, Gujarat**",
+      "summary": "24x7 ATMs at Surat Railway Station (ST) and at Surat Airport.",
+      "keywords": [
+        "surat",
+        "railway station",
+        "airport"
+      ],
+      "start_line": 82,
+      "end_line": 89,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "10. **Jaipur, Rajasthan**",
+      "summary": "24x7 ATMs at Jaipur Junction (JP) railway station and at Jaipur International Airport.",
+      "keywords": [
+        "jaipur",
+        "railway station",
+        "airport",
+        "jaipur junction"
+      ],
+      "start_line": 90,
+      "end_line": 97,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "11. **Lucknow, Uttar Pradesh**",
+      "summary": "24x7 ATMs at Lucknow Charbagh (LKO / LJN) railway station and at Chaudhary Charan Singh International Airport.",
+      "keywords": [
+        "lucknow",
+        "railway station",
+        "airport",
+        "charbagh",
+        "charan singh"
+      ],
+      "start_line": 98,
+      "end_line": 105,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "12. **Kanpur, Uttar Pradesh**",
+      "summary": "24x7 ATMs at Kanpur Central (CNB) railway station and at Kanpur Airport (Chakeri).",
+      "keywords": [
+        "kanpur",
+        "railway station",
+        "airport",
+        "kanpur central",
+        "chakeri"
+      ],
+      "start_line": 106,
+      "end_line": 113,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "13. **Nagpur, Maharashtra**",
+      "summary": "24x7 ATMs at Nagpur Junction (NGP) railway station and at Dr. Babasaheb Ambedkar International Airport.",
+      "keywords": [
+        "nagpur",
+        "railway station",
+        "airport",
+        "nagpur junction",
+        "ambedkar"
+      ],
+      "start_line": 114,
+      "end_line": 121,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "14. **Indore, Madhya Pradesh**",
+      "summary": "24x7 ATMs at Indore Junction (INDB) railway station and at Devi Ahilya Bai Holkar Airport.",
+      "keywords": [
+        "indore",
+        "railway station",
+        "airport",
+        "indb",
+        "ahilya"
+      ],
+      "start_line": 122,
+      "end_line": 129,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "15. **Bhopal, Madhya Pradesh**",
+      "summary": "24x7 ATMs at Bhopal Junction (BPL) railway station and at Raja Bhoj Airport.",
+      "keywords": [
+        "bhopal",
+        "railway station",
+        "airport",
+        "bpl",
+        "raja bhoj"
+      ],
+      "start_line": 130,
+      "end_line": 137,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "16. **Visakhapatnam, Andhra Pradesh**",
+      "summary": "24x7 ATMs at Visakhapatnam Junction (VSKP) railway station and at Visakhapatnam International Airport.",
+      "keywords": [
+        "visakhapatnam",
+        "vizag",
+        "railway station",
+        "airport",
+        "vskp"
+      ],
+      "start_line": 138,
+      "end_line": 145,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "17. **Patna, Bihar**",
+      "summary": "24x7 ATMs at Patna Junction (PNBE) railway station and at Jay Prakash Narayan International Airport.",
+      "keywords": [
+        "patna",
+        "railway station",
+        "airport",
+        "patna junction",
+        "jay prakash"
+      ],
+      "start_line": 146,
+      "end_line": 153,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "18. **Vadodara (Baroda), Gujarat**",
+      "summary": "24x7 ATMs at Vadodara Junction (BRC) railway station and at Vadodara Airport.",
+      "keywords": [
+        "vadodara",
+        "baroda",
+        "railway station",
+        "airport",
+        "brc"
+      ],
+      "start_line": 154,
+      "end_line": 161,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "19. **Ludhiana, Punjab**",
+      "summary": "24x7 ATMs at Ludhiana Junction (LDH) railway station and at Sahnewal Airport.",
+      "keywords": [
+        "ludhiana",
+        "railway station",
+        "airport",
+        "sahnewal"
+      ],
+      "start_line": 162,
+      "end_line": 169,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "20. **Coimbatore, Tamil Nadu**",
+      "summary": "24x7 ATMs at Coimbatore Junction (CBE) railway station and at Coimbatore International Airport.",
+      "keywords": [
+        "coimbatore",
+        "railway station",
+        "airport",
+        "cbe"
+      ],
+      "start_line": 170,
+      "end_line": 182,
+      "children": []
+    }
+  ]
+}

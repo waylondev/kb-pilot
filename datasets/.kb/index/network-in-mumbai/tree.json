@@ -1,0 +1,114 @@
+{
+  "doc_id": "doc_044",
+  "title": "ZX Bank Branch Network in Mumbai",
+  "source_sha256": "407e2f1167ffbf41673d670f9562fcbaf429b17ddde157ea1f56fa9750108f76",
+  "total_lines": 77,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "South Mumbai Branches",
+      "summary": "7 branches: Nariman Point (ZXIN0000101, 022-24510011), MG Road Fort (ZXIN0000102, 022-24982255), Kala Ghoda (ZXIN0000103, 022-22851122), Ballard Estate Fort (ZXIN0000104, 022-26269988), Cuffe Parade Colaba (ZXIN0000105, 022-22114477), Marine Drive Churchgate (ZXIN0000106, 022-22671199), Haji Ali Tardeo Road (ZXIN0000107, 022-24880044).",
+      "keywords": [
+        "South Mumbai",
+        "Nariman Point",
+        "Fort",
+        "Kala Ghoda",
+        "Ballard Estate",
+        "Cuffe Parade",
+        "Colaba",
+        "Marine Drive",
+        "Churchgate",
+        "Haji Ali",
+        "IFSC",
+        "contact"
+      ],
+      "start_line": 7,
+      "end_line": 20,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "North Mumbai Branches",
+      "summary": "7 branches: Malad West (ZXIN0000201, 022-28607744), Borivali East (ZXIN0000202, 022-28953398), Mira Road East (ZXIN0000203, 022-28121234), Dahisar East (ZXIN0000204, 022-28988810), Kandivali East (ZXIN0000205, 022-28056742), Goregaon West (ZXIN0000206, 022-28792211), Malad West Chincholi Bunder (ZXIN0000207, 022-28812255).",
+      "keywords": [
+        "North Mumbai",
+        "Malad",
+        "Borivali",
+        "Mira Road",
+        "Dahisar",
+        "Kandivali",
+        "Goregaon",
+        "IFSC",
+        "contact"
+      ],
+      "start_line": 21,
+      "end_line": 34,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "East Mumbai Branches",
+      "summary": "6 branches: Chembur (ZXIN0000301, 022-25233412), Ghatkopar East (ZXIN0000302, 022-25012144), Eastern Express Hwy Vikhroli East (ZXIN0000303, 022-25775689), Tagore Nagar Vikhroli East (ZXIN0000304, 022-25968899), Pant Nagar Ghatkopar East (ZXIN0000305, 022-25051199), Amar Mahal Chembur (ZXIN0000306, 022-25270033).",
+      "keywords": [
+        "East Mumbai",
+        "Chembur",
+        "Ghatkopar",
+        "Vikhroli",
+        "Pant Nagar",
+        "Amar Mahal",
+        "IFSC",
+        "contact"
+      ],
+      "start_line": 35,
+      "end_line": 47,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "West Mumbai Branches",
+      "summary": "7 branches: Juhu Tara Road Santacruz West (ZXIN0000401, 022-26605510), SV Road Andheri West (ZXIN0000402, 022-26773355), Carter Road Bandra West (ZXIN0000403, 022-26487577), Lokhandwala Andheri West (ZXIN0000404, 022-26361188), Oshiwara Jogeshwari West (ZXIN0000405, 022-28756612), Yari Road Versova (ZXIN0000406, 022-26338891), Kandivali West (ZXIN0000407, 022-28093971).",
+      "keywords": [
+        "West Mumbai",
+        "Santacruz",
+        "Andheri",
+        "Bandra",
+        "Lokhandwala",
+        "Oshiwara",
+        "Jogeshwari",
+        "Versova",
+        "Kandivali",
+        "IFSC",
+        "contact"
+      ],
+      "start_line": 48,
+      "end_line": 61,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Central Mumbai Branches",
+      "summary": "8 branches: Dr Ambedkar Road Parel (ZXIN0000501, 022-24127700), Phoenix Mall Lower Parel (ZXIN0000502, 022-24905566), LBS Marg Kurla West (ZXIN0000503, 022-26519990), Dadar TT Circle (ZXIN0000504, 022-24155322), Lalbaug (ZXIN0000505, 022-24715586), Sion Circle (ZXIN0000506, 022-24035511), Matunga East (ZXIN0000507, 022-24088909), Prabhadevi (ZXIN0000508, 022-24214455).",
+      "keywords": [
+        "Central Mumbai",
+        "Parel",
+        "Lower Parel",
+        "Kurla",
+        "Dadar",
+        "Lalbaug",
+        "Sion",
+        "Matunga",
+        "Prabhadevi",
+        "IFSC",
+        "contact"
+      ],
+      "start_line": 62,
+      "end_line": 77,
+      "children": []
+    }
+  ]
+}

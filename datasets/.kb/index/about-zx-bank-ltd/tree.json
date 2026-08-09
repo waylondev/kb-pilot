@@ -1,0 +1,192 @@
+{
+  "doc_id": "doc_001",
+  "title": "ZX Bank Ltd.",
+  "source_sha256": "ca79d2199ad9fb3459bfe2cb470fdb1b8ea585c6501cdb176535610ec8a43cfc",
+  "total_lines": 103,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Operating Countries",
+      "summary": "ZX Bank operates across five South Asian countries: India (full-service retail, corporate and digital banking), Sri Lanka (25+ branches for SME, personal banking and remittance corridors), Bangladesh (regional partner for mobile banking and microfinance), Bhutan (cross-border banking, digital onboarding, NRI support) and Nepal (digital kiosks and remittance services).",
+      "keywords": [
+        "operating countries",
+        "india",
+        "sri lanka",
+        "bangladesh",
+        "bhutan",
+        "nepal",
+        "south asia",
+        "cross-border"
+      ],
+      "start_line": 12,
+      "end_line": 30,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Services Offered",
+      "summary": "ZX Bank's product lines span retail banking (savings/current accounts, personal and home loans, credit cards, fixed deposits), corporate banking (business loans, trade finance, treasury), digital banking (mobile app, NetBanking/UPI, e-KYC, AI chatbot), remittances and wealth management (investment advisory, mutual funds, NRI services).",
+      "keywords": [
+        "services",
+        "retail banking",
+        "corporate banking",
+        "digital banking",
+        "remittances",
+        "wealth management",
+        "product portfolio"
+      ],
+      "start_line": 31,
+      "end_line": 59,
+      "children": [
+        {
+          "id": "ch_2_1",
+          "level": 3,
+          "title": "Retail Banking",
+          "summary": "Retail banking products are savings and current accounts, personal and home loans, credit cards, and fixed deposits.",
+          "keywords": [
+            "savings account",
+            "current account",
+            "personal loan",
+            "home loan",
+            "credit card",
+            "fixed deposit"
+          ],
+          "start_line": 33,
+          "end_line": 38,
+          "children": []
+        },
+        {
+          "id": "ch_2_2",
+          "level": 3,
+          "title": "Corporate Banking",
+          "summary": "Corporate banking offering covers business loans, trade finance, and treasury solutions.",
+          "keywords": [
+            "corporate banking",
+            "business loan",
+            "trade finance",
+            "treasury"
+          ],
+          "start_line": 39,
+          "end_line": 43,
+          "children": []
+        },
+        {
+          "id": "ch_2_3",
+          "level": 3,
+          "title": "Digital Banking",
+          "summary": "Digital banking includes the ZX Bank Asia mobile app on Android and iOS, NetBanking and UPI, e-KYC, and an AI chatbot.",
+          "keywords": [
+            "digital banking",
+            "mobile app",
+            "netbanking",
+            "upi",
+            "e-kyc",
+            "ai chatbot"
+          ],
+          "start_line": 44,
+          "end_line": 49,
+          "children": []
+        },
+        {
+          "id": "ch_2_4",
+          "level": 3,
+          "title": "Remittances",
+          "summary": "Remittance services provide rapid cross-border payments across India, Sri Lanka, Nepal, and Bhutan.",
+          "keywords": [
+            "remittances",
+            "cross-border payments",
+            "money transfer",
+            "international"
+          ],
+          "start_line": 50,
+          "end_line": 52,
+          "children": []
+        },
+        {
+          "id": "ch_2_5",
+          "level": 3,
+          "title": "Wealth Management",
+          "summary": "Wealth management offerings are investment advisory, mutual funds, and NRI services.",
+          "keywords": [
+            "wealth management",
+            "investment advisory",
+            "mutual funds",
+            "nri services"
+          ],
+          "start_line": 53,
+          "end_line": 59,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Branch & ATM Network",
+      "summary": "Network scale by country: India 560+ branches and 1,200+ ATMs, Sri Lanka 32 branches / 40 ATMs, Bangladesh 18 / 30, Bhutan 8 / 15, Nepal 20 / 35.",
+      "keywords": [
+        "branch network",
+        "atm network",
+        "india branches",
+        "network size",
+        "south asia"
+      ],
+      "start_line": 60,
+      "end_line": 71,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Key Management",
+      "summary": "Key leadership team: CEO Anjali Deshmukh, CFO Rajiv Senanayake, CTO Dipendra Khadka, and South Asia Regional Director Meera Liyanage.",
+      "keywords": [
+        "management",
+        "ceo",
+        "anjali deshmukh",
+        "executives",
+        "leadership"
+      ],
+      "start_line": 72,
+      "end_line": 80,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Mobile App: ZX Bank Asia",
+      "summary": "The ZX Bank Asia mobile app is available on Android and iOS with balance check and fund transfer, bill payments, loan tracking, biometric login, QR scan pay, and the Zia AI financial assistant.",
+      "keywords": [
+        "mobile app",
+        "zx bank asia",
+        "android",
+        "ios",
+        "biometric login",
+        "qr pay",
+        "zia"
+      ],
+      "start_line": 81,
+      "end_line": 91,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "CSR & ESG Focus",
+      "summary": "CSR and ESG work includes green finance (Bhutan hydropower, Nepal solar), financial literacy campaigns in rural India and Bangladesh, and women empowerment micro-loans across South Asia.",
+      "keywords": [
+        "csr",
+        "esg",
+        "green finance",
+        "financial literacy",
+        "women empowerment",
+        "micro-loans"
+      ],
+      "start_line": 92,
+      "end_line": 103,
+      "children": []
+    }
+  ]
+}

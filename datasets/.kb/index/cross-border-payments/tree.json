@@ -1,0 +1,98 @@
+{
+  "doc_id": "doc_031",
+  "title": "Fast Cross-Border Payments with ZX Bank",
+  "source_sha256": "472bb80a7bcfff8bc26e4181588f303e1a151413ebe19795099a27778131d67a",
+  "total_lines": 54,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 3,
+      "title": "Seamless Transfers Across South Asia",
+      "summary": "ZX Bank offers fast, secure cross-border payments between India, Sri Lanka, Nepal and Bhutan for remittances, business imports and family support.",
+      "keywords": [
+        "south asia",
+        "cross-border",
+        "remittance"
+      ],
+      "start_line": 3,
+      "end_line": 8,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Key Features",
+      "summary": "Feature-rich transfers: instant processing via SWIFT rails, transparent upfront fees, multi-currency support (INR, LKR, NPR, BTN), real-time tracking in the ZX Bank Asia app, access through 600+ branches and ATMs, and full regulatory compliance.",
+      "keywords": [
+        "features",
+        "swift",
+        "multi-currency",
+        "tracking",
+        "ifsc"
+      ],
+      "start_line": 9,
+      "end_line": 19,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "How It Works",
+      "summary": "Five steps: initiate at a branch or via app/NetBanking, choose the recipient (ZX Bank or partner accounts), select amount and currency, pay with transparent fees, then track the transfer in real time.",
+      "keywords": [
+        "how-to",
+        "initiate",
+        "recipient",
+        "track"
+      ],
+      "start_line": 20,
+      "end_line": 34,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Digital Convenience",
+      "summary": "The ZX Bank Asia mobile app allows 24/7 transfers secured by biometric login and OTP authentication, with instant support from AI assistant 'Zia'.",
+      "keywords": [
+        "mobile app",
+        "biometric",
+        "otp",
+        "zia"
+      ],
+      "start_line": 35,
+      "end_line": 40,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Empowering Families & Businesses",
+      "summary": "Beneficiaries include NRIs and migrant workers sending low-fee remittances home, SMEs and traders needing rapid settlements, and students abroad paying tuition or living expenses.",
+      "keywords": [
+        "nri",
+        "migrant workers",
+        "sme",
+        "students"
+      ],
+      "start_line": 41,
+      "end_line": 48,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Ready to Get Started?",
+      "summary": "Start by signing up on ZX Bank Asia, downloading the mobile app, or visiting the nearest branch.",
+      "keywords": [
+        "sign-up",
+        "app",
+        "branch",
+        "zx bank asia"
+      ],
+      "start_line": 49,
+      "end_line": 54,
+      "children": []
+    }
+  ]
+}

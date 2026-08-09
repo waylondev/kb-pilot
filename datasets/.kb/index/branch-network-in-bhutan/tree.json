@@ -1,0 +1,83 @@
+{
+  "doc_id": "doc_025",
+  "title": "ZX Bank – Branch Network in Bhutan",
+  "source_sha256": "2b8d54b9fff302463359b9fab32724d2fa19ad9095110cd57140e5819eb71eab",
+  "total_lines": 48,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Thimphu Region",
+      "summary": "Thimphu region has two branches — one near the Clock Tower, Norzin Lam, Thimphu, and one on the 1st floor of City Mall, Changlam, Thimphu — with IFSC codes ZXIN000BT01 and ZXIN000BT02.",
+      "keywords": [
+        "thimphu",
+        "norzin lam",
+        "changlam",
+        "city mall",
+        "bhutan"
+      ],
+      "start_line": 7,
+      "end_line": 15,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Paro Region",
+      "summary": "Paro region has two branches — Main Street, Paro Town (ZXIN000BP01) and Opposite Paro Airport Entrance, Shaba (ZXIN000BP02) — with IFSC codes ZXIN000BP01 and ZXIN000BP02.",
+      "keywords": [
+        "paro",
+        "shaba",
+        "paro airport",
+        "bhutan"
+      ],
+      "start_line": 16,
+      "end_line": 24,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Punakha Region",
+      "summary": "Punakha region has a single branch opposite Dzong Gate, Punakha Town, with IFSC code ZXIN000BK01 and contact +975-3-584242.",
+      "keywords": [
+        "punakha",
+        "dzong gate",
+        "bhutan"
+      ],
+      "start_line": 25,
+      "end_line": 32,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Phuentsholing Region",
+      "summary": "Phuentsholing region has two branches — 2nd floor, Shopping Complex, Main Road and near RSTA Office, Dhamdara — with IFSC codes ZXIN000BL01 and ZXIN000BL02.",
+      "keywords": [
+        "phuentsholing",
+        "dhamdara",
+        "main road",
+        "bhutan"
+      ],
+      "start_line": 33,
+      "end_line": 41,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Gelephu Region",
+      "summary": "Gelephu region has a single branch at Samtenling Road, near BCCI Office, Gelephu, with IFSC code ZXIN000BG01 and contact +975-6-251885.",
+      "keywords": [
+        "gelephu",
+        "samtenling road",
+        "bcci",
+        "bhutan"
+      ],
+      "start_line": 42,
+      "end_line": 48,
+      "children": []
+    }
+  ]
+}

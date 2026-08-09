@@ -1,0 +1,112 @@
+{
+  "doc_id": "doc_047",
+  "title": "ZX Bank Ltd. – Personal Loan Information",
+  "source_sha256": "8554afccdeef2844f1a68cd35101bac810568b4683d1b7365b872fd0ad026acd",
+  "total_lines": 74,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Features & Benefits",
+      "summary": "Personal loans up to ₹30,00,000 (INR) or equivalent in local currency, flexible tenure of 12–60 months, quick approval with instant eligibility check and digital application, zero collateral (no security or guarantor), and part-payment and foreclosure options.",
+      "keywords": [
+        "personal loan",
+        "loan amount",
+        "tenure",
+        "12 to 60 months",
+        "quick approval",
+        "zero collateral",
+        "no guarantor",
+        "part payment",
+        "foreclosure"
+      ],
+      "start_line": 7,
+      "end_line": 16,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Interest Rate",
+      "summary": "Interest rates per annum: salaried customers in India and Sri Lanka 11.75%–17.99%, self-employed (India/Sri Lanka) 13.25%–19.99%, and Bangladesh/Bhutan/Nepal 13.50%–21.00% (subject to local market review and branch/country variation).",
+      "keywords": [
+        "interest rate",
+        "salaried",
+        "self-employed",
+        "India",
+        "Sri Lanka",
+        "Bangladesh",
+        "Bhutan",
+        "Nepal",
+        "per annum"
+      ],
+      "start_line": 17,
+      "end_line": 28,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Documentation Required",
+      "summary": "Salaried applicants: application form, photo ID (Aadhaar/Passport/Voter ID), address proof, latest 3 months' salary slips, last 6 months' bank statements, one passport-size photograph, and PAN (Indian). Self-employed applicants additionally need last 2 years' IT returns and business continuity proof (trade license, GST certificate, etc.).",
+      "keywords": [
+        "documentation",
+        "salaried",
+        "self-employed",
+        "application form",
+        "photo identity",
+        "address proof",
+        "salary slips",
+        "bank statement",
+        "PAN",
+        "IT returns",
+        "business proof"
+      ],
+      "start_line": 29,
+      "end_line": 51,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Maximum Loan Amount",
+      "summary": "Maximum loan amount by country: India ₹30,00,000, Sri Lanka LKR 60,00,000, Bangladesh BDT 35,00,000, Bhutan BTN 15,00,000, Nepal NPR 40,00,000. Final amount and eligibility depend on bank policy, applicant profile, and credit assessment.",
+      "keywords": [
+        "maximum loan amount",
+        "India",
+        "Sri Lanka",
+        "LKR",
+        "Bangladesh",
+        "BDT",
+        "Bhutan",
+        "BTN",
+        "Nepal",
+        "NPR",
+        "credit assessment"
+      ],
+      "start_line": 52,
+      "end_line": 63,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "How to Apply",
+      "summary": "Apply by visiting any ZX Bank branch, online via the ZX Bank Asia Mobile App or NetBanking, or by calling 24x7 Customer Care or the AI assistant 'Zia'. More details at www.zxbank.asia/personal-loan; terms subject to change per regulatory guidelines.",
+      "keywords": [
+        "apply",
+        "branch",
+        "mobile app",
+        "NetBanking",
+        "customer care",
+        "Zia",
+        "24x7",
+        "website",
+        "how to apply"
+      ],
+      "start_line": 64,
+      "end_line": 74,
+      "children": []
+    }
+  ]
+}

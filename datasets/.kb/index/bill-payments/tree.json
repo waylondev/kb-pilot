@@ -1,0 +1,105 @@
+{
+  "doc_id": "doc_023",
+  "title": "ZX Bank – Bill Payments & Auto Debit Feature",
+  "source_sha256": "73b7a4214fec84e13c4b1e56e7909d4f4193972a5a8acee050f34fe8a040c7cf",
+  "total_lines": 74,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Supported Bill Payment Categories",
+      "summary": "Bill payments cover credit cards (ZX Bank and other banks), mobile/postpaid bills, prepaid mobile recharge, DTH, broadband and landline, electricity/water/gas, insurance premiums, educational fees and municipality taxes, with more coming soon.",
+      "keywords": [
+        "bill payment",
+        "categories",
+        "credit card",
+        "recharge",
+        "dth",
+        "utilities"
+      ],
+      "start_line": 7,
+      "end_line": 21,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Auto Debit Feature",
+      "summary": "Auto debit ensures recurring bills are always paid on time by automatically debiting a ZX Bank account or credit card on a custom schedule, with alerts and full control to modify or cancel mandates.",
+      "keywords": [
+        "auto debit",
+        "recurring",
+        "mandates",
+        "biller"
+      ],
+      "start_line": 22,
+      "end_line": 45,
+      "children": [
+        {
+          "id": "ch_2_1",
+          "level": 3,
+          "title": "How Auto Debit Works",
+          "summary": "Register billers online via Mobile App or NetBanking, choose the payment date (due date or an earlier preferred day), let ZX Bank process payments automatically, receive SMS/email alerts before each debit, and modify or stop mandates anytime under Manage Mandates.",
+          "keywords": [
+            "register online",
+            "custom schedule",
+            "alerts",
+            "manage mandates",
+            "automated payment"
+          ],
+          "start_line": 27,
+          "end_line": 45,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Key Features",
+      "summary": "One-time biller setup, secure payments via OTP/biometric/device authentication, 400+ billers across India, Sri Lanka, Bangladesh, Bhutan and Nepal, real-time tracking of payment history and upcoming debits, plus an AI assistant named Zia for reminders and support.",
+      "keywords": [
+        "one-time setup",
+        "secure",
+        "400+ billers",
+        "realtime tracking",
+        "zia"
+      ],
+      "start_line": 46,
+      "end_line": 55,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "How To Get Started",
+      "summary": "Steps to begin: download the ZX Bank Asia Mobile App, log in or complete e-KYC onboarding, open Bill Payments or Auto Debit to add the biller and enable auto debit with preferences, then confirm and save.",
+      "keywords": [
+        "mobile app",
+        "e-kyc onboarding",
+        "biller",
+        "enable auto debit",
+        "get started"
+      ],
+      "start_line": 56,
+      "end_line": 74,
+      "children": [
+        {
+          "id": "ch_4_1",
+          "level": 3,
+          "title": "Need Help?",
+          "summary": "Support options: ask the in-app assistant Zia, visit www.zxbank.asia/support, call the 24x7 helpline, or visit the nearest branch.",
+          "keywords": [
+            "help",
+            "support",
+            "zia",
+            "helpline"
+          ],
+          "start_line": 67,
+          "end_line": 74,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

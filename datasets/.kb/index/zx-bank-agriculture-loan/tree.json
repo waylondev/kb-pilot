@@ -1,0 +1,128 @@
+{
+  "doc_id": "doc_060",
+  "title": "ZX Bank Agriculture Loan",
+  "source_sha256": "a57dd6f84a830e7ba13811ad8af2c8141656831be3058a639d8a4d1fb3e378a9",
+  "total_lines": 65,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "**Key Features**",
+      "summary": "Loans from ₹25,000 up to ₹50 lakhs (or local equivalent) with competitive interest, flexible seasonal EMI or bullet repayment, fast-tracked disbursement, no prepayment penalty, secured or partially secured collateral options, and an extra 1% interest rate discount for women-led agri ventures.",
+      "keywords": [
+        "agriculture loan",
+        "features",
+        "interest rate",
+        "repayment",
+        "women farmers"
+      ],
+      "start_line": 7,
+      "end_line": 17,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "**Who Can Apply?**",
+      "summary": "Eligible applicants include individual farmers, joint landholders, Self Help Groups (SHGs), and agribusinesses and cooperatives.",
+      "keywords": [
+        "farmers",
+        "eligibility",
+        "self help groups",
+        "agribusiness"
+      ],
+      "start_line": 18,
+      "end_line": 25,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "**Documents Required**",
+      "summary": "Application needs proof of identity (Aadhaar, Voter ID, Passport), address proof, land ownership or lease documents, recent passport-size photographs, an optional Kisan Credit Card, and equipment quotations or invoices where applicable.",
+      "keywords": [
+        "documents",
+        "identity proof",
+        "land records",
+        "kisan credit card"
+      ],
+      "start_line": 26,
+      "end_line": 35,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "**How to Apply?**",
+      "summary": "Apply online via the ZX Bank Asia app (Loans > Agriculture Loan) with Zia AI assistance, at a branch or digital kiosk with dedicated Agri-Loan officers, or by phone/email through customer care.",
+      "keywords": [
+        "apply",
+        "zx bank asia app",
+        "branch",
+        "customer care"
+      ],
+      "start_line": 36,
+      "end_line": 57,
+      "children": [
+        {
+          "id": "ch_4_1",
+          "level": 3,
+          "title": "**1. Online Application (Recommended)**",
+          "summary": "Download the ZX Bank Asia app, login with mobile number and e-KYC, go to Loans > Agriculture Loan, fill the form and upload documents, track application status in real time, and use the Zia AI assistant for help.",
+          "keywords": [
+            "online",
+            "application",
+            "zx bank asia app",
+            "document upload"
+          ],
+          "start_line": 38,
+          "end_line": 45,
+          "children": []
+        },
+        {
+          "id": "ch_4_2",
+          "level": 3,
+          "title": "**2. Visit a Branch or Digital Kiosk**",
+          "summary": "Visit a ZX Bank branch or digital banking kiosk, collect and fill the Agriculture Loan application form, submit documents for verification, and get support from dedicated Agri-Loan officers.",
+          "keywords": [
+            "branch",
+            "kiosk",
+            "agri-loan officer"
+          ],
+          "start_line": 46,
+          "end_line": 51,
+          "children": []
+        },
+        {
+          "id": "ch_4_3",
+          "level": 3,
+          "title": "**3. Contact Customer Care**",
+          "summary": "Call the Agri Loan helpline at toll-free 1800-123-4567 or email support at agrihelp@zxbank.asia.",
+          "keywords": [
+            "helpline",
+            "1800-123-4567",
+            "email"
+          ],
+          "start_line": 52,
+          "end_line": 57,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "**ZX Bank Supporting Rural Dreams**",
+      "summary": "ZX Bank partners with local agri-input suppliers and markets for seamless credit, and provides exclusive SMS alerts, agri-weather tips, and crop advisory with every loan; applications are linked at zxbank.asia/agri-loans.",
+      "keywords": [
+        "rural",
+        "agri-input suppliers",
+        "crop advisory",
+        "partnership"
+      ],
+      "start_line": 58,
+      "end_line": 65,
+      "children": []
+    }
+  ]
+}

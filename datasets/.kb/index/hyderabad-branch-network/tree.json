@@ -1,0 +1,88 @@
+{
+  "doc_id": "doc_035",
+  "title": "ZX Bank: Hyderabad Branch Network",
+  "source_sha256": "74463590794482a9a419b75a9ee13c3d14a9c7ea68fc15bb2f76fefa2e2a2c3b",
+  "total_lines": 70,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "North Hyderabad Branches",
+      "summary": "Six North Hyderabad branches at Kukatpally, Ameerpet, Kompally, Bowenpally, Jeedimetla Industrial Area and Suchitra, with IFSC codes ZXIN0001201 to ZXIN0001206.",
+      "keywords": [
+        "north hyderabad",
+        "kukatpally",
+        "ameerpet",
+        "suchitra",
+        "ifsc"
+      ],
+      "start_line": 7,
+      "end_line": 19,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "South Hyderabad Branches",
+      "summary": "Five South Hyderabad branches in Charminar, Falaknuma, Santosh Nagar, LB Nagar and Chandrayangutta, with IFSC codes ZXIN0001211 to ZXIN0001215.",
+      "keywords": [
+        "south hyderabad",
+        "charminar",
+        "falaknuma",
+        "lb nagar",
+        "ifsc"
+      ],
+      "start_line": 20,
+      "end_line": 31,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "East Hyderabad Branches",
+      "summary": "Six East Hyderabad branches in Uppal, Habsiguda, Nacharam, Ramanthapur, Peerzadiguda and Boduppal, with IFSC codes ZXIN0001221 to ZXIN0001226.",
+      "keywords": [
+        "east hyderabad",
+        "uppal",
+        "habsiguda",
+        "peerzadiguda",
+        "ifsc"
+      ],
+      "start_line": 32,
+      "end_line": 44,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "West Hyderabad Branches",
+      "summary": "Six West Hyderabad branches in Gachibowli, Madhapur, Miyapur, Kondapur, Bharat Nagar (Moosapet) and Chanda Nagar, with IFSC codes ZXIN0001231 to ZXIN0001236.",
+      "keywords": [
+        "west hyderabad",
+        "gachibowli",
+        "madhapur",
+        "miyapur",
+        "ifsc"
+      ],
+      "start_line": 45,
+      "end_line": 57,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Central Hyderabad Branches",
+      "summary": "Seven Central Hyderabad branches in Banjara Hills, Begumpet, Abids, Himayat Nagar, Somajiguda, Nampally and Basheerbagh, with IFSC codes ZXIN0001241 to ZXIN0001247.",
+      "keywords": [
+        "central hyderabad",
+        "banjara hills",
+        "begumpet",
+        "abids",
+        "ifsc"
+      ],
+      "start_line": 58,
+      "end_line": 70,
+      "children": []
+    }
+  ]
+}

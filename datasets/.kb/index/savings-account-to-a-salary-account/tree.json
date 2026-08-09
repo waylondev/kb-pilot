@@ -1,0 +1,183 @@
+{
+  "doc_id": "doc_055",
+  "title": "How to Convert Your ZX Bank Savings Account to a Salary Account",
+  "source_sha256": "686d6e8ddf0603e7d0d43c240665041bd7518b96c2df005da1601473c4bac161",
+  "total_lines": 73,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Why Convert to a Salary Account?",
+      "summary": "Salary account benefits include zero minimum balance in most types, faster salary credit and alerts, preferential offers on loans and credit cards, fee waivers on select services, and exclusive benefits like insurance and accidental coverage.",
+      "keywords": [
+        "salary account",
+        "benefits",
+        "zero balance",
+        "conversion"
+      ],
+      "start_line": 7,
+      "end_line": 16,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Steps to Convert Savings Account to Salary Account at ZX Bank",
+      "summary": "Six steps: verify employer tie-up, visit the home branch or use the ZX Bank Asia app, provide required documents, fill the conversion form, get documents verified and processed, then enjoy salary account benefits.",
+      "keywords": [
+        "conversion",
+        "steps",
+        "salary account",
+        "documents"
+      ],
+      "start_line": 17,
+      "end_line": 57,
+      "children": [
+        {
+          "id": "ch_2_1",
+          "level": 3,
+          "title": "1. Check Your Employer's Tie-Up",
+          "summary": "Confirm with your HR or Payroll department whether they have a salary account arrangement with ZX Bank, and obtain the official employer letter or introduction.",
+          "keywords": [
+            "employer",
+            "hr",
+            "salary tie-up",
+            "letter"
+          ],
+          "start_line": 19,
+          "end_line": 22,
+          "children": []
+        },
+        {
+          "id": "ch_2_2",
+          "level": 3,
+          "title": "2. Visit Your Home Branch or Use ZX Bank Asia App",
+          "summary": "Initiate the conversion by visiting your ZX Bank home branch or through the 'Account Services' section of the ZX Bank Asia app.",
+          "keywords": [
+            "home branch",
+            "zx bank asia app",
+            "account services"
+          ],
+          "start_line": 23,
+          "end_line": 27,
+          "children": []
+        },
+        {
+          "id": "ch_2_3",
+          "level": 3,
+          "title": "3. Provide Required Documents",
+          "summary": "Prepare employee ID card, an employer letter on company letterhead (employment status, salary account introduction, and account number for upgrades), PAN card if not on file, a passport-size photograph if required, and a KYC update if asked.",
+          "keywords": [
+            "employee id",
+            "employer letter",
+            "pan card",
+            "kyc"
+          ],
+          "start_line": 28,
+          "end_line": 38,
+          "children": []
+        },
+        {
+          "id": "ch_2_4",
+          "level": 3,
+          "title": "4. Fill Out Conversion Form",
+          "summary": "At a branch, ask for the Account Conversion/Upgrade Form; on the app, navigate to menu > Account Services > Convert to Salary Account, follow prompts, and upload scanned documents if prompted.",
+          "keywords": [
+            "conversion form",
+            "account services",
+            "online conversion"
+          ],
+          "start_line": 39,
+          "end_line": 43,
+          "children": []
+        },
+        {
+          "id": "ch_2_5",
+          "level": 3,
+          "title": "5. Verification and Processing",
+          "summary": "The bank verifies the documents and, upon success, changes your account type to a Salary Account; obtain written or email confirmation from the bank.",
+          "keywords": [
+            "verification",
+            "processing",
+            "account type"
+          ],
+          "start_line": 44,
+          "end_line": 49,
+          "children": []
+        },
+        {
+          "id": "ch_2_6",
+          "level": 3,
+          "title": "6. Enjoy Salary Account Benefits!",
+          "summary": "Once converted you get zero minimum balance, priority services and offers, and employer-specific benefits where applicable.",
+          "keywords": [
+            "zero balance",
+            "priority services",
+            "offers"
+          ],
+          "start_line": 50,
+          "end_line": 57,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Frequently Asked Questions",
+      "summary": "Answers FAQs: account number and debit card stay the same (unless you opt for a premium variant); no salary credits for 3-6 months can revert the account to a regular savings account with minimum balance criteria; online conversion works when your employer is registered and KYC is current.",
+      "keywords": [
+        "faq",
+        "account number",
+        "revert",
+        "online conversion"
+      ],
+      "start_line": 58,
+      "end_line": 73,
+      "children": [
+        {
+          "id": "ch_3_1",
+          "level": 3,
+          "title": "Q: Will my account number or debit card change?",
+          "summary": "No — your account number remains the same; a debit card change happens only if you opt for exclusive salary account variants.",
+          "keywords": [
+            "account number",
+            "debit card",
+            "unchanged"
+          ],
+          "start_line": 60,
+          "end_line": 62,
+          "children": []
+        },
+        {
+          "id": "ch_3_2",
+          "level": 3,
+          "title": "Q: What if my salary is not credited for a few months?",
+          "summary": "If salary isn't credited for 3-6 months (per bank policy), the account may revert to a regular savings account with applicable minimum balance criteria.",
+          "keywords": [
+            "revert",
+            "savings account",
+            "salary credit"
+          ],
+          "start_line": 63,
+          "end_line": 65,
+          "children": []
+        },
+        {
+          "id": "ch_3_3",
+          "level": 3,
+          "title": "Q: Can I convert online?",
+          "summary": "Yes — if your employer is registered with ZX Bank and your KYC is up to date, you can convert via the ZX Bank Asia app or NetBanking.",
+          "keywords": [
+            "online",
+            "netbanking",
+            "employer registered"
+          ],
+          "start_line": 66,
+          "end_line": 73,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "doc_id": "doc_045",
+  "title": "How to Open a Locker at ZX Bank Branch",
+  "source_sha256": "941ca98c61a2d2ab6c40579af28ce822c70c6d72d8a40e0edc909841a2ba785e",
+  "total_lines": 74,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Step 1: Check Locker Availability",
+      "summary": "Visit the nearest ZX Bank branch or call it to check locker sizes and availability; popular sizes are Small, Medium and Large, and availability may vary by location.",
+      "keywords": [
+        "locker",
+        "availability",
+        "branch",
+        "size",
+        "Small",
+        "Medium",
+        "Large"
+      ],
+      "start_line": 7,
+      "end_line": 14,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Step 2: Eligibility Criteria",
+      "summary": "Applicant must be an existing ZX Bank customer with a savings or current account (or open one), and KYC must be updated with valid photo ID (Aadhaar/Passport/Driving License), address proof, and a recent passport-sized photo.",
+      "keywords": [
+        "eligibility",
+        "existing customer",
+        "savings account",
+        "current account",
+        "KYC",
+        "photo ID",
+        "Aadhaar",
+        "Passport",
+        "address proof",
+        "photograph"
+      ],
+      "start_line": 15,
+      "end_line": 24,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Step 3: Locker Application Process",
+      "summary": "Visit the branch with original documents and photocopies, fill the 'Locker Facility Application Form', attach KYC documents, then read and sign the Locker Hirer Agreement provided by the bank.",
+      "keywords": [
+        "application",
+        "branch",
+        "form",
+        "KYC",
+        "documents",
+        "Locker Hirer Agreement",
+        "sign"
+      ],
+      "start_line": 25,
+      "end_line": 33,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Step 4: Security Deposit & Rent Payment",
+      "summary": "Pay a refundable security deposit; locker rent varies by size and city and is typically paid annually, by cash, cheque, or direct bank transfer.",
+      "keywords": [
+        "security deposit",
+        "refundable",
+        "rent",
+        "annual",
+        "cash",
+        "cheque",
+        "bank transfer",
+        "payment"
+      ],
+      "start_line": 34,
+      "end_line": 41,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Step 5: Locker Allotment & Access",
+      "summary": "Upon approval a locker number is allotted; customer receives locker keys (usually two; the bank does not keep duplicates), and a bank officer explains the locker location and operating procedure.",
+      "keywords": [
+        "allotment",
+        "locker number",
+        "keys",
+        "two keys",
+        "operating procedure",
+        "approval"
+      ],
+      "start_line": 42,
+      "end_line": 49,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Step 6: Operating the Locker",
+      "summary": "The locker is operated during branch working hours by visiting with locker keys and valid ID, signing the Locker Access Register each time; all operations are conducted privately in the vault area.",
+      "keywords": [
+        "operating",
+        "working hours",
+        "ID proof",
+        "Locker Access Register",
+        "vault",
+        "privacy"
+      ],
+      "start_line": 50,
+      "end_line": 58,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Additional Guidelines",
+      "summary": "Recommendations: nominate a beneficiary; opt for a joint locker with another account holder; inform the bank immediately on losing a key (charges apply for key duplication/drilling); pay annual rent on time to avoid late fees or a locker freeze.",
+      "keywords": [
+        "nomination",
+        "beneficiary",
+        "joint locker",
+        "lost key",
+        "key duplication",
+        "drilling",
+        "annual rent",
+        "late fees",
+        "locker freeze"
+      ],
+      "start_line": 59,
+      "end_line": 67,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "For Assistance",
+      "summary": "Assistance via the nearest ZX Bank branch, website www.zxbank.asia, or customer care contacts listed on the official website or mobile app.",
+      "keywords": [
+        "assistance",
+        "branch",
+        "website",
+        "customer care",
+        "www.zxbank.asia",
+        "mobile app"
+      ],
+      "start_line": 68,
+      "end_line": 74,
+      "children": []
+    }
+  ]
+}

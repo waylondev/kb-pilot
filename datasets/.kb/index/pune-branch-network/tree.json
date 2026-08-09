@@ -1,0 +1,88 @@
+{
+  "doc_id": "doc_049",
+  "title": "ZX Bank Ltd. – Pune Branch Network Directory",
+  "source_sha256": "93a669aa8da5e773e7bd48d2c03de1c8695b5a8123104f1c3e4c8f2eda289515",
+  "total_lines": 80,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "North Pune",
+      "summary": "Lists 8 ZX Bank branches in North Pune: Pimple Saudagar, Bhosari, Akurdi, Moshi, Chinchwad, Nigdi, Dighi, and Vishrantwadi, with IFSC codes ZXIN0001201–ZXIN0001208 and 020-area contact numbers.",
+      "keywords": [
+        "north pune",
+        "branch",
+        "ifsc",
+        "contact",
+        "address"
+      ],
+      "start_line": 7,
+      "end_line": 21,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "South Pune",
+      "summary": "Lists 8 ZX Bank branches in South Pune: Kondhwa, Wanowrie, Camp, Hadapsar, Fatima Nagar, Bibvewadi, Katraj, and Dhankawadi, with IFSC codes ZXIN0001301–ZXIN0001308 and 020-area contact numbers.",
+      "keywords": [
+        "south pune",
+        "branch",
+        "ifsc",
+        "contact",
+        "address"
+      ],
+      "start_line": 22,
+      "end_line": 36,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "East Pune",
+      "summary": "Lists 8 ZX Bank branches in East Pune: Kharadi, Viman Nagar, Wagholi, Kalyani Nagar, Mundhwa, Koregaon Park, Yerwada, and Chandan Nagar, with IFSC codes ZXIN0001401–ZXIN0001408 and 020-area contact numbers.",
+      "keywords": [
+        "east pune",
+        "branch",
+        "ifsc",
+        "contact",
+        "address"
+      ],
+      "start_line": 37,
+      "end_line": 51,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "West Pune",
+      "summary": "Lists 8 ZX Bank branches in West Pune: Aundh, Baner, Hinjawadi, Pashan, Wakad, Bavdhan, Kothrud, and Karve Nagar, with IFSC codes ZXIN0001501–ZXIN0001508 and 020-area contact numbers.",
+      "keywords": [
+        "west pune",
+        "branch",
+        "ifsc",
+        "contact",
+        "address"
+      ],
+      "start_line": 52,
+      "end_line": 66,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Central Pune",
+      "summary": "Lists 8 ZX Bank branches in Central Pune: Shivaji Nagar, Deccan Gymkhana, Sadashiv Peth, Swargate, Shaniwar Peth, Erandwane, Model Colony, and Fergusson College Road, with IFSC codes ZXIN0001601–ZXIN0001608 and 020-area contact numbers.",
+      "keywords": [
+        "central pune",
+        "branch",
+        "ifsc",
+        "contact",
+        "address"
+      ],
+      "start_line": 67,
+      "end_line": 80,
+      "children": []
+    }
+  ]
+}

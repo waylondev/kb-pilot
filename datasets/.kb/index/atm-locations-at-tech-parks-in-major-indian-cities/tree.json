@@ -1,0 +1,331 @@
+{
+  "doc_id": "doc_011",
+  "title": "ZX Bank – ATM Locations at Tech Parks in Major Indian Cities",
+  "source_sha256": "d7f63a49269d49b7e88bf40f7eee81bb357f4c6c735ab2531a67e8c02de2f068",
+  "total_lines": 266,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "Mumbai – Maharashtra",
+      "summary": "ATMs at the following tech parks in Mumbai: Infinity IT Park (Malad West), with Mindspace Airoli IT Park and Nesco IT Park (Goregaon East) in the wider Mumbai region.",
+      "keywords": [
+        "mumbai",
+        "tech park",
+        "mindspace airoli",
+        "nesco",
+        "infinity"
+      ],
+      "start_line": 7,
+      "end_line": 19,
+      "children": []
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "Delhi – National Capital Territory",
+      "summary": "ATMs at the following tech parks in Delhi NCR: DLF Cyber City (Gurugram), Okhla Industrial Estate and Netaji Subhash Place IT Park (Pitampura).",
+      "keywords": [
+        "delhi",
+        "delhi ncr",
+        "tech park",
+        "dlf cyber city",
+        "okhla",
+        "pitampura"
+      ],
+      "start_line": 20,
+      "end_line": 32,
+      "children": []
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "Bangalore (Bengaluru) – Karnataka",
+      "summary": "ATMs at the following tech parks in Bangalore: Manyata Tech Park (Rachenahalli), Bagmane Tech Park (C.V. Raman Nagar) and RMZ Ecospace (Bellandur).",
+      "keywords": [
+        "bangalore",
+        "bengaluru",
+        "tech park",
+        "manyata",
+        "bagmane",
+        "rmz ecospace"
+      ],
+      "start_line": 33,
+      "end_line": 45,
+      "children": []
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "Hyderabad – Telangana",
+      "summary": "ATMs at the following tech parks in Hyderabad: HITEC City (Madhapur), Raheja Mindspace IT Park (Cyberabad) and Cyber Pearl (Madhapur).",
+      "keywords": [
+        "hyderabad",
+        "tech park",
+        "hitec city",
+        "mindspace",
+        "cyber pearl"
+      ],
+      "start_line": 46,
+      "end_line": 58,
+      "children": []
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "Chennai – Tamil Nadu",
+      "summary": "ATMs at the following tech parks in Chennai: TIDEL Park (Taramani), DLF IT Park (Manapakkam) and Olympia Tech Park (Guindy).",
+      "keywords": [
+        "chennai",
+        "tech park",
+        "tidel",
+        "dlf",
+        "olympia"
+      ],
+      "start_line": 59,
+      "end_line": 71,
+      "children": []
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "Kolkata – West Bengal",
+      "summary": "ATMs at the following tech parks in Kolkata: DLF IT Park (New Town, Rajarhat), Salt Lake Electronics Complex Sector V and Godrej Waterside (Sector V).",
+      "keywords": [
+        "kolkata",
+        "tech park",
+        "salt lake",
+        "dlf",
+        "godrej waterside"
+      ],
+      "start_line": 72,
+      "end_line": 84,
+      "children": []
+    },
+    {
+      "id": "ch_7",
+      "level": 2,
+      "title": "Pune – Maharashtra",
+      "summary": "ATMs at the following tech parks in Pune: EON IT Park (Kharadi), Rajiv Gandhi Infotech Park (Hinjewadi Phase 1) and Magarpatta City Cybercity (Hadapsar).",
+      "keywords": [
+        "pune",
+        "tech park",
+        "eon",
+        "hinjewadi",
+        "magarpatta"
+      ],
+      "start_line": 85,
+      "end_line": 97,
+      "children": []
+    },
+    {
+      "id": "ch_8",
+      "level": 2,
+      "title": "Ahmedabad – Gujarat",
+      "summary": "ATMs at the following tech parks in Ahmedabad: Infocity Gandhinagar IT Park (Sector 34, Gandhinagar), Navratna Business Park (Iscon-Ambli Road) and Mondeal Square (S.G. Highway).",
+      "keywords": [
+        "ahmedabad",
+        "gandhinagar",
+        "tech park",
+        "infocity",
+        "navratna",
+        "mondeal"
+      ],
+      "start_line": 98,
+      "end_line": 110,
+      "children": []
+    },
+    {
+      "id": "ch_9",
+      "level": 2,
+      "title": "Surat – Gujarat",
+      "summary": "ATMs at the following tech parks in Surat: iTower IT Park (Vesu), Surat Diamond Bourse (DREAM City, Khajod) and International Trade & Technology Park (Udhna).",
+      "keywords": [
+        "surat",
+        "tech park",
+        "itower",
+        "diamond bourse",
+        "khajod"
+      ],
+      "start_line": 111,
+      "end_line": 123,
+      "children": []
+    },
+    {
+      "id": "ch_10",
+      "level": 2,
+      "title": "Jaipur – Rajasthan",
+      "summary": "ATMs at the following tech parks in Jaipur: Mahindra World City IT Park (Ajmer Road, SEZ), Genpact IT Park (Sitapura) and Infosys Infospace (Mansarovar Industrial Area).",
+      "keywords": [
+        "jaipur",
+        "tech park",
+        "mahindra world city",
+        "genpact",
+        "infosys"
+      ],
+      "start_line": 124,
+      "end_line": 136,
+      "children": []
+    },
+    {
+      "id": "ch_11",
+      "level": 2,
+      "title": "Lucknow – Uttar Pradesh",
+      "summary": "ATMs at the following tech parks in Lucknow: Gomti Nagar Tech Park (Vibhuti Khand), TIT Tech Park (Chinhat) and Awadh Tech Park (Transport Nagar).",
+      "keywords": [
+        "lucknow",
+        "tech park",
+        "gomti nagar",
+        "tit",
+        "awadh"
+      ],
+      "start_line": 137,
+      "end_line": 149,
+      "children": []
+    },
+    {
+      "id": "ch_12",
+      "level": 2,
+      "title": "Kanpur – Uttar Pradesh",
+      "summary": "ATMs at the following tech parks in Kanpur: Kanpur IT Park (Lakhanpur), Shastri Nagar Tech Hub (Block 8) and Fazalganj Industrial Tech Zone (Kalpi Road).",
+      "keywords": [
+        "kanpur",
+        "tech park",
+        "kanpur it park",
+        "shastri nagar",
+        "fazalganj"
+      ],
+      "start_line": 150,
+      "end_line": 162,
+      "children": []
+    },
+    {
+      "id": "ch_13",
+      "level": 2,
+      "title": "Nagpur – Maharashtra",
+      "summary": "ATMs at the following tech parks in Nagpur: IT Park Parsodi (South Ambazari Road), MIDC Hingna IT Zone and Empress City IT Hub (Empress Mall).",
+      "keywords": [
+        "nagpur",
+        "tech park",
+        "parsodi",
+        "hingna",
+        "empress city"
+      ],
+      "start_line": 163,
+      "end_line": 175,
+      "children": []
+    },
+    {
+      "id": "ch_14",
+      "level": 2,
+      "title": "Indore – Madhya Pradesh",
+      "summary": "ATMs at the following tech parks in Indore: Crystal IT Park (Khandwa Road), Super Corridor IT Park and Scheme 54 Commercial IT Zone (Vijay Nagar).",
+      "keywords": [
+        "indore",
+        "tech park",
+        "crystal it park",
+        "super corridor",
+        "scheme 54"
+      ],
+      "start_line": 176,
+      "end_line": 188,
+      "children": []
+    },
+    {
+      "id": "ch_15",
+      "level": 2,
+      "title": "Bhopal – Madhya Pradesh",
+      "summary": "ATMs at the following tech parks in Bhopal: MP Nagar IT Park (Zone-II), Mandideep Tech Park and IT Park Ayodhya Bypass.",
+      "keywords": [
+        "bhopal",
+        "tech park",
+        "mp nagar",
+        "mandideep"
+      ],
+      "start_line": 189,
+      "end_line": 201,
+      "children": []
+    },
+    {
+      "id": "ch_16",
+      "level": 2,
+      "title": "Visakhapatnam – Andhra Pradesh",
+      "summary": "ATMs at the following tech parks in Visakhapatnam: Rushikonda IT SEZ (Madhurawada), Cyber Valley IT Park (Kapuluppada) and Vizag Tech Hub (Resapuvanipalem).",
+      "keywords": [
+        "visakhapatnam",
+        "vizag",
+        "tech park",
+        "rushikonda",
+        "cyber valley"
+      ],
+      "start_line": 202,
+      "end_line": 214,
+      "children": []
+    },
+    {
+      "id": "ch_17",
+      "level": 2,
+      "title": "Patna – Bihar",
+      "summary": "ATMs at the following tech parks in Patna: Biscomaun Bhawan IT Park (West Gandhi Maidan), Software Technology Park of India (Walmi Complex, Bailey Road) and Patliputra Industrial Park (Patliputra Industrial Area).",
+      "keywords": [
+        "patna",
+        "tech park",
+        "biscomaun",
+        "stpi",
+        "patliputra"
+      ],
+      "start_line": 215,
+      "end_line": 227,
+      "children": []
+    },
+    {
+      "id": "ch_18",
+      "level": 2,
+      "title": "Vadodara (Baroda) – Gujarat",
+      "summary": "ATMs at the following tech parks in Vadodara: Crystal IT Park (Ajwa Road), iPlex IT Park (GIDC Manjusar, Savli) and Notus IT Park (Race Course Road).",
+      "keywords": [
+        "vadodara",
+        "baroda",
+        "tech park",
+        "crystal it park",
+        "iplex",
+        "notus"
+      ],
+      "start_line": 228,
+      "end_line": 240,
+      "children": []
+    },
+    {
+      "id": "ch_19",
+      "level": 2,
+      "title": "Ludhiana – Punjab",
+      "summary": "ATMs at the following tech parks in Ludhiana: Ferozepur Road IT Park, DLF Industrial Park (GT Road) and IT Park Chandigarh Road.",
+      "keywords": [
+        "ludhiana",
+        "tech park",
+        "ferozepur road",
+        "dlf",
+        "chandigarh road"
+      ],
+      "start_line": 241,
+      "end_line": 253,
+      "children": []
+    },
+    {
+      "id": "ch_20",
+      "level": 2,
+      "title": "Coimbatore – Tamil Nadu",
+      "summary": "ATMs at the following tech parks in Coimbatore: TIDEL Park Coimbatore (Peelamedu), SPC Tech Park (Avinashi Road) and KCT Tech Park (Saravanampatti).",
+      "keywords": [
+        "coimbatore",
+        "tech park",
+        "tidel",
+        "spc",
+        "kct"
+      ],
+      "start_line": 254,
+      "end_line": 266,
+      "children": []
+    }
+  ]
+}

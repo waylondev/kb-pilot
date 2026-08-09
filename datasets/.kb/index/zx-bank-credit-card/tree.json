@@ -1,0 +1,348 @@
+{
+  "doc_id": "doc_068",
+  "title": "ZX Bank Credit Card Options",
+  "source_sha256": "70c48796769973ea60dce1df881f7a80d2bcf7567255e241e709262897754609",
+  "total_lines": 132,
+  "nodes": [
+    {
+      "id": "ch_1",
+      "level": 2,
+      "title": "1. **ZX Platinum Credit Card**",
+      "summary": "The ZX Platinum Credit Card is positioned for high-income professionals and frequent travelers, offering comprehensive travel and lifestyle benefits with premium fees and a high income/credit requirement.",
+      "keywords": [
+        "platinum card",
+        "premium card",
+        "traveler",
+        "high income"
+      ],
+      "start_line": 7,
+      "end_line": 28,
+      "children": [
+        {
+          "id": "ch_1_1",
+          "level": 3,
+          "title": "Features",
+          "summary": "Platinum card features: complimentary airport lounge access in India and South Asia, 3X reward points on international spends, travel insurance up to ₹50 lakh, fuel surcharge waiver at all pumps, and a dedicated 24x7 concierge service.",
+          "keywords": [
+            "lounge access",
+            "reward points",
+            "travel insurance",
+            "fuel surcharge waiver",
+            "concierge"
+          ],
+          "start_line": 11,
+          "end_line": 17,
+          "children": []
+        },
+        {
+          "id": "ch_1_2",
+          "level": 3,
+          "title": "Fees",
+          "summary": "Platinum card fees: joining fee ₹2,999 + GST and annual fee ₹2,499 + GST, with the annual fee waived when annual spends exceed ₹3 lakh.",
+          "keywords": [
+            "joining fee",
+            "annual fee",
+            "gst",
+            "fee waiver"
+          ],
+          "start_line": 18,
+          "end_line": 21,
+          "children": []
+        },
+        {
+          "id": "ch_1_3",
+          "level": 3,
+          "title": "Eligibility",
+          "summary": "Platinum card eligibility: minimum monthly income ₹80,000, age 21 to 65, and a good credit history with CIBIL score of 750 or above.",
+          "keywords": [
+            "eligibility",
+            "income",
+            "age",
+            "cibil"
+          ],
+          "start_line": 22,
+          "end_line": 28,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_2",
+      "level": 2,
+      "title": "2. **ZX Gold Credit Card**",
+      "summary": "The ZX Gold Credit Card is designed for salaried individuals and regular shoppers, offering everyday rewards on groceries and utility payments along with dining discounts and EMI flexibility.",
+      "keywords": [
+        "gold card",
+        "salaried",
+        "shopping rewards",
+        "dining"
+      ],
+      "start_line": 29,
+      "end_line": 49,
+      "children": [
+        {
+          "id": "ch_2_1",
+          "level": 3,
+          "title": "Features",
+          "summary": "Gold card features: 1.5X reward points on groceries and utility payments, up to 20% discount at partner dining outlets, zero lost card liability after reporting, and EMI conversion on purchases above ₹5,000.",
+          "keywords": [
+            "reward points",
+            "groceries",
+            "dining discount",
+            "lost card liability",
+            "emi conversion"
+          ],
+          "start_line": 33,
+          "end_line": 38,
+          "children": []
+        },
+        {
+          "id": "ch_2_2",
+          "level": 3,
+          "title": "Fees",
+          "summary": "Gold card fees: joining fee ₹499 + GST and annual fee ₹499 + GST, with the annual fee waived when annual spend exceeds ₹75,000.",
+          "keywords": [
+            "joining fee",
+            "annual fee",
+            "gst",
+            "fee waiver"
+          ],
+          "start_line": 39,
+          "end_line": 42,
+          "children": []
+        },
+        {
+          "id": "ch_2_3",
+          "level": 3,
+          "title": "Eligibility",
+          "summary": "Gold card eligibility: minimum monthly income ₹25,000, age 21 to 65, and a CIBIL score of 700 or above.",
+          "keywords": [
+            "eligibility",
+            "income",
+            "age",
+            "cibil"
+          ],
+          "start_line": 43,
+          "end_line": 49,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_3",
+      "level": 2,
+      "title": "3. **ZX Women Empower Credit Card**",
+      "summary": "The ZX Women Empower Credit Card is aimed at women entrepreneurs and working professionals, with e-commerce cashback, an interest-free period, and benefits for women-led businesses.",
+      "keywords": [
+        "women card",
+        "empower",
+        "entrepreneur",
+        "cashback"
+      ],
+      "start_line": 50,
+      "end_line": 71,
+      "children": [
+        {
+          "id": "ch_3_1",
+          "level": 3,
+          "title": "Features",
+          "summary": "Women Empower card features: a ₹1,000 welcome voucher for women-led businesses, enhanced cashback of up to 5% on e-commerce, an interest-free period of up to 55 days, and a free add-on card for family.",
+          "keywords": [
+            "welcome voucher",
+            "cashback",
+            "interest-free period",
+            "add-on card"
+          ],
+          "start_line": 54,
+          "end_line": 59,
+          "children": []
+        },
+        {
+          "id": "ch_3_2",
+          "level": 3,
+          "title": "Fees",
+          "summary": "Women Empower card fees: joining fee ₹299 + GST and annual fee ₹299 + GST, with the annual fee waived on spends exceeding ₹50,000.",
+          "keywords": [
+            "joining fee",
+            "annual fee",
+            "gst",
+            "fee waiver"
+          ],
+          "start_line": 60,
+          "end_line": 63,
+          "children": []
+        },
+        {
+          "id": "ch_3_3",
+          "level": 3,
+          "title": "Eligibility",
+          "summary": "Women Empower card eligibility: applicant must self-identify as female, minimum monthly income ₹15,000 (proof required for entrepreneurs), age 21 to 65, and CIBIL score 650+.",
+          "keywords": [
+            "female",
+            "eligibility",
+            "income",
+            "age",
+            "cibil"
+          ],
+          "start_line": 64,
+          "end_line": 71,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_4",
+      "level": 2,
+      "title": "4. **ZX Student Credit Card**",
+      "summary": "The ZX Student Credit Card is for college and university students in India, Sri Lanka, and Nepal, with a low credit limit, no annual fees for the first two years, and study-related perks.",
+      "keywords": [
+        "student card",
+        "college",
+        "university",
+        "credit limit"
+      ],
+      "start_line": 72,
+      "end_line": 92,
+      "children": [
+        {
+          "id": "ch_4_1",
+          "level": 3,
+          "title": "Features",
+          "summary": "Student card features: a low credit limit of ₹20,000 (flexible for students), no annual fee for the first 2 years, 1% cashback on online purchases, and bill reminders with study abroad offers.",
+          "keywords": [
+            "credit limit",
+            "cashback",
+            "study abroad",
+            "bill reminder"
+          ],
+          "start_line": 76,
+          "end_line": 81,
+          "children": []
+        },
+        {
+          "id": "ch_4_2",
+          "level": 3,
+          "title": "Fees",
+          "summary": "Student card fees: joining fee ₹0 and annual fee ₹199 + GST, waived with one transaction per quarter.",
+          "keywords": [
+            "joining fee",
+            "annual fee",
+            "no fee",
+            "fee waiver"
+          ],
+          "start_line": 82,
+          "end_line": 85,
+          "children": []
+        },
+        {
+          "id": "ch_4_3",
+          "level": 3,
+          "title": "Eligibility",
+          "summary": "Student card eligibility: age 18 to 25, a valid student ID and proof of admission, and a co-signer or proof of minimal monthly remittance/allowance.",
+          "keywords": [
+            "student id",
+            "age 18",
+            "co-signer",
+            "admission proof"
+          ],
+          "start_line": 86,
+          "end_line": 92,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_5",
+      "level": 2,
+      "title": "5. **ZX NRI Credit Card**",
+      "summary": "The ZX NRI Credit Card is for non-resident Indians and NRIs in Bhutan, Nepal, and Sri Lanka, with global acceptance, no forex markup in South Asia, and remittance integration.",
+      "keywords": [
+        "nri",
+        "non-resident indian",
+        "forex",
+        "global"
+      ],
+      "start_line": 93,
+      "end_line": 114,
+      "children": [
+        {
+          "id": "ch_5_1",
+          "level": 3,
+          "title": "Features",
+          "summary": "NRI card features: global acceptance in over 150 countries, no forex markup on spends in South Asia, remittance integration via the ZX app, and reward points redeemable for airline miles.",
+          "keywords": [
+            "global acceptance",
+            "forex",
+            "remittance",
+            "airline miles"
+          ],
+          "start_line": 97,
+          "end_line": 102,
+          "children": []
+        },
+        {
+          "id": "ch_5_2",
+          "level": 3,
+          "title": "Fees",
+          "summary": "NRI card fees: joining fee USD $30 (or equivalent) and annual fee USD $25, waived on spends above USD $5,000.",
+          "keywords": [
+            "joining fee",
+            "annual fee",
+            "usd",
+            "fee waiver"
+          ],
+          "start_line": 103,
+          "end_line": 106,
+          "children": []
+        },
+        {
+          "id": "ch_5_3",
+          "level": 3,
+          "title": "Eligibility",
+          "summary": "NRI card eligibility: valid NRI status with passport copy and visa/residence permit, minimum monthly overseas remittance of USD 1,000, age 21 to 65, and a satisfactory credit reference at home or abroad.",
+          "keywords": [
+            "nri status",
+            "eligibility",
+            "remittance",
+            "age",
+            "credit reference"
+          ],
+          "start_line": 107,
+          "end_line": 114,
+          "children": []
+        }
+      ]
+    },
+    {
+      "id": "ch_6",
+      "level": 2,
+      "title": "**How to Apply**",
+      "summary": "Apply for any credit card through the ZX Bank Asia website or app by filling an online form and uploading ID, income proof, and address proof; e-KYC is available for India, Sri Lanka, and Nepal residents, with approval in as little as 48 hours.",
+      "keywords": [
+        "apply",
+        "online application",
+        "e-kyc",
+        "approval"
+      ],
+      "start_line": 115,
+      "end_line": 132,
+      "children": [
+        {
+          "id": "ch_6_1",
+          "level": 3,
+          "title": "**For More Information**",
+          "summary": "For more credit card information, visit the ZX Bank credit card page, call Customer Care (India or Sri Lanka), or chat with the Zia AI assistant in the mobile app; fees and eligibility are indicative and subject to change.",
+          "keywords": [
+            "contact",
+            "customer care",
+            "zia",
+            "credit card page"
+          ],
+          "start_line": 124,
+          "end_line": 132,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

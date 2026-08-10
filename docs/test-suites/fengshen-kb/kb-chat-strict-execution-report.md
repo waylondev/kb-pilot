@@ -22,6 +22,9 @@
 | Q10 | 跨文档综合、多跳师承、隐式关联 | 通过 | 通过 | 完成 Step 1 到 Step 6；答案与题集标准答案一致 |
 | Q12 | 集合推理、否定推理、多跳师承 | 通过 | 通过 | 完成 Step 1 到 Step 6；答案与题集标准答案一致 |
 | Q13 | 错误前提识别、民间误传边界、忠实回答 | 通过 | 通过 | 完成 Step 1 到 Step 6；答案与题集标准答案一致 |
+| Q14 | 表面冲突消解、来源边界、分类谨慎 | 通过 | 通过 | 完成 Step 1 到 Step 6；答案与题集标准答案一致 |
+| Q15 | 错误前提识别、人物事件解耦、纠错式回答 | 通过 | 通过 | 完成 Step 1 到 Step 6；答案与题集标准答案一致 |
+| Q16 | 边界条件推理、跨文档验证、反泛化能力 | 通过 | 通过 | 完成 Step 1 到 Step 6；答案与题集标准答案一致 |
 
 ## 本次单题执行更新：Q1
 
@@ -1190,3 +1193,285 @@
 | 封于齐或齐太公不等于被封为天庭正神 | 通过 | `fengshen-variant-records.md#L19-L21` |
 
 自检结论：已回答题目所有问点；每个关键断言均可回到已读取源文行段；引用行号真实存在且能支撑断言。源文自检通过后读取题集 `fengshen-hard-rag-questions.md` 的 Q13 标准答案进行对比，结果一致：题目前提不成立，当前知识库不支持“姜子牙被封为土地神”；姜子牙是封神执行者而非受封对象；本人未入封神榜，封神后归周辅政、封于齐、只享人间富贵。
+
+## 本次单题执行更新：Q14
+
+更新时间：2026-08-10。
+
+问题：文档里说申公豹封为东海分水将军，又说他被填北海眼。这是不是矛盾？他到底应该算东海神还是北海神？
+
+结论：
+
+| 问点 | 答案 |
+|---|---|
+| “东海分水将军”和“填北海眼”是否矛盾 | 不矛盾。前者是封号，后者是惩罚性质的结局 |
+| 申公豹到底算东海神还是北海神 | 文档没有把他简单归类为普通意义上的“东海神”或“北海神”；更准确地说，他的封号是“东海分水将军”，结局是被罚填北海眼 |
+| 是否属于一般正神受封 | 文档说明其虽封东海分水将军，但实为被罚填北海眼，与一般受封性质不同 |
+
+### Step 1 Document routing
+
+执行说明：本题使用 `../../../fixtures/fengshen-kb/.kb/manifest.json`。本题没有用户显式提供 `domain_preference`，且目标知识库未发现 `.kb/memory/route_preferences.json`。
+
+| 命中文档 | doc_id | manifest 匹配点 | 用途 |
+|---|---|---|---|
+| `fengshen-variant-records.md` | `doc_006` | 标题为“封神演义异文、俗称与误传记录”；摘要包含民间说法和误传记录；tags 含“申公豹异文”“东海分水将军”“北海眼”“封号”“惩罚”“不矛盾” | 判断“东海分水将军”和“填北海眼”是否矛盾，以及回答边界 |
+| `fengshen-deification-list.md` | `doc_003` | 标题为“封神演义封神榜名录”；摘要包含封位名录、未入榜者；tags 含“申公豹”“东海分水将军”“北海眼” | 确认申公豹封号、被填北海眼，以及与一般受封性质不同 |
+| `fengshen-character-profiles.md` | `doc_002` | 标题为“封神演义核心人物图鉴”；摘要含申公豹核心人物事迹；tags 含“申公豹”“阐教弟子”“游说助商”“封神大战推手” | 补充申公豹阵营背景与人物身份 |
+
+路由判断：本题是表面冲突消解。`fengshen-variant-records.md` 直接解释东海与北海表述差异；`fengshen-deification-list.md` 提供主体名录中的封号和结局；`fengshen-character-profiles.md` 仅用于补充申公豹人物背景。战役纪事、法宝谱、门派谱系不是本题必要证据。
+
+### Step 2 Section localization
+
+| 文档 | 命中节点 | 源行锚 | 用途 |
+|---|---|---:|---|
+| `fengshen-variant-records.md` | `ch_6_1` / `东海与北海的表述差异` | L67-L72 | 定位封号与惩罚结局并存、不构成矛盾的解释 |
+| `fengshen-variant-records.md` | `ch_6_2` / `助截教与助商` | L73-L76 | 补充申公豹阵营描述边界 |
+| `fengshen-deification-list.md` | `ch_12` / `其他重要封位` | L96-L101 | 定位申公豹“东海分水将军”封号和“封神后被填北海眼” |
+| `fengshen-deification-list.md` | `ch_14` / `未入封神榜者` | L114-L121 | 定位“虽封东海分水将军，但实为被罚填北海眼，与一般受封性质不同” |
+| `fengshen-character-profiles.md` | `ch_2_4` / `申公豹` | L72-L79 | 定位申公豹原阐教弟子、转而助商、游说各方仙人下山助商 |
+
+### Step 3 Content extraction
+
+| 实际读取文件 | 行段 | 提取事实 |
+|---|---:|---|
+| `fengshen-variant-records.md` | L65-L75 | 申公豹封号为“东海分水将军”，封神后被填北海眼；两句话不构成直接矛盾，前者是封号，后者是惩罚性质的结局；回答时应同时保留两个信息，不能因东海和北海不同就判断其中一条错误；其阵营更准确描述是助商 |
+| `fengshen-deification-list.md` | L96-L121 | 申公豹为东海分水将军，原阐教弟子，游说各方助商，封神后被填北海眼；虽封东海分水将军，但实为被罚填北海眼，与一般受封性质不同 |
+| `fengshen-character-profiles.md` | L72-L78 | 申公豹原阐教弟子，与姜尚同师元始天尊；因与姜尚理念不合转而助商，游说各方仙人下山助商，是封神大战的重要推手 |
+
+### Step 4 Correction loading
+
+| 检查位置 | 结果 |
+|---|---|
+| `.kb/memory/corrections/` | 不存在 correction 目录；实际检查中 `.kb/memory/` 目录不存在 |
+| `doc_006.jsonl` | 不存在 |
+| `doc_003.jsonl` | 不存在 |
+| `doc_002.jsonl` | 不存在 |
+
+结论：未加载到与当前问题相关的 correction；最终答案仅基于 Step 3 已读取源文。
+
+### Step 5 Generate answer
+
+| 判断项 | 结论 | 判断依据 |
+|---|---|---|
+| 东海分水将军与填北海眼是否矛盾 | 不矛盾 | 异文记录明确说明前者是封号，后者是惩罚性质的结局 |
+| 申公豹封号 | 东海分水将军 | 封神榜名录“其他重要封位”写明 |
+| 申公豹结局 | 封神后被填北海眼 | 封神榜名录“其他重要封位”和“未入封神榜者”均写明 |
+| 是否可简单归类为东海神或北海神 | 不应简单二选一 | 题集和源文均强调应同时保留封号与惩罚结局，文档未将其归为普通意义上的东海神或北海神 |
+| 受封性质 | 与一般受封性质不同 | 封神榜名录写明“实为被罚填北海眼，与一般受封性质不同” |
+
+最终答案：不矛盾，也不需要在“东海神”和“北海神”之间二选一。按文档，申公豹的封号是“东海分水将军”，但“被填北海眼”是惩罚性质的结局；两条信息可以同时成立。更准确的说法是：他封号为东海分水将军，封神后被罚填北海眼，而且这种受封与一般正神不同。当前文档没有把他归类为普通意义上的“东海神”或“北海神”。
+
+引用：
+
+- Source: `doc_006` `ch_6_1` / `ch_6_2` `fengshen-variant-records.md#L65-L75`
+- Source: `doc_003` `ch_12` / `ch_14` `fengshen-deification-list.md#L96-L121`
+- Source: `doc_002` `ch_2_4` `fengshen-character-profiles.md#L72-L78`
+
+### Step 6 Self-verify
+
+| 断言 | 核验 | 来源 |
+|---|---|---|
+| 申公豹封号为“东海分水将军” | 通过 | `fengshen-variant-records.md#L69-L69`; `fengshen-deification-list.md#L100-L100` |
+| 申公豹封神后被填北海眼 | 通过 | `fengshen-variant-records.md#L69-L69`; `fengshen-deification-list.md#L100-L100`; `fengshen-deification-list.md#L121-L121` |
+| 东海分水将军与填北海眼不构成直接矛盾 | 通过 | `fengshen-variant-records.md#L69-L71` |
+| 前者是封号，后者是惩罚性质的结局 | 通过 | `fengshen-variant-records.md#L69-L69`; `fengshen-deification-list.md#L121-L121` |
+| 应同时保留两个信息，不能因东海和北海不同就判断其中一条错误 | 通过 | `fengshen-variant-records.md#L71-L71` |
+| 申公豹与一般受封性质不同 | 通过 | `fengshen-deification-list.md#L121-L121` |
+| 文档没有把申公豹简单归类为普通意义上的东海神或北海神 | 通过 | `fengshen-variant-records.md#L69-L71`; `fengshen-deification-list.md#L100-L121` |
+
+自检结论：已回答题目所有问点；每个关键断言均可回到已读取源文行段；引用行号真实存在且能支撑断言。源文自检通过后读取题集 `fengshen-hard-rag-questions.md` 的 Q14 标准答案进行对比，结果一致：东海分水将军是封号，填北海眼是惩罚性质结局，两者不矛盾；不应简单回答东海神或北海神，应同时保留封号和受罚结局。
+
+## 本次单题执行更新：Q15
+
+更新时间：2026-08-10。
+
+问题：闻仲是不是在万仙阵中被燃灯道人用定海珠打死，然后封为雷神？如果不是，请指出问题里混淆了哪些人物和事件。
+
+结论：
+
+| 问点 | 答案 |
+|---|---|
+| 闻仲是否在万仙阵中被燃灯道人用定海珠打死 | 不是。闻仲死于绝龙岭，被云中子以通天神火柱烧死 |
+| 闻仲是否封为雷神 | 闻仲受封为九天应元雷声普化天尊，统领雷部二十四员正神；可简称雷部正神或雷神，但严格回答应给完整封号 |
+| 被混淆的人物和事件 | “万仙阵中被燃灯道人用定海珠打死”对应金灵圣母；“封为雷部正神/雷神”对应闻仲 |
+| 正确拆分 | 闻仲线：绝龙岭、云中子、通天神火柱、雷部封号；金灵圣母线：万仙阵、燃灯道人、定海珠、斗姆元君 |
+
+### Step 1 Document routing
+
+执行说明：本题使用 `../../../fixtures/fengshen-kb/.kb/manifest.json`。本题没有用户显式提供 `domain_preference`，且目标知识库未发现 `.kb/memory/route_preferences.json`。
+
+| 命中文档 | doc_id | manifest 匹配点 | 用途 |
+|---|---|---|---|
+| `fengshen-major-battles.md` | `doc_005` | 标题为“封神演义重大战役纪事”；摘要含绝龙岭、万仙阵；tags 含“闻仲之死”“绝龙岭”“云中子”“通天神火柱”“万仙阵”“金灵圣母战死” | 确认闻仲真实死亡地点和死因，以及万仙阵中战死者 |
+| `fengshen-deification-list.md` | `doc_003` | 标题为“封神演义封神榜名录”；摘要含雷部、斗部等封位；tags 含“闻仲”“普化天尊”“雷部二十四天君”“金灵圣母”“斗姆元君”“燃灯道人”“定海珠” | 确认闻仲封号，以及金灵圣母被燃灯道人用定海珠打死后受封 |
+| `fengshen-variant-records.md` | `doc_006` | 标题为“封神演义异文、俗称与误传记录”；摘要含闻仲等人物异文辨析；tags 含“闻仲异文”“雷神称呼”“死亡地点误传”“万仙阵误传”“金灵圣母” | 判断“闻仲死于万仙阵”的错误前提，并确认雷神简称边界 |
+| `fengshen-character-profiles.md` | `doc_002` | 标题为“封神演义核心人物图鉴”；摘要含闻仲核心人物事迹；tags 含“闻仲”“金灵圣母”“绝龙岭”“云中子” | 交叉确认闻仲身份、师承和绝龙岭死因 |
+
+路由判断：本题需要拆分两条事件线。`fengshen-major-battles.md` 支撑绝龙岭与万仙阵两场战事；`fengshen-deification-list.md` 支撑闻仲雷部封号和金灵圣母斗部封号及死因；`fengshen-variant-records.md` 明确处理闻仲死亡地点误传和雷神简称；`fengshen-character-profiles.md` 用于人物层面交叉确认。法宝谱和门派谱系不是本题必要证据。
+
+### Step 2 Section localization
+
+| 文档 | 命中节点 | 源行锚 | 用途 |
+|---|---|---:|---|
+| `fengshen-major-battles.md` | `ch_2` / `绝龙岭之战` | L28-L33 | 定位闻仲真实死亡地点和死因 |
+| `fengshen-major-battles.md` | `ch_6_2` / `万仙阵过程` | L81-L84 | 定位万仙阵参战人物，包含金灵圣母等截教核心弟子 |
+| `fengshen-major-battles.md` | `ch_6_3` / `万仙阵结果` | L85-L90 | 定位万仙阵中金灵圣母战死 |
+| `fengshen-deification-list.md` | `ch_1_2` / `斗部` | L10-L12 | 定位金灵圣母被燃灯道人用定海珠打死后受封斗姆元君 |
+| `fengshen-deification-list.md` | `ch_3` / `雷部诸神` | L25-L32 | 定位闻仲雷部封号和绝龙岭战死后受封 |
+| `fengshen-variant-records.md` | `ch_7_1` / `雷神称呼` | L79-L82 | 定位闻仲“雷神”简称和完整封号边界 |
+| `fengshen-variant-records.md` | `ch_7_2` / `死亡地点误传` | L83-L86 | 定位“闻仲死于万仙阵”为错误前提，万仙阵中战死的是金灵圣母等人 |
+| `fengshen-character-profiles.md` | `ch_2_3` / `闻仲` | L64-L71 | 交叉确认闻仲为金灵圣母弟子、绝龙岭被云中子以通天神火柱烧死 |
+
+### Step 3 Content extraction
+
+| 实际读取文件 | 行段 | 提取事实 |
+|---|---:|---|
+| `fengshen-major-battles.md` | L28-L32 | 闻仲退至绝龙岭后，被云中子预先布下的通天神火柱困住，并被神火烧死 |
+| `fengshen-major-battles.md` | L75-L89 | 万仙阵中，截教方面金灵圣母、龟灵圣母等核心弟子抵抗；结果为金灵圣母战死、龟灵圣母遭蚊道人吞噬、无当圣母撤走 |
+| `fengshen-deification-list.md` | L5-L31 | 金灵圣母为斗姆元君，万仙阵中被燃灯道人用定海珠打死后受封；闻仲为九天应元雷声普化天尊，统领雷部二十四员正神，绝龙岭战死后受封 |
+| `fengshen-variant-records.md` | L77-L85 | 闻仲完整封号为九天应元雷声普化天尊，可简称雷部正神或雷神；若问题声称闻仲死于万仙阵，应判定为错误前提；万仙阵中战死的是金灵圣母等截教核心人物 |
+| `fengshen-character-profiles.md` | L64-L70 | 闻仲为闻太师、商朝太师、金灵圣母弟子、截教门人；绝龙岭被云中子以通天神火柱烧死 |
+
+### Step 4 Correction loading
+
+| 检查位置 | 结果 |
+|---|---|
+| `.kb/memory/corrections/` | 不存在 correction 目录；实际检查中 `.kb/memory/` 目录不存在 |
+| `doc_005.jsonl` | 不存在 |
+| `doc_003.jsonl` | 不存在 |
+| `doc_006.jsonl` | 不存在 |
+| `doc_002.jsonl` | 不存在 |
+
+结论：未加载到与当前问题相关的 correction；最终答案仅基于 Step 3 已读取源文。
+
+### Step 5 Generate answer
+
+| 判断项 | 结论 | 判断依据 |
+|---|---|---|
+| 闻仲是否死于万仙阵 | 不是 | 战役文档和异文记录均写明闻仲死于绝龙岭 |
+| 闻仲死因 | 被云中子以通天神火柱烧死 | 战役文档、人物图鉴、异文记录均支持 |
+| 闻仲封号 | 九天应元雷声普化天尊，统领雷部二十四员正神 | 封神榜名录和异文记录均支持 |
+| “雷神”称呼 | 可作民间简称；严格回答应给完整封号 | 异文记录明确说明 |
+| 万仙阵中被燃灯道人用定海珠打死者 | 金灵圣母 | 封神榜名录斗部条目写明 |
+| 金灵圣母封号 | 北极紫气之尊永坐坎宫斗母正神，即斗姆元君 | 封神榜名录斗部条目写明 |
+
+最终答案：不是。问题混淆了两条不同事件线：闻仲死于绝龙岭，被云中子以通天神火柱烧死；死后受封为九天应元雷声普化天尊，统领雷部二十四员正神，民间可简称雷部正神或雷神，但严格回答应给完整封号。万仙阵中战死并在封神榜名录中记载为被燃灯道人用定海珠打死的是金灵圣母；她受封为北极紫气之尊永坐坎宫斗母正神，即斗姆元君。因此，“封为雷神”对应闻仲，“万仙阵中被燃灯道人用定海珠打死”对应金灵圣母，不能合并为闻仲的一件事。
+
+引用：
+
+- Source: `doc_005` `ch_2` `fengshen-major-battles.md#L28-L32`
+- Source: `doc_005` `ch_6_2` / `ch_6_3` `fengshen-major-battles.md#L75-L89`
+- Source: `doc_003` `ch_1_2` / `ch_3` `fengshen-deification-list.md#L5-L31`
+- Source: `doc_006` `ch_7_1` / `ch_7_2` `fengshen-variant-records.md#L77-L85`
+- Source: `doc_002` `ch_2_3` `fengshen-character-profiles.md#L64-L70`
+
+### Step 6 Self-verify
+
+| 断言 | 核验 | 来源 |
+|---|---|---|
+| 闻仲不是死于万仙阵 | 通过 | `fengshen-major-battles.md#L28-L32`; `fengshen-variant-records.md#L83-L85` |
+| 闻仲死于绝龙岭 | 通过 | `fengshen-major-battles.md#L28-L32`; `fengshen-deification-list.md#L27-L27`; `fengshen-character-profiles.md#L70-L70` |
+| 闻仲被云中子以通天神火柱烧死 | 通过 | `fengshen-major-battles.md#L30-L30`; `fengshen-character-profiles.md#L70-L70`; `fengshen-variant-records.md#L85-L85` |
+| 闻仲封为九天应元雷声普化天尊，统领雷部二十四员正神 | 通过 | `fengshen-deification-list.md#L27-L31`; `fengshen-variant-records.md#L79-L81` |
+| 闻仲可简称雷部正神或雷神，但严格回答应给完整封号 | 通过 | `fengshen-variant-records.md#L79-L81` |
+| 万仙阵中战死的是金灵圣母等截教核心人物 | 通过 | `fengshen-major-battles.md#L83-L87`; `fengshen-variant-records.md#L83-L85` |
+| 被燃灯道人用定海珠打死后受封的是金灵圣母 | 通过 | `fengshen-deification-list.md#L10-L11` |
+| 金灵圣母受封为北极紫气之尊永坐坎宫斗母正神，即斗姆元君 | 通过 | `fengshen-deification-list.md#L10-L11` |
+
+自检结论：已回答题目所有问点；每个关键断言均可回到已读取源文行段；引用行号真实存在且能支撑断言。源文自检通过后读取题集 `fengshen-hard-rag-questions.md` 的 Q15 标准答案进行对比，结果一致：闻仲死于绝龙岭并受封雷部；金灵圣母才是在万仙阵中被燃灯道人用定海珠打死后受封斗姆元君；题目混淆了两条事件线。
+
+## 本次单题执行更新：Q16
+
+更新时间：2026-08-10。
+
+问题：落宝金钱既然可以落定海珠和缚龙索，那它能不能落太极图或混元金斗？如果不能，依据是什么？这说明落宝金钱克制定海珠时依赖了什么前提？
+
+结论：
+
+| 问点 | 答案 |
+|---|---|
+| 落宝金钱能否落太极图 | 不能根据当前知识库认定可以。太极图列在“先天至宝”章节，而落宝金钱对先天至宝无效 |
+| 落宝金钱能否落混元金斗 | 不能根据当前知识库认定可以。混元金斗也列在“先天至宝”章节，异文记录明确说此说法不受当前知识库支持 |
+| 依据 | 落宝金钱的功能是“可落尽先天至宝以下一切法宝”，限制是“对先天至宝无效，只能落后天灵宝及以下” |
+| 克制定海珠依赖的前提 | 定海珠处于落宝金钱可作用的品阶范围内，即不是当前文档所说的先天至宝；不能把“能落定海珠”泛化为“能落任何法宝” |
+
+### Step 1 Document routing
+
+执行说明：本题使用 `../../../fixtures/fengshen-kb/.kb/manifest.json`。本题没有用户显式提供 `domain_preference`，且目标知识库未发现 `.kb/memory/route_preferences.json`。
+
+| 命中文档 | doc_id | manifest 匹配点 | 用途 |
+|---|---|---|---|
+| `fengshen-artifacts-and-counter.md` | `doc_001` | 标题为“封神演义法宝谱与克制关系”；摘要含先天至宝、截教法宝、法宝克制关系；tags 含“先天至宝”“太极图”“混元金斗”“定海珠”“落宝金钱”“落宝”“限制条件”“落宝金钱克定海珠” | 确认太极图、混元金斗的品阶；确认落宝金钱功能、限制、实战；确认定海珠被落去 |
+| `fengshen-major-battles.md` | `doc_005` | 标题为“封神演义重大战役纪事”；摘要含赵公明之死；tags 含“赵公明之死”“定海珠”“落宝金钱”“萧升”“曹宝” | 交叉验证赵公明的定海珠被萧升、曹宝以落宝金钱落去 |
+| `fengshen-variant-records.md` | `doc_006` | 标题为“封神演义异文、俗称与误传记录”；摘要含法宝克制议题的异文辨析；tags 含“法宝克制误传”“落宝金钱边界”“先天至宝”“无效”“太极图”“混元金斗” | 确认“落宝金钱可落太极图或混元金斗”不受当前知识库支持的边界 |
+
+路由判断：本题核心是法宝能力边界和反泛化。`fengshen-artifacts-and-counter.md` 是主证据，覆盖先天至宝、落宝金钱限制和定海珠被落去；`fengshen-major-battles.md` 用于交叉验证定海珠被落事件；`fengshen-variant-records.md` 用于处理“能落太极图/混元金斗”的误传边界。人物图鉴、门派谱系、封神榜名录不是本题必要证据。
+
+### Step 2 Section localization
+
+| 文档 | 命中节点 | 源行锚 | 用途 |
+|---|---|---:|---|
+| `fengshen-artifacts-and-counter.md` | `ch_1` / `先天至宝` | L5-L21 | 定位太极图、混元金斗属于先天至宝章节 |
+| `fengshen-artifacts-and-counter.md` | `ch_1_1` / `太极图` | L7-L11 | 确认太极图条目位置 |
+| `fengshen-artifacts-and-counter.md` | `ch_1_2` / `混元金斗` | L12-L16 | 确认混元金斗条目位置 |
+| `fengshen-artifacts-and-counter.md` | `ch_3_1` / `定海珠` | L64-L69 | 定位定海珠流转：被萧升、曹宝以落宝金钱落去 |
+| `fengshen-artifacts-and-counter.md` | `ch_3_2` / `落宝金钱` | L70-L75 | 定位落宝金钱功能、限制和实战 |
+| `fengshen-artifacts-and-counter.md` | `ch_5` / `法宝克制关系总览` | L88-L98 | 定位“定海珠—落宝金钱”的克制关系 |
+| `fengshen-major-battles.md` | `ch_3` / `赵公明之死` | L34-L39 | 交叉定位定海珠被落宝金钱落去的战役叙事 |
+| `fengshen-variant-records.md` | `ch_11_1` / `落宝金钱的边界` | L121-L124 | 定位落宝金钱对先天至宝无效，以及不能落太极图或混元金斗的边界说明 |
+
+### Step 3 Content extraction
+
+| 实际读取文件 | 行段 | 提取事实 |
+|---|---:|---|
+| `fengshen-artifacts-and-counter.md` | L5-L20 | 太极图、混元金斗、金蛟剪列在“先天至宝”章节；太极图为太上老君持有，混元金斗为三霄娘娘持有 |
+| `fengshen-artifacts-and-counter.md` | L62-L79 | 定海珠由赵公明原持有，死后被萧升、曹宝以落宝金钱落去；落宝金钱可落尽先天至宝以下一切法宝，对先天至宝无效，只能落后天灵宝及以下；实战中落去定海珠和缚龙索 |
+| `fengshen-artifacts-and-counter.md` | L88-L98 | 法宝克制关系总览列明定海珠被落宝金钱直接落去 |
+| `fengshen-major-battles.md` | L34-L38 | 赵公明以定海珠独战五位金仙，后萧升、曹宝以落宝金钱落去定海珠，赵公明失去至宝 |
+| `fengshen-variant-records.md` | L119-L127 | 落宝金钱可落尽先天至宝以下法宝，但对先天至宝无效；若声称落宝金钱可落太极图或混元金斗，应判断不受当前知识库支持 |
+
+### Step 4 Correction loading
+
+| 检查位置 | 结果 |
+|---|---|
+| `.kb/memory/corrections/` | 不存在 correction 目录；实际检查中 `.kb/memory/` 目录不存在 |
+| `doc_001.jsonl` | 不存在 |
+| `doc_005.jsonl` | 不存在 |
+| `doc_006.jsonl` | 不存在 |
+
+结论：未加载到与当前问题相关的 correction；最终答案仅基于 Step 3 已读取源文。
+
+### Step 5 Generate answer
+
+| 判断项 | 结论 | 判断依据 |
+|---|---|---|
+| 落宝金钱能否落太极图 | 当前知识库不支持 | 太极图列于“先天至宝”；落宝金钱对先天至宝无效 |
+| 落宝金钱能否落混元金斗 | 当前知识库不支持 | 混元金斗列于“先天至宝”；异文记录明确说不能据此支持 |
+| 落宝金钱能力边界 | 可落尽先天至宝以下一切法宝 | 法宝文档落宝金钱条目写明 |
+| 落宝金钱限制 | 对先天至宝无效，只能落后天灵宝及以下 | 法宝文档落宝金钱条目写明 |
+| 落定海珠依赖的前提 | 定海珠不是当前文档所说的先天至宝，处于可被落宝金钱作用的品阶范围内 | 定海珠在截教法宝章节，且实际被落宝金钱落去；落宝金钱限制排除先天至宝 |
+
+最终答案：不能根据当前知识库认定落宝金钱可以落太极图或混元金斗。依据是：落宝金钱的能力边界是“可落尽先天至宝以下一切法宝”，限制是“对先天至宝无效，只能落后天灵宝及以下”；而太极图和混元金斗都列在“先天至宝”章节。因此，说落宝金钱能落太极图或混元金斗不受当前知识库支持。落宝金钱克制定海珠依赖的前提是：定海珠处在可被落宝金钱作用的品阶范围内，即不是当前文档所说的先天至宝；所以不能从“能落定海珠和缚龙索”泛化为“能落任何法宝”。
+
+引用：
+
+- Source: `doc_001` `ch_1` / `ch_1_1` / `ch_1_2` `fengshen-artifacts-and-counter.md#L5-L20`
+- Source: `doc_001` `ch_3_1` / `ch_3_2` `fengshen-artifacts-and-counter.md#L62-L79`
+- Source: `doc_001` `ch_5` `fengshen-artifacts-and-counter.md#L88-L98`
+- Source: `doc_005` `ch_3` `fengshen-major-battles.md#L34-L38`
+- Source: `doc_006` `ch_11_1` `fengshen-variant-records.md#L119-L127`
+
+### Step 6 Self-verify
+
+| 断言 | 核验 | 来源 |
+|---|---|---|
+| 太极图列在“先天至宝”章节 | 通过 | `fengshen-artifacts-and-counter.md#L5-L10` |
+| 混元金斗列在“先天至宝”章节 | 通过 | `fengshen-artifacts-and-counter.md#L5-L15` |
+| 落宝金钱可落尽先天至宝以下一切法宝 | 通过 | `fengshen-artifacts-and-counter.md#L70-L72`; `fengshen-variant-records.md#L121-L123` |
+| 落宝金钱对先天至宝无效，只能落后天灵宝及以下 | 通过 | `fengshen-artifacts-and-counter.md#L73-L73`; `fengshen-variant-records.md#L123-L123` |
+| 当前知识库不支持“落宝金钱可以落太极图或混元金斗” | 通过 | `fengshen-variant-records.md#L123-L123` |
+| 定海珠被萧升、曹宝以落宝金钱落去 | 通过 | `fengshen-artifacts-and-counter.md#L64-L68`; `fengshen-major-battles.md#L36-L36` |
+| 落宝金钱实战中落去定海珠和缚龙索 | 通过 | `fengshen-artifacts-and-counter.md#L70-L74` |
+| 定海珠被落宝金钱克制依赖于其属于可被作用的非先天至宝范围 | 通过 | `fengshen-artifacts-and-counter.md#L62-L74`; `fengshen-variant-records.md#L121-L123` |
+
+自检结论：已回答题目所有问点；每个关键断言均可回到已读取源文行段；引用行号真实存在且能支撑断言。源文自检通过后读取题集 `fengshen-hard-rag-questions.md` 的 Q16 标准答案进行对比，结果一致：不能认定落宝金钱可落太极图或混元金斗；依据是其对先天至宝无效；克制定海珠依赖前提是定海珠处于可被落宝金钱作用的品阶范围内。

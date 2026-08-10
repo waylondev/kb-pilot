@@ -65,7 +65,7 @@
 ### 标准答案
 
 1. **账户变化：** 工资账户 3 个月以上未收到工资入账，银行可能自动将其转为储蓄账户。客户也可以主动发起转换以避免服务中断。
-2. **最低余额：** 转为 Regular Savings 后，印度需维持 **₹5,000**；如果是 Digital Zero Balance 则无需最低余额；老年人/学生为 ₹1,000。不维持最低余额可能产生罚款。
+2. **最低余额：** 转为 regular Savings Account 后，若客户在印度，需按 Regular Savings 要求维持 **₹5,000**；若在斯里兰卡则为 LKR 3,000。不维持最低余额可能产生罚款。Digital Zero Balance、Senior Citizens/Students 是其他储蓄账户类型，不能直接当作该工资账户转换后的默认结果。
 3. **数字渠道转换步骤：**
    - 打开 ZX Bank Asia 手机 App 或登录 NetBanking
    - 进入 "Service Requests" > "Convert Salary Account to Savings Account"
@@ -99,7 +99,7 @@
 |---------|------|
 | 跨文档否定推理 | 需要 `personal-loan.md` 查孟加拉国贷款条件，再跳到 `upi-zx-bank-asia.md` 查 UPI 可用国家，发现 UPI 仅限印度 → 否定推理 |
 | 隐式比较 | "与印度相比" 需要从同一文档的不同行提取两个国家的数据并比较 |
-| 替代方案推理 | UPI 不可用后，需要从其他文档推理出替代还款渠道（手机 App、NetBanking、分行） |
+| 来源边界判断 | UPI 不可用后，需要区分“源文明确说明的替代跨境汇款方式”和“源文没有直接列明的个人贷款还款渠道” |
 
 ### 标准答案
 
@@ -107,11 +107,7 @@
 2. **利率范围：** 孟加拉国 — **13.50% – 21.00% p.a.**
 3. **与印度比较：** 印度受薪人士利率为 11.75% – 17.99%，孟加拉国利率**更高**（下限高 1.75 个百分点，上限高 3.01 个百分点）
 4. **UPI 不可行：** UPI 服务目前仅限印度用户。孟加拉国客户无法使用 UPI。
-5. **替代还款渠道：**
-   - 通过 ZX Bank Asia 手机 App 管理（查看贷款、EMI、还款）
-   - 通过 NetBanking 在线还款
-   - 前往任意 ZX Bank 分行还款
-   - 联系客户服务或使用 AI 助手 "Zia"
+5. **替代渠道：** 源文没有明确列出孟加拉国个人贷款的还款渠道。可以确定的是：UPI 不可用；UPI 文档提示跨境付款/汇款应使用 App 内 dedicated remittance options。`personal-loan.md` 中的分行、App/NetBanking、Customer Care/Zia 是个人贷款申请/服务渠道，不能直接写成已明示的还款渠道。
 
 ### 原文引用
 
@@ -123,7 +119,10 @@
 **UPI 可用性** — `../../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
 - L66: `- UPI services currently available in India for ZX Bank account holders`
 
-**替代渠道** — `../../fixtures/zx-bank-kb/personal-loan.md`:
+**UPI 限制与替代提示** — `../../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
+- L66-67: `- UPI services currently available in India for ZX Bank account holders` / `- For cross-border payments/remittances, use the dedicated remittance options in the app.`
+
+**个人贷款申请/服务渠道（不是还款渠道的直接证据）** — `../../fixtures/zx-bank-kb/personal-loan.md`:
 - L65-68: `1. **Visit:** Any ZX Bank branch in your country` / `2. **Online:** Through [ZX Bank Asia Mobile App] or [NetBanking]` / `3. **Call:** 24x7 Customer Care or use AI Assistant "Zia" on the app`
 
 ---
@@ -142,7 +141,7 @@
 
 ### 标准答案
 
-1. **黄金贷款最高 LTV：** 最高 **75%**（按黄金市场价值计算，遵循 RBI 规定）
+1. **黄金贷款最高 LTV：** 源文给出的黄金贷款 LTV 为最高 **75%**（按黄金市场价值计算）。需要注意：该行写有 `as per RBI regulations`，源文没有为尼泊尔单独列出不同 LTV，因此这里按产品文档的统一 LTV 回答，不额外推断尼泊尔监管细则。
 2. **尼泊尔定期存款最低起存额：** **NPR 1,500**
 3. **定期存款可抵押贷款比例：** 最高 **90%**（可获得的透支或贷款占 FD 价值的比例）
 
@@ -218,19 +217,23 @@
 
 ### 标准答案
 
-**冻结/挂失卡片的所有渠道：**
+**明确可用于冻结/挂失卡片的渠道：**
 
 1. **手机 App：** ZX Bank Asia App → Card Management → "Block/Card Hotlisting" → 确认操作
    - 或 App → 选择卡片 → More options → Block（立即生效）
+   - 或 App 内使用 "Block Instantly" 进行紧急冻结
 2. **NetBanking：** 登录 → Account Services → "Freeze Account" 或 Card Management → Block
-3. **欺诈热线电话（24x7）：**
+
+**欺诈报告/联系银行渠道（源文未明确说这些渠道都能立即冻结卡片）：**
+
+1. **欺诈热线电话（24x7）：**
    - 印度：1800 123 9876
    - 斯里兰卡：+94 11 2345678
    - 孟加拉国：+880 9612 345678
    - 不丹：+975 2 345678
    - 尼泊尔：+977 1 2345678
-4. **邮件：** fraudreport@zxbank.asia
-5. **App 内举报：** ZX Bank Asia App → Support → Report Fraud
+2. **邮件：** fraudreport@zxbank.asia
+3. **App 内举报：** ZX Bank Asia App → Support → Report Fraud
 
 **欺诈处理目标解决时间：** **10 个工作日**内
 
@@ -245,10 +248,13 @@
 ### 原文引用
 
 **欺诈冻结渠道** — `../../fixtures/zx-bank-kb/fraud-transaction.md`:
+- L22-24: `- Go to "Card Management" or "Account Services"` / `- Select "Block/Card Hotlisting" or "Freeze Account"`
+- L63: `For urgent blocking, use the “Block Instantly” option in the app.`
+
+**欺诈报告/联系银行渠道** — `../../fixtures/zx-bank-kb/fraud-transaction.md`:
 - L9-14: 热线电话（印度/斯里兰卡/孟加拉国/不丹/尼泊尔）
 - L16: `- **Email:** fraudreport@zxbank.asia`
 - L17: `- **Mobile App:** Go to **ZX Bank Asia** app → Support → Report Fraud`
-- L22-24: `- Go to "Card Management" or "Account Services"` / `- Select "Block/Card Hotlisting" or "Freeze Account"`
 
 **App 内冻结卡片** — `../../fixtures/zx-bank-kb/zx-bank-asia-mobile-app-guide.md`:
 - L75: `- **Block Card**: Select card → More options → Block (immediate effect).`
@@ -282,18 +288,18 @@
 | 服务 | 可用国家 | 不可用国家 |
 |------|---------|-----------|
 | UPI 支付 | 仅印度 | 斯里兰卡、孟加拉国、不丹、尼泊尔 |
-| e-KYC | 印度、斯里兰卡、尼泊尔 | 孟加拉国、不丹 |
+| e-KYC（信用卡申请） | 印度、斯里兰卡、尼泊尔 | 孟加拉国、不丹 |
 | 学生信用卡 | 印度、斯里兰卡、尼泊尔 | 孟加拉国、不丹 |
 | 跨境汇款 | 印度、斯里兰卡、尼泊尔、不丹 | 孟加拉国（汇款走廊不包含孟加拉国） |
 
-**孟加拉国学生的信用卡选择：** 学生信用卡仅在印度、斯里兰卡、尼泊尔提供，孟加拉国学生**无法申请学生信用卡**。他可以考虑其他信用卡（如 Gold Card，需月收入 ₹25,000 且 CIBIL 700+），但需满足相应的收入和信用要求。e-KYC 在孟加拉国也不可用，需前往分行完成验证。
+**孟加拉国学生的信用卡选择：** 学生信用卡仅在印度、斯里兰卡、尼泊尔提供，孟加拉国学生**无法申请学生信用卡**。他可以考虑其他信用卡（如 Gold Card，需月收入 ₹25,000 且 CIBIL 700+），但需满足相应的收入和信用要求。就信用卡申请文档而言，e-KYC 不覆盖孟加拉国；是否存在其他产品线的数字开户能力，需要另看对应文档，不能由本题直接推断。
 
 ### 原文引用
 
 **UPI 可用性** — `../../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
 - L66: `- UPI services currently available in India for ZX Bank account holders`
 
-**e-KYC 可用性** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
+**信用卡申请 e-KYC 可用性** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
 - L119: `- e-KYC available for India, Sri Lanka, and Nepal residents`
 
 **学生信用卡可用性** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
@@ -319,32 +325,33 @@
 ### 标准答案
 
 **共同需要的文件（交集）：**
-- 身份证明（Aadhaar/Passport/PAN 等）
-- 地址证明
+- 身份/KYC 类文件：房屋贷款列 ID Proof；汽车贷款列 KYC Documents
 - 收入证明（工资单/ITR/银行流水）
-- 护照尺寸照片（汽车贷款隐含在 KYC 中）
 
 **房屋贷款独有：**
+- 地址证明：Utility Bill、Passport、Aadhaar（房屋贷款单独列为 Address Proof）
 - 物业文件：销售协议、地契、批准平面图
 - Form 16（作为收入证明的一部分）
 
 **汽车贷款独有：**
 - 雇佣/商业证明：录用通知书或商业注册证
 - 车辆报价单/发票
+- photograph（汽车贷款 KYC 中明确列出，房屋贷款文件清单未列照片）
 
-**在线申请：** 两种贷款都支持完全在线申请。
-- 房屋贷款：通过 ZX Bank Home Loan Portal 或 ZX Bank Asia App
-- 汽车贷款：通过 ZX Bank Asia App 或 NetBanking
+**在线申请：** 两种贷款都支持在线/移动端发起申请。
+- 房屋贷款：通过 ZX Bank Home Loan Portal 或 ZX Bank Asia App 发起申请；源文没有说明所有文件都能数字上传，因此不能直接确认“完全在线”。
+- 汽车贷款：通过 ZX Bank Asia App 或 NetBanking；源文明确说明所有文件可通过 App/NetBanking 数字上传，因此可以确认完整线上申请与文件上传流程。
 
 ### 原文引用
 
 **房屋贷款文件** — `../../fixtures/zx-bank-kb/zx-bank-house-loan.md`:
 - L34-37: `- **ID Proof:** Aadhaar, PAN, Passport, Voter ID` / `- **Address Proof:** Utility Bill, Passport, Aadhaar` / `- **Income Proof:** Salary slips, ITR, Bank statement, Form 16` / `- **Property Documents:** Sale agreement, title deed, approved plan`
-- L43-44: `1. **Online:**` / `Visit [ZX Bank Home Loan Portal]`
+- L43-47: `1. **Online:**` / `Visit [ZX Bank Home Loan Portal]` / `2. **Mobile App:**`
 
 **汽车贷款文件** — `../../fixtures/zx-bank-kb/zx-bank-car-loan.md`:
 - L31-34: `- **KYC Documents:** Aadhaar/Passport/Driving License, PAN, photograph` / `- **Income Proof:** Salary slips/ITR/Bank statements (Past 6 months)` / `- **Employment/Business Proof:** Offer letter/Business registration` / `- **Vehicle Quotation/Invoice**`
-- L41-42: `1. **Download** the [ZX Bank Asia App] or log in to [ZX NetBanking]`
+- L35: `_All documents can be uploaded digitally via the ZX Bank Asia app/NetBanking_`
+- L41-47: `1. **Download** the [ZX Bank Asia App] or log in to [ZX NetBanking]` / `4. **Upload documents** using e-KYC ...` / `6. **Submit application**`
 
 ---
 
@@ -364,7 +371,7 @@
 
 **海得拉巴 HITEC City 最近的分行：**
 
-HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
+HITEC City 位于 Madhapur 地区。从源文中的地区和邮编可推断，最匹配、可视为最近的 ZX Bank 分行是：
 
 | 分行地址 | IFSC | 联系电话 |
 |---------|------|---------|
@@ -399,6 +406,9 @@ HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
 
 **ATM 定位方式** — `../../fixtures/zx-bank-kb/atms-at-railway-stations-and-airports.md`:
 - L180: `Find the nearest ZX Bank ATM using the [ZX Bank Asia Mobile App] or [ZX Bank ATM Locator].`
+
+**Zia 定位分行/ATM** — `../../fixtures/zx-bank-kb/ask-zia-your-24-7-banking-assistant.md`:
+- L9-10: `From locating branches and ATMs to product information`
 
 ---
 
@@ -442,12 +452,13 @@ HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
 - **FD 开立：** 可完全在线（App/NetBanking），无需到分行
 - **信用卡：** 不适用（不符合资格）
 - **保险箱：** 以下步骤**必须到分行**：
-  - 查询保险箱可用性（可电话查询，但开立必须到分行）
+  - 正式申请保险箱并携带原件和复印件
   - 填写申请表并提交 KYC 文件原件
   - 签署保险箱租赁协议
-  - 支付保证金和租金
   - 领取保险箱钥匙
   - 每次操作保险箱（在分行营业时间到访，携带钥匙和身份证，签署访问登记簿）
+
+查询保险箱可用性可到分行或电话完成，不应写成必须到分行；支付保证金和租金属于申请流程的一部分，但源文允许 cash、cheque 或 direct bank transfer，因此不能把“支付”本身写成必须到分行。
 
 ### 原文引用
 
@@ -464,8 +475,9 @@ HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
 
 **保险箱前提条件** — `../../fixtures/zx-bank-kb/open-a-locker.md`:
 - L17-18: `- **Existing ZX Bank customer:** You must have (or open) a savings or current account.` / `- **KYC Compliance:** Ensure your KYC (Know Your Customer) details are updated.`
+- L9-10: `Visit your nearest branch or call the branch directly to check locker availability.`
 - L27-30: `1. **Visit the Branch:** Bring original documents and photocopies.` / `2. **Fill Application Form:**` / `3. **Submit KYC Documents:**` / `4. **Locker Agreement:** Read and sign the Locker Hirer Agreement`
-- L35-36: `- Pay the **refundable security deposit**` / `- Locker rent is typically paid **annually**.`
+- L35-38: `- Pay the **refundable security deposit**` / `- Locker rent is typically paid **annually**.` / `Payment can be made via cash, cheque, or direct bank transfer.`
 - L44: `- Upon approval, a locker number will be allotted.`
 - L45: `- Receive the **locker keys**`
 

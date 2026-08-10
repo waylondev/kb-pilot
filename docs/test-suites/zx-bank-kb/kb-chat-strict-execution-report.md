@@ -1,6 +1,6 @@
 # kb-chat 严格执行追踪报告
 
-测试对象：`../../fixtures/zx-bank-kb/`
+测试对象：`../../../fixtures/zx-bank-kb/`
 
 测试题集：`zx-bank-kb-hard-rag-questions.md`
 
@@ -36,7 +36,7 @@
 
 每道题均按以下流程记录：
 
-1. Document routing：读取并使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`，根据问题语义匹配 `domain/title/summary/tags`，选出相关文档。
+1. Document routing：读取并使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`，根据问题语义匹配 `domain/title/summary/tags`，选出相关文档。
 2. Section localization：读取每个命中文档的 `.kb/index/<source-stem>/tree.json`，根据节点 `title/summary/keywords` 定位章节。
 3. Content extraction：按 `tree.json` 中的 `start_line/end_line` 读取源 Markdown，必要时扩展到同级或父级行段。
 4. Correction loading：检查 `.kb/memory/corrections/{doc_id}.jsonl`。本次知识库的 `corrections/` 目录为空，因此所有题均无 correction。
@@ -61,7 +61,7 @@
 
 ### Step 1 Document routing
 
-执行说明：根目录未发现 `.kb/manifest.json`，本题按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：根目录未发现 `.kb/manifest.json`，本题按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -98,7 +98,7 @@
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_068.jsonl` | 不存在 |
 | `doc_064.jsonl` | 不存在 |
 
@@ -150,7 +150,7 @@
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -182,7 +182,7 @@
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_052.jsonl` | 不存在 |
 | `doc_054.jsonl` | 不存在 |
 
@@ -243,7 +243,7 @@
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -274,7 +274,7 @@
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_047.jsonl` | 不存在 |
 | `doc_058.jsonl` | 不存在 |
 
@@ -323,7 +323,7 @@
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -352,7 +352,7 @@
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_070.jsonl` | 不存在 |
 | `doc_069.jsonl` | 不存在 |
 
@@ -397,7 +397,7 @@
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -435,7 +435,7 @@
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_016.jsonl` | 不存在 |
 | `doc_001.jsonl` | 不存在 |
 | `doc_071.jsonl` | 不存在 |
@@ -494,7 +494,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -534,7 +534,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_033.jsonl` | 不存在 |
 | `doc_061.jsonl` | 不存在 |
 | `doc_005.jsonl` | 不存在 |
@@ -602,7 +602,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -639,7 +639,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_001.jsonl` | 不存在 |
 | `doc_058.jsonl` | 不存在 |
 | `doc_068.jsonl` | 不存在 |
@@ -691,7 +691,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -722,7 +722,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_071.jsonl` | 不存在 |
 | `doc_066.jsonl` | 不存在 |
 
@@ -780,7 +780,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -818,7 +818,7 @@ ZX Bank 的绿色金融奖项是 `Excellence in Green Finance Award (2022)`，�
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_011.jsonl` | 不存在 |
 | `doc_035.jsonl` | 不存在 |
 | `doc_061.jsonl` | 不存在 |
@@ -881,7 +881,7 @@ HITEC City 位于 `Madhapur, Hyderabad, Telangana 500081`。在 Hyderabad 分行
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -920,7 +920,7 @@ HITEC City 位于 `Madhapur, Hyderabad, Telangana 500081`。在 Hyderabad 分行
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_069.jsonl` | 不存在 |
 | `doc_068.jsonl` | 不存在 |
 | `doc_045.jsonl` | 不存在 |
@@ -990,7 +990,7 @@ FD 开立不必须到分行，因为可通过 `ZX Bank Asia app` 或 `NetBanking
 
 ### Step 1 Document routing
 
-执行说明：本题继续按测试对象使用 `../../fixtures/zx-bank-kb/.kb/manifest.json`。
+执行说明：本题继续按测试对象使用 `../../../fixtures/zx-bank-kb/.kb/manifest.json`。
 
 | 命中文档 | doc_id | manifest 匹配点 | 用途 |
 |---|---|---|---|
@@ -1026,7 +1026,7 @@ FD 开立不必须到分行，因为可通过 `ZX Bank Asia app` 或 `NetBanking
 
 | 检查位置 | 结果 |
 |---|---|
-| `../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
+| `../../../fixtures/zx-bank-kb/.kb/memory/corrections/` | 目录存在但为空 |
 | `doc_031.jsonl` | 不存在 |
 | `doc_068.jsonl` | 不存在 |
 | `doc_006.jsonl` | 不存在 |

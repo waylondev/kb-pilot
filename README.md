@@ -40,8 +40,9 @@ In short: kb-pilot trades broad retrieval infrastructure for a transparent, line
 
 A small structured test suite is available under `docs/test-suites/`:
 
-- [Hard RAG questions](docs/test-suites/zx-bank-kb-hard-rag-questions.md)
-- [kb-chat execution report](docs/test-suites/kb-chat-strict-execution-report.md)
+- [ZX Bank hard RAG questions](docs/test-suites/zx-bank-kb/zx-bank-kb-hard-rag-questions.md)
+- [ZX Bank kb-chat execution report](docs/test-suites/zx-bank-kb/kb-chat-strict-execution-report.md)
+- [Credit card hard RAG questions](docs/test-suites/credit-card-kb/qa-credit-card-hard-rag.md)
 
 This is a hand-auditable execution record on a small, structured Markdown knowledge base. It is not an automated benchmark or a claim of general performance across open-domain RAG workloads.
 

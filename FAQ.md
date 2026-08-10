@@ -30,13 +30,13 @@ Not a static directory for humans, but the skeleton the system uses to retrieve.
 
 This is a theoretical concern. Current design handles it with:
 
-1. **SHA256 checksum**: Each `tree.json` node includes `sha256`. When the source file changes, the new tree replaces the old one.
+1. **SHA256 checksum**: Each `tree.json` includes a top-level `source_sha256` checksum for the source file. When the source file changes, the new tree replaces the old one.
 
 2. **LLM judges at read time**: When `kb-chat` loads corrections, the LLM reads the current source and determines whether an old correction still applies — if the source conflicts with the old record, it defers to the source.
 
 3. **Human intervention**: Correction records are plain text JSONL — if outdated, manually delete or mark them. Git tracks the full history.
 
-**The risk exists, but the design handles it by deferring to the LLM and human judgment at read time, rather than building complex version mapping tables.** If you need tighter version binding, `sha256` is already in `tree.json` — PRs welcome.
+**The risk exists, but the design handles it by deferring to the LLM and human judgment at read time, rather than building complex version mapping tables.** If you need tighter version binding, `source_sha256` is already in `tree.json` — PRs welcome.
 
 ---
 

@@ -38,13 +38,12 @@ In short: kb-pilot trades broad retrieval infrastructure for a transparent, line
 
 ## Evaluation
 
-A small structured test suite is available under `docs/test-suites/`:
+| Test suite | Knowledge base shape | Result |
+|---|---|---:|
+| [ZX Bank hard RAG questions](docs/test-suites/zx-bank-kb/zx-bank-kb-hard-rag-questions.md) | Small-to-mid structured banking Markdown corpus | [11/11 factual answers, 11/11 citation precision](docs/test-suites/zx-bank-kb/kb-chat-strict-execution-report.md) |
+| [Credit card hard RAG questions](docs/test-suites/credit-card-kb/qa-credit-card-hard-rag.md) | Small structured credit-card policy corpus | [10/10 factual answers, 10/10 citation precision](docs/test-suites/credit-card-kb/kb-chat-strict-execution-report.md) |
 
-- [ZX Bank hard RAG questions](docs/test-suites/zx-bank-kb/zx-bank-kb-hard-rag-questions.md)
-- [ZX Bank kb-chat execution report](docs/test-suites/zx-bank-kb/kb-chat-strict-execution-report.md)
-- [Credit card hard RAG questions](docs/test-suites/credit-card-kb/qa-credit-card-hard-rag.md)
-
-This is a hand-auditable execution record on a small, structured Markdown knowledge base. It is not an automated benchmark or a claim of general performance across open-domain RAG workloads.
+These are hand-auditable execution records on small, structured Markdown knowledge bases. They are not an automated benchmark or a claim of general performance across open-domain RAG workloads.
 
 
 ## Quick start
@@ -76,7 +75,7 @@ Use Skill: kb-correct to persist this correction.
 
 `kb-correct` appends the correction (append-only) to `.kb/memory/corrections/`. Subsequent identical questions load the correction; when multiple users give the same answer to the same fact, duplicate records are treated as a consensus signal, reinforcing confidence. Conflicting corrections are shown side by side. Concurrent write conflicts are resolved by Git merge.
 
-**Version awareness**: Each `tree.json` node includes a `sha256` checksum of the source file. When a source file is updated and re-ingested, the new tree replaces the old one. Corrections are loaded alongside the current `tree.json` — the LLM reads both and can disregard corrections that no longer apply to the current version. This is handled at read time, not index time.
+**Version awareness**: Each `tree.json` includes a top-level `source_sha256` checksum for the source file. When a source file is updated and re-ingested, the new tree replaces the old one. Corrections are loaded alongside the current `tree.json` — the LLM reads both and can disregard corrections that no longer apply to the current version. This is handled at read time, not index time.
 
 ### 4. Initialize from an existing Git repo
 
@@ -252,7 +251,7 @@ git commit -m "fix: update auth module summary"
 
 Plain text JSON means edits are simple, Git tracks every change.
 
-**Version drift protection**: Each `tree.json` node contains a `sha256` checksum. When the source file updates, the LLM reads the current tree alongside corrections and can disregard obsolete corrections at read time.
+**Version drift protection**: Each `tree.json` contains a top-level `source_sha256` checksum for the source file. When the source file updates, the LLM reads the current tree alongside corrections and can disregard obsolete corrections at read time.
 
 ### Step 5: Team collaboration
 

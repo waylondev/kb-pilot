@@ -1,0 +1,5 @@
+{
+  "credit_card": "credit-card-kb",
+  "last_confirmed_domain": "credit-card-kb",
+  "after_answer": "使用 kb-chat 作答后，将单题执行记录追加写入 Markdown 报告；记录格式沿用 zx-bank-kb 的 kb-chat 严格执行追踪报告格式。"
+}

@@ -30,6 +30,7 @@ It works best for internal policies, product manuals, technical docs, compliance
 - The knowledge base is maintained like a Git repo, with humans responsible for document quality
 - Answers must cite exact source lines
 - The agent can spend time reading the relevant section and self-verifying claims against the source
+- The repository maps to one team, product, policy area, or technical domain
 
 It is not designed for massive unstructured corpora, real-time web-scale search, millisecond-latency retrieval, or replacing document cleanup and human review.
 

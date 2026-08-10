@@ -104,6 +104,22 @@ Beyond that, split by domain:
 
 ---
 
+### Q: What if the repository grows beyond a few hundred Markdown files?
+
+This is where kb-pilot's intended boundary starts to matter. The design target is tens to hundreds of documents in one coherent team or domain, not an ever-growing universal corpus.
+
+If the repository grows beyond that boundary, split it by ownership or subject area. The project principle is "one knowledge base = one Git repo = one cognitive boundary," so scale is handled by clearer repo boundaries rather than adding vector search or sharding layers.
+
+---
+
+### Q: What if a single document is very long?
+
+Long documents are acceptable when they have clear heading hierarchy. `tree.json` uses headings and line ranges as navigation anchors, so a long manual with well-formed sections is easier to use than many tiny files with vague names.
+
+If one heading contains several unrelated topics, fix the Markdown structure first. kb-pilot deliberately avoids automatic chunk splitting because arbitrary chunks make citations and source review harder to trust.
+
+---
+
 ## Input Formats
 
 ### Q: What about images, PDFs, Excel files?
@@ -123,6 +139,32 @@ PDFs, images, Excel files must be converted to Markdown before ingestion. This i
 No. Markdown is the lightest-weight format — you only need **basic heading hierarchy** (`#`, `##`, `###`), not complex schemas.
 
 AI can convert PDF/Word to Markdown; humans just need to verify key information — not write from scratch.
+
+---
+
+## Maintenance
+
+### Q: What happens when source documents change?
+
+Re-ingest the changed Markdown files so `tree.json` and `manifest.json` reflect the current headings, line ranges, and checksums. The deterministic scripts rebuild structure; the LLM rechecks summaries and keywords where the source meaning or section layout has changed.
+
+Corrections are loaded at read time alongside the current source. If an old correction no longer matches the updated document, the LLM should defer to the current source or surface the conflict instead of silently applying stale knowledge.
+
+---
+
+### Q: What if the source Markdown has poor headings?
+
+The source should be fixed before ingestion. kb-pilot depends on headings as the table of contents; if a document has vague headings, missing H2 sections, or several topics under one heading, routing and citation quality will suffer.
+
+This is intentional. The system treats document structure as part of knowledge quality, not as something to hide behind embeddings or post-processing.
+
+---
+
+### Q: What if two documents conflict?
+
+The answer should cite the conflicting source lines and explain the disagreement rather than forcing a single merged conclusion. In a Git-based knowledge base, conflicting source documents are usually a documentation governance issue.
+
+Use corrections for answer-level fixes, and update the source Markdown when the authoritative policy or fact has changed. The goal is not to make conflicts disappear, but to make them visible and traceable.
 
 ---
 

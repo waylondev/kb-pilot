@@ -1,6 +1,6 @@
 # KB-Pilot 硬核 RAG 测试题集
 
-> 基于 `../fixtures/zx-bank-kb/` 目录下的文档设计，专门针对传统 RAG 系统的薄弱环节：多跳推理、跨文档关联、上下文割裂、条件推理、否定推理。
+> 基于 `../../fixtures/zx-bank-kb/` 目录下的文档设计，专门针对传统 RAG 系统的薄弱环节：多跳推理、跨文档关联、上下文割裂、条件推理、否定推理。
 > 每道题包含：问题、RAG 难度分析、标准答案、原文引用（文件名 + 行号）。
 
 ---
@@ -36,7 +36,7 @@
 
 ### 原文引用
 
-**信用卡资格条件** — `../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
+**信用卡资格条件** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
 - L23: `- Minimum monthly income: ₹80,000`（Platinum）
 - L25: `- Good credit history (CIBIL 750+)`
 - L43-44: `- Minimum monthly income: ₹25,000` / `- CIBIL 700+`（Gold）
@@ -44,7 +44,7 @@
 - L86: `- Age: 18 to 25 years`（Student）
 - L108: `- Valid NRI status (passport copy and visa/residence permit)`（NRI）
 
-**摩托车贷款** — `../fixtures/zx-bank-kb/zx-bank-bike-loan.md`:
+**摩托车贷款** — `../../fixtures/zx-bank-kb/zx-bank-bike-loan.md`:
 - L9: `- **Attractive Interest Rates** – Starting from *9.49% p.a.*`
 - L43-46: `- **Age:** 21–60 years` / `- **Minimum Income:** ₹8,000/month` / `- **CIBIL Score:** Above 650 preferred`
 
@@ -75,16 +75,16 @@
 
 ### 原文引用
 
-**自动转换规则** — `../fixtures/zx-bank-kb/salary-account-to-a-savings-account.md`:
+**自动转换规则** — `../../fixtures/zx-bank-kb/salary-account-to-a-savings-account.md`:
 - L10: `- If salary credits stop (for 3+ months), your account may be automatically converted to a Savings Account by the bank, but manual conversion avoids service interruptions.`
 
-**最低余额** — `../fixtures/zx-bank-kb/savings-account-overview.md`:
+**最低余额** — `../../fixtures/zx-bank-kb/savings-account-overview.md`:
 - L42-46: `| Regular Savings       | ₹5,000 (India) / LKR 3,000 (Sri Lanka) |` / `| Digital Zero Balance  | Nil (No minimum balance)  |` / `| Senior Citizens/Students | ₹1,000 (India)         |`
 
-**数字渠道转换** — `../fixtures/zx-bank-kb/salary-account-to-a-savings-account.md`:
+**数字渠道转换** — `../../fixtures/zx-bank-kb/salary-account-to-a-savings-account.md`:
 - L46-51: `1. **Open the ZX Bank Asia Mobile App** or log into NetBanking.` / `2. Go to "Service Requests" > "Convert Salary Account to Savings Account."` / `3. Fill in details and upload necessary KYC docs, if asked.` / `4. Receive confirmation after processing.`
 
-**卡/支票簿保留** — `../fixtures/zx-bank-kb/salary-account-to-a-savings-account.md`:
+**卡/支票簿保留** — `../../fixtures/zx-bank-kb/salary-account-to-a-savings-account.md`:
 - L40: `- Existing debit card, chequebook, and account number typically remain unchanged.`
 
 ---
@@ -115,15 +115,15 @@
 
 ### 原文引用
 
-**个人贷款条件** — `../fixtures/zx-bank-kb/personal-loan.md`:
+**个人贷款条件** — `../../fixtures/zx-bank-kb/personal-loan.md`:
 - L22: `| Bangladesh, Bhutan, Nepal        | 13.50% – 21.00%*                         |`
 - L20: `| Salaried (India, Sri Lanka)      | 11.75% – 17.99%                          |`
 - L56: `- **Bangladesh:** Up to BDT 35,00,000`
 
-**UPI 可用性** — `../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
+**UPI 可用性** — `../../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
 - L66: `- UPI services currently available in India for ZX Bank account holders`
 
-**替代渠道** — `../fixtures/zx-bank-kb/personal-loan.md`:
+**替代渠道** — `../../fixtures/zx-bank-kb/personal-loan.md`:
 - L65-68: `1. **Visit:** Any ZX Bank branch in your country` / `2. **Online:** Through [ZX Bank Asia Mobile App] or [NetBanking]` / `3. **Call:** 24x7 Customer Care or use AI Assistant "Zia" on the app`
 
 ---
@@ -148,13 +148,13 @@
 
 ### 原文引用
 
-**黄金贷款 LTV** — `../fixtures/zx-bank-kb/zx-bank-gold-loan.md`:
+**黄金贷款 LTV** — `../../fixtures/zx-bank-kb/zx-bank-gold-loan.md`:
 - L28: `- **Loan-to-Value (LTV):** Up to 75% of the gold's market value, as per RBI regulations`
 
-**尼泊尔 FD 最低起存** — `../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
+**尼泊尔 FD 最低起存** — `../../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
 - L20: `- Minimum Deposit: ₹5,000 (India), LKR 10,000 (Sri Lanka), BDT 10,000 (Bangladesh), BTN 1,000 (Bhutan), NPR 1,500 (Nepal)`
 
-**FD 抵押贷款比例** — `../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
+**FD 抵押贷款比例** — `../../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
 - L12: `- **Loan Against FD:** Avail instant overdraft or loans up to 90% of your FD value.`
 
 ---
@@ -187,19 +187,19 @@
 
 ### 原文引用
 
-**绿色金融奖项** — `../fixtures/zx-bank-kb/awards-and-recognitions.md`:
+**绿色金融奖项** — `../../fixtures/zx-bank-kb/awards-and-recognitions.md`:
 - L9-11: `## 2. Excellence in Green Finance Award (2022)` / `*Highlight:* Honored for innovative green financing projects supporting Bhutan's hydropower and Nepal's solar ventures, advancing ESG goals in banking.`
 
-**绿色金融项目** — `../fixtures/zx-bank-kb/about-zx-bank-ltd.md`:
+**绿色金融项目** — `../../fixtures/zx-bank-kb/about-zx-bank-ltd.md`:
 - L93-94: `- **Green Finance Projects**` / `  - Partnering with Bhutan hydropower & Nepal solar ventures`
 
-**绿色家园贷款** — `../fixtures/zx-bank-kb/zx-bank-house-loan.md`:
+**绿色家园贷款** — `../../fixtures/zx-bank-kb/zx-bank-house-loan.md`:
 - L58: `- **Green Homes:** Lower rates for eco-friendly/energy-efficient homes`
 
-**绿色商业贷款** — `../fixtures/zx-bank-kb/zx-bank-business-loans.md`:
+**绿色商业贷款** — `../../fixtures/zx-bank-kb/zx-bank-business-loans.md`:
 - L34-35: `### 6. **Green & Sustainability Loans**` / `> Financing for renewable energy, eco-friendly infrastructure, and climate-smart business initiatives.`
 
-**存款参与 ESG** — `../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
+**存款参与 ESG** — `../../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
 - L74-75: `Part of your deposits fuel green finance projects such as Bhutanese hydropower and Nepalese solar ventures, ensuring your savings contribute to a sustainable future.`
 
 ---
@@ -244,19 +244,19 @@
 
 ### 原文引用
 
-**欺诈冻结渠道** — `../fixtures/zx-bank-kb/fraud-transaction.md`:
+**欺诈冻结渠道** — `../../fixtures/zx-bank-kb/fraud-transaction.md`:
 - L9-14: 热线电话（印度/斯里兰卡/孟加拉国/不丹/尼泊尔）
 - L16: `- **Email:** fraudreport@zxbank.asia`
 - L17: `- **Mobile App:** Go to **ZX Bank Asia** app → Support → Report Fraud`
 - L22-24: `- Go to "Card Management" or "Account Services"` / `- Select "Block/Card Hotlisting" or "Freeze Account"`
 
-**App 内冻结卡片** — `../fixtures/zx-bank-kb/zx-bank-asia-mobile-app-guide.md`:
+**App 内冻结卡片** — `../../fixtures/zx-bank-kb/zx-bank-asia-mobile-app-guide.md`:
 - L75: `- **Block Card**: Select card → More options → Block (immediate effect).`
 
-**解决时间** — `../fixtures/zx-bank-kb/fraud-transaction.md`:
+**解决时间** — `../../fixtures/zx-bank-kb/fraud-transaction.md`:
 - L54: `- ZX Bank targets resolution within 10 working days.`
 
-**支票簿申请渠道** — `../fixtures/zx-bank-kb/apply-for-a-cheque-book.md`:
+**支票簿申请渠道** — `../../fixtures/zx-bank-kb/apply-for-a-cheque-book.md`:
 - L1-15: Via ZX Bank Mobile App（渠道1）
 - L19-26: Through NetBanking（渠道2）
 - L29-34: At Branch（渠道3）
@@ -290,16 +290,16 @@
 
 ### 原文引用
 
-**UPI 可用性** — `../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
+**UPI 可用性** — `../../fixtures/zx-bank-kb/upi-zx-bank-asia.md`:
 - L66: `- UPI services currently available in India for ZX Bank account holders`
 
-**e-KYC 可用性** — `../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
+**e-KYC 可用性** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
 - L119: `- e-KYC available for India, Sri Lanka, and Nepal residents`
 
-**学生信用卡可用性** — `../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
+**学生信用卡可用性** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
 - L74: `**Best For:** College & university students (India, Sri Lanka, Nepal only)`
 
-**跨境汇款走廊** — `../fixtures/zx-bank-kb/cross-border-payments.md`:
+**跨境汇款走廊** — `../../fixtures/zx-bank-kb/cross-border-payments.md`:
 - L5: `ZX Bank provides **fast, secure cross-border payment services** between **India, Sri Lanka, Nepal, and Bhutan**.`
 
 ---
@@ -338,11 +338,11 @@
 
 ### 原文引用
 
-**房屋贷款文件** — `../fixtures/zx-bank-kb/zx-bank-house-loan.md`:
+**房屋贷款文件** — `../../fixtures/zx-bank-kb/zx-bank-house-loan.md`:
 - L34-37: `- **ID Proof:** Aadhaar, PAN, Passport, Voter ID` / `- **Address Proof:** Utility Bill, Passport, Aadhaar` / `- **Income Proof:** Salary slips, ITR, Bank statement, Form 16` / `- **Property Documents:** Sale agreement, title deed, approved plan`
 - L43-44: `1. **Online:**` / `Visit [ZX Bank Home Loan Portal]`
 
-**汽车贷款文件** — `../fixtures/zx-bank-kb/zx-bank-car-loan.md`:
+**汽车贷款文件** — `../../fixtures/zx-bank-kb/zx-bank-car-loan.md`:
 - L31-34: `- **KYC Documents:** Aadhaar/Passport/Driving License, PAN, photograph` / `- **Income Proof:** Salary slips/ITR/Bank statements (Past 6 months)` / `- **Employment/Business Proof:** Offer letter/Business registration` / `- **Vehicle Quotation/Invoice**`
 - L41-42: `1. **Download** the [ZX Bank Asia App] or log in to [ZX NetBanking]`
 
@@ -385,19 +385,19 @@ HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
 
 ### 原文引用
 
-**海得拉巴西区分行** — `../fixtures/zx-bank-kb/hyderabad-branch-network.md`:
+**海得拉巴西区分行** — `../../fixtures/zx-bank-kb/hyderabad-branch-network.md`:
 - L49-50: `| Madhapur Kavuri Hills, 500081                   | ZXIN0001232   | 040-45671232    |`
 
-**HITEC City 位置** — `../fixtures/zx-bank-kb/atm-locations-at-tech-parks-in-major-indian-cities.md`:
+**HITEC City 位置** — `../../fixtures/zx-bank-kb/atm-locations-at-tech-parks-in-major-indian-cities.md`:
 - L48-49: `1. **HITEC City**` / `   Madhapur, Hyderabad, Telangana 500081`
 
-**孟买科技园区 ATM** — `../fixtures/zx-bank-kb/atm-locations-at-tech-parks-in-major-indian-cities.md`:
+**孟买科技园区 ATM** — `../../fixtures/zx-bank-kb/atm-locations-at-tech-parks-in-major-indian-cities.md`:
 - L9-16: Mindspace Airoli IT Park / Nesco IT Park / Infinity IT Park
 
-**ATM 定位方式** — `../fixtures/zx-bank-kb/zx-bank-asia-mobile-app-guide.md`:
+**ATM 定位方式** — `../../fixtures/zx-bank-kb/zx-bank-asia-mobile-app-guide.md`:
 - L117: `- **Locate Branch/ATM**: Find ZX Bank locations in all supported countries`
 
-**ATM 定位方式** — `../fixtures/zx-bank-kb/atms-at-railway-stations-and-airports.md`:
+**ATM 定位方式** — `../../fixtures/zx-bank-kb/atms-at-railway-stations-and-airports.md`:
 - L180: `Find the nearest ZX Bank ATM using the [ZX Bank Asia Mobile App] or [ZX Bank ATM Locator].`
 
 ---
@@ -451,28 +451,28 @@ HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
 
 ### 原文引用
 
-**FD 老年人利率** — `../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
+**FD 老年人利率** — `../../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
 - L67: `| 3 years–5 years  | 6.30%        | 6.80%               |`
 - L22: `- Special Schemes: Senior citizen extra interest, tax-saver FDs, recurring deposit variants`
 
-**信用卡年龄限制** — `../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
+**信用卡年龄限制** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
 - L24: `- Age: 21 to 65 years`（Platinum）
 - L45: `- Age: 21 to 65 years`（Gold）
 - L67: `- Age: 21 to 65 years`（Women Empower）
 - L87: `- Age: 18 to 25 years`（Student）
 - L110: `- Age: 21 to 65 years`（NRI）
 
-**保险箱前提条件** — `../fixtures/zx-bank-kb/open-a-locker.md`:
+**保险箱前提条件** — `../../fixtures/zx-bank-kb/open-a-locker.md`:
 - L17-18: `- **Existing ZX Bank customer:** You must have (or open) a savings or current account.` / `- **KYC Compliance:** Ensure your KYC (Know Your Customer) details are updated.`
 - L27-30: `1. **Visit the Branch:** Bring original documents and photocopies.` / `2. **Fill Application Form:**` / `3. **Submit KYC Documents:**` / `4. **Locker Agreement:** Read and sign the Locker Hirer Agreement`
 - L35-36: `- Pay the **refundable security deposit**` / `- Locker rent is typically paid **annually**.`
 - L44: `- Upon approval, a locker number will be allotted.`
 - L45: `- Receive the **locker keys**`
 
-**保险箱操作** — `../fixtures/zx-bank-kb/open-a-locker.md`:
+**保险箱操作** — `../../fixtures/zx-bank-kb/open-a-locker.md`:
 - L51-54: `- Locker can be operated **during branch working hours**.` / `- Visit the branch with your locker keys and valid ID proof.` / `- Sign the **Locker Access Register** each time you access the locker.`
 
-**FD 在线开立** — `../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
+**FD 在线开立** — `../../fixtures/zx-bank-kb/zx-bank-fixed-deposits.md`:
 - L14: `- **Digital Opening:** Open, renew, or close FDs instantly through ZX Bank Asia mobile app or NetBanking.`
 - L42-47: Via Mobile App 步骤（完全在线）
 
@@ -505,21 +505,21 @@ HITEC City 位于 Madhapur 地区，最近的 ZX Bank 分行是：
 
 ### 原文引用
 
-**跨境汇款时间** — `../fixtures/zx-bank-kb/cross-border-payments.md`:
+**跨境汇款时间** — `../../fixtures/zx-bank-kb/cross-border-payments.md`:
 - L11: `- **Instant Transfers:** Most transfers are processed within minutes using ZX Bank's advanced payment rails and SWIFT capabilities.`
 - L5: `ZX Bank provides **fast, secure cross-border payment services** between **India, Sri Lanka, Nepal, and Bhutan**.`
 
-**NRI 信用卡条件** — `../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
+**NRI 信用卡条件** — `../../fixtures/zx-bank-kb/zx-bank-credit-card.md`:
 - L95: `**Best For:** Non-resident Indians and NRIs in Bhutan, Nepal, Sri Lanka`
 - L104-105: `- Joining Fee: USD $30 (or equivalent)` / `- Annual Fee: USD $25 (waived on spends above USD $5,000)`
 - L109: `- Minimum monthly overseas remittance: $1,000`
 
-**WhatsApp Zia** — `../fixtures/zx-bank-kb/ask-zia-your-24-7-banking-assistant.md`:
+**WhatsApp Zia** — `../../fixtures/zx-bank-kb/ask-zia-your-24-7-banking-assistant.md`:
 - L19: `- **Easy Onboarding**: Start a chat by saving our official number and saying "Hello Zia!"`
 - L24: `- **Language Support**: Interact in English, Hindi, Sinhala, Bengali, and Nepali.`
 - L42-44: `1. Save our official WhatsApp number: **+91-XXX-XXX-XXXX**` / `2. Send a message: \`Hello Zia\`` / `3. Follow prompts to access banking features.`
 
-**不丹运营** — `../fixtures/zx-bank-kb/about-zx-bank-ltd.md`:
+**不丹运营** — `../../fixtures/zx-bank-kb/about-zx-bank-ltd.md`:
 - L23-24: `- **Bhutan**` / `  - Cross-border banking, digital onboarding, and NRI support.`
 
 ---

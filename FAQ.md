@@ -6,7 +6,7 @@
 
 LLM Wiki is a **"compiler" model** — the LLM reads, reconstructs, and rewrites source documents into a structured set of Markdown Wiki pages. Queries read the compiled output, not the original text. Information loss occurs during compilation.
 
-kb-pilot is an **"index" model** — no compilation, no reconstruction, no modification of the source. `tree.json` only records heading hierarchy and line numbers. Queries extract the **original source** via line numbers. **Zero loss.**
+kb-pilot is an **"index" model** — no compilation, no reconstruction, no modification of the source. `tree.json` only records heading hierarchy and line numbers. Queries read the **original source** via line-number anchors, so the source text itself is not rewritten during indexing.
 
 **One reads compiled content; the other reads the original source.**
 
@@ -54,9 +54,9 @@ Yes. That's by design — **correction records are the audit log of knowledge ev
 
 ### Q: How is the TOC different from a vector DB's "domain field filter"?
 
-A vector DB's domain field filter does **coarse-grained** filtering (e.g., "only finance documents"), but after filtering, it still relies on vector recall. kb-pilot's TOC provides **line-level deterministic positioning**, not probabilistic matching.
+A vector DB's domain field filter does **coarse-grained** filtering (e.g., "only finance documents"), but after filtering, it still relies on vector recall. kb-pilot's TOC provides **line-level anchors into the source**, so the LLM can navigate to a specific document section and verify against the original text.
 
-**Fundamental difference: vector DB is "filter and guess"; TOC is "direct locate."**
+**Fundamental difference: vector DB is "filter and recall"; TOC is "navigate and read the source."**
 
 ---
 
@@ -64,9 +64,9 @@ A vector DB's domain field filter does **coarse-grained** filtering (e.g., "only
 
 Parent-child chunking is a patch **within** the vector retrieval framework — small chunks for recall, parent chunks for context compensation. But the root issue remains: you're still chunking, still relying on vector recall.
 
-kb-pilot's TOC **doesn't chunk the source**. It extracts complete original source via line numbers, not stitched-together fragments.
+kb-pilot's TOC **doesn't chunk the source**. It reads relevant source sections via line numbers, rather than stitching together pre-split fragments.
 
-**Parent-child chunking is "tagging shredded fragments"; kb-pilot's TOC is "indexing the complete source."**
+**Parent-child chunking is "tagging shredded fragments"; kb-pilot's TOC is "indexing source structure and reading source sections."**
 
 ---
 
@@ -74,7 +74,7 @@ kb-pilot's TOC **doesn't chunk the source**. It extracts complete original sourc
 
 grep/ripgrep work well for structured documents — **if the user knows exactly what to search for**.
 
-kb-pilot's differentiator: the user doesn't need to hit the exact keyword. The LLM routes to the document and section via semantic matching, then uses the same line-level positioning. **One is "I know what to search for"; the other is "the LLM figures out what to read for me."**
+kb-pilot's differentiator: the user doesn't need to hit the exact keyword. The LLM routes to the document and section via semantic matching, then verifies against line-numbered source text. **One is "I know what to search for"; the other is "the LLM figures out what to read for me."**
 
 ---
 
@@ -84,9 +84,9 @@ kb-pilot's differentiator: the user doesn't need to hit the exact keyword. The L
 
 Yes, that's the direct tradeoff. A few points to consider:
 
-1. **Less volume**: The TOC pinpoints only relevant sections — you don't scan everything. Traditional RAG may use fewer tokens per chunk, but may need multiple retrieval rounds to assemble an answer.
+1. **Less volume than full-repo reading**: The TOC narrows the reading scope to likely relevant sections. Traditional RAG may use fewer tokens per chunk, but may need multiple retrieval rounds to assemble an answer.
 
-2. **What you get**: No lost context, precise citations, zero hallucination. If you only need "rough answers," this approach isn't cost-effective. But if you need **accurate citations and traceable conclusions**, the cost is necessary.
+2. **What you get**: More complete local context, precise citations, and source-grounded self-verification. If you only need "rough answers," this approach may not be cost-effective. But if you need **accurate citations and traceable conclusions**, the extra reading cost can be worthwhile.
 
 **It's a tradeoff: cost for accuracy.** Choose based on your scenario — kb-pilot isn't for every use case.
 
@@ -114,7 +114,7 @@ AGENTS.md states: **"No format conversion — PDF/Word/HTML → Markdown is the 
 
 PDFs, images, Excel files must be converted to Markdown before ingestion. This isn't a technical limitation — it's a design choice: the accuracy of conversion must be the user's responsibility. AI-assisted conversion + human review is the recommended workflow.
 
-**If a document references an image (e.g., "see Figure 5"), the extracted source snippet includes the reference text, and the LLM perceives the context.**
+**If a document references an image (e.g., "see Figure 5"), the extracted source snippet includes the reference text and surrounding Markdown context. The system does not interpret image contents unless that content is represented in Markdown.**
 
 ---
 
@@ -158,7 +158,7 @@ Differences:
 
 ### Q: What's kb-pilot's advantage in one sentence?
 
-**Replace probabilistic vector recall with deterministic line-level positioning; let the LLM handle all semantic understanding; use Git as the collaboration backbone.** Designed for mid-scale (tens to hundreds of documents), structured knowledge bases that require high accuracy, traceable citations, and low-cost deployment.
+**Replace chunk-level vector recall with TOC-guided source navigation; let the LLM handle semantic understanding; use Git as the collaboration backbone.** Designed for mid-scale (tens to hundreds of documents), structured knowledge bases that require accurate citations, traceable conclusions, and low infrastructure overhead.
 
 ---
 

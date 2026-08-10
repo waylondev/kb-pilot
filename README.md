@@ -2,24 +2,47 @@
 
 > TOC + source = knowledge base. Let the LLM read like a human, instead of shredding books into a vector database.
 
-**Core insight**: The LLM is sufficiently intelligent — it only needs **a precise TOC and the full source text**, not vector embeddings, chunk splitting, or entity-relationship graphs. Scripts constrain the skeleton; the LLM fills the content. See [AGENTS.md](./AGENTS.md) for design principles.
+**Core insight**: For well-structured Markdown knowledge bases, an LLM can often answer accurately with **a precise TOC and the relevant source text**, without adding vector embeddings, chunk splitting, or entity-relationship graphs. Scripts constrain the skeleton; the LLM fills the content. See [AGENTS.md](./AGENTS.md) for design principles.
 
-**Forward-looking**: This design gets stronger as LLMs improve — routing gets more precise, reasoning gets deeper, self-verification gets more reliable. No intermediate layers to hold it back.
+**Forward-looking**: This design benefits from stronger LLMs — routing, reasoning, and self-verification can improve without rebuilding a retrieval stack.
 
 **Zero intrusion**: Original documents stay where they are. All metadata (index, corrections) lives under `.kb/` in a mirrored layout. Delete `.kb/` to fully uninstall — user files are untouched.
-
 
 ## Why kb-pilot?
 
 | | Traditional RAG | kb-pilot |
 |---|---|---|
 | Document processing | Shred into chunks → vectorize | Keep full source, zero modification |
-| Retrieval | Semantic similarity (probabilistic) | TOC index (deterministic) |
-| Infrastructure | Embedding model + vector DB + GPU | Filesystem + Git |
+| Retrieval | Semantic similarity over chunks | TOC-guided source navigation |
+| Infrastructure | Embedding model + vector DB + often GPU-backed services | Filesystem + Git |
 | Answer tracing | "somewhere near a chunk" | `docs/api/auth.md#L16` line-level precision |
 | Corrections | Requires a separate system | Conversation-as-correction, jsonl-persisted |
-| Deployment cost | High (GPU, vector DB) | **Zero** |
+| Deployment cost | High infrastructure cost | Low infrastructure cost |
 | User directory intrusion | Must migrate to a required layout | **Zero intrusion**, metadata in `.kb/` |
+
+## Scope
+
+kb-pilot is not a universal replacement for every RAG system. It is a focused choice for **small to mid-sized, well-structured Markdown knowledge bases** where traceability matters more than millisecond retrieval speed.
+
+It works best for internal policies, product manuals, technical docs, compliance notes, financial procedures, and other sources where:
+
+- Documents have clear heading hierarchy (`#`, `##`, `###`) and stable source files
+- The knowledge base is maintained like a Git repo, with humans responsible for document quality
+- Answers must cite exact source lines
+- The agent can spend time reading the relevant section and self-verifying claims against the source
+
+It is not designed for massive unstructured corpora, real-time web-scale search, millisecond-latency retrieval, or replacing document cleanup and human review.
+
+In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow. It is strongest when the source documents are clean, structured, and worth reading precisely.
+
+## Evaluation
+
+A small structured test suite is available under `docs/test-suites/`:
+
+- [Hard RAG questions](docs/test-suites/zx-bank-kb-hard-rag-questions.md)
+- [kb-chat execution report](docs/test-suites/kb-chat-strict-execution-report.md)
+
+This is a hand-auditable execution record on a small, structured Markdown knowledge base. It is not an automated benchmark or a claim of general performance across open-domain RAG workloads.
 
 
 ## Quick start
@@ -148,12 +171,12 @@ kb-pilot/
 
 | Principle | Meaning |
 |------|------|
-| **TOC + source = knowledge base** | The LLM is smart enough; it only needs a precise TOC and the full source — no vectors, chunks, or graphs |
+| **TOC + source = knowledge base** | For structured Markdown, a precise TOC plus source text can often be enough — no vectors, chunks, or graphs by default |
 | **Trust the LLM** | Scripts only constrain the skeleton (headings, line numbers); summary, keywords, routing, and answers are all LLM-autonomous — no templates, no extraction algorithms |
 | **LLM is the routing engine** | Locates documents via semantic understanding of title/summary/keywords, not keyword matching |
 | **Zero intrusion** | User's source stays in place; metadata centralized under `.kb/`; delete to uninstall |
 | **Deterministic skeleton + semantic flesh** | Skeleton (heading hierarchy, line numbers) is script-generated; flesh (summary, keywords) is LLM-injected |
-| **Git is the source of truth** | All metadata is text files; versioning, collaboration, sync, and conflicts all go through Git |
+| **Git as the collaboration layer** | All metadata is text files; versioning, collaboration, sync, and conflicts can go through Git |
 | **Line-level tracing** | Answers cite `docs/api/auth.md#L16` — traceable and verifiable |
 | **Conversation-as-correction** | User corrections persist as jsonl; duplicates = consensus; conflicts shown side by side |
 | **Less is more** | No vectors, no chunks, no graphs, no sharding, no format conversion |
@@ -279,7 +302,7 @@ flowchart TD
 - **Knowledge as code**: Metadata is plain text JSON — editable, versioned, auditable
 - **Correction as commit**: Error found → correct → commit → push
 - **Collaboration as pull**: Team updates via `git pull`, no "re-index" delays
-- **Gets better over time**: LLM improvements → better routing, deeper reasoning, stronger self-verification. No intermediate layers to rebuild.
+- **Can benefit from better models**: LLM improvements may improve routing, reasoning, and self-verification without rebuilding the index format.
 
 ### Scaling
 
@@ -291,13 +314,7 @@ One knowledge base = one Git repo = one cognitive boundary. When a single repo e
 
 ## FAQ
 
-See [FAQ.md](./FAQ.md) for common questions and design trade-offs:
-- How does this compare to LLM Wiki?
-- What about version drift in corrections?
-- How is this different from vector database filtering?
-- How to handle images, PDFs, Excel files?
-- Does this work at scale?
-- Does it consume too many tokens?
+See [FAQ.md](./FAQ.md) for common questions and design trade-offs.
 
 
 ## License

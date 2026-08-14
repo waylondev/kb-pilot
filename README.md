@@ -36,15 +36,6 @@ It is not designed for massive unstructured corpora, real-time web-scale search,
 
 In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow. It is strongest when the source documents are clean, structured, and worth reading precisely.
 
-## Evaluation
-
-| Test suite | Knowledge base shape | Result |
-|---|---|---:|
-| [ZX Bank hard RAG questions](docs/test-suites/zx-bank-kb/zx-bank-kb-hard-rag-questions.md) | Small-to-mid structured banking Markdown corpus | [11/11 factual answers, 11/11 citation precision](docs/test-suites/zx-bank-kb/kb-chat-strict-execution-report.md) |
-| [Credit card hard RAG questions](docs/test-suites/credit-card-kb/qa-credit-card-hard-rag.md) | Small structured credit-card policy corpus | [10/10 factual answers, 10/10 citation precision](docs/test-suites/credit-card-kb/kb-chat-strict-execution-report.md) |
-
-These are hand-auditable execution records on small, structured Markdown knowledge bases. They are not an automated benchmark or a claim of general performance across open-domain RAG workloads.
-
 
 ## Quick start
 

@@ -20,7 +20,6 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 - **Let the LLM navigate autonomously** — It picks the document, dives into the section, expands the read range as needed. Provide anchors (line numbers, TOC), not rules
 - **Let the LLM organize answers freely** — The only hard requirement is traceable citations. Format, length, and style are the LLM's call
 - **Let the LLM distill summaries** — After reading each section, the LLM writes what it understood. No templates, no extraction algorithms
-- **Let the LLM judge corrections** — It decides whether a correction is relevant, whether duplicates signal consensus, whether conflicts need side-by-side display
 - **Keep scripts minimal** — Parse structure, aggregate metadata, compute hashes. That is all
 - **When uncertain, consult the user** — The LLM asks rather than guesses, just like a librarian
 - **Let the LLM reflect on its own answer** — Before delivering, it re-checks every claim against the source and decides for itself how many rounds it needs. No fixed round count, no score threshold — the stop condition is "I can stand behind every claim". This is not a constraint; it is the LLM using its own judgment, like a human double-checking notes before answering
@@ -46,12 +45,12 @@ SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guide
 - **Match specificity to fragility** — Be prescriptive for fragile operations (path mapping, doc_id); give freedom where multiple approaches are valid
 - **Favor procedures over declarations** — Teach *how to approach*, not *what to produce*
 - **Checklists, not decision trees** — Steps are progress markers, not if-else branches
-- **Validation loops** — Validate after fragile operations (kb-ingest Step 5 + Step 6, kb-chat Step 6)
+- **Validation loops** — Validate after fragile operations (kb-ingest Step 5 + Step 6, kb-chat Step 5)
 - **Bundling reusable scripts** — Deterministic logic lives in `scripts/`; the LLM handles semantics
 
 ## Script design principles
 
-- **Self-contained with PEP 723 inline dependencies** — Declare external deps (e.g. `# /// script\n# dependencies = ["pyyaml"]\n# ///`) so scripts run without separate install steps
+- **Self-contained with PEP 723 inline dependencies** — Declare external deps (e.g. `# /// script\n# dependencies = ["requests"]\n# ///`) so scripts run without separate install steps
 - **argparse CLI with `--help`** — Examples and exit codes in the epilog
 - **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
 - **Single responsibility** — One script does one deterministic thing
@@ -78,11 +77,9 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
     ├── kb-ingest/
     │   ├── SKILL.md               # ingest workflow (9 steps: clone → tree → LLM fill → manifest → commit)
     │   └── scripts/
-    │       ├── build_tree.py      # Markdown → tree.json skeleton (deterministic)
-    │       └── build_manifest.py  # metadata.yaml × N → manifest.json (deterministic)
-    ├── kb-chat/                   # QA workflow (6 steps: route → localize → read → answer → self-verify)
-    │   └── SKILL.md
-    └── kb-correct/                # correction persistence
+    │       ├── build_tree.py      # Markdown → tree.json (document record + skeleton, deterministic)
+    │       └── build_manifest.py  # tree.json × N → manifest.json (deterministic)
+    └── kb-chat/                   # QA workflow (5 steps: route → localize → read → answer → self-verify)
         └── SKILL.md
 ```
 

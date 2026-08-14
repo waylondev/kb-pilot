@@ -6,7 +6,7 @@
 
 **Forward-looking**: This design benefits from stronger LLMs — routing, reasoning, and self-verification can improve without rebuilding a retrieval stack.
 
-**Zero intrusion**: Original documents stay where they are. All metadata (index, corrections) lives under `.kb/` in a mirrored layout. Delete `.kb/` to fully uninstall — user files are untouched.
+**Zero intrusion**: Original documents stay where they are. All metadata (the index) lives under `.kb/` in a mirrored layout. Delete `.kb/` to fully uninstall — user files are untouched.
 
 ## Why kb-pilot?
 
@@ -16,7 +16,7 @@
 | Retrieval | Semantic similarity over chunks | TOC-guided source navigation |
 | Infrastructure | Embedding model + vector DB + often GPU-backed services | Filesystem + Git |
 | Answer tracing | "somewhere near a chunk" | `docs/api/auth.md#L16` line-level precision |
-| Corrections | Requires a separate system | Conversation-as-correction, jsonl-persisted |
+| Corrections | Requires a separate system | Edit the source, re-ingest — the source is the correction |
 | Deployment cost | High infrastructure cost | Low infrastructure cost |
 | User directory intrusion | Must migrate to a required layout | **Zero intrusion**, metadata in `.kb/` |
 
@@ -39,11 +39,7 @@ In short: kb-pilot trades broad retrieval infrastructure for a transparent, line
 
 ## Quick start
 
-**Prerequisites**: Python 3.10+, Git, PyYAML
-
-```bash
-pip install pyyaml
-```
+**Prerequisites**: Python 3.10+, Git. The scripts use only the Python standard library — no extra dependencies.
 
 ### 1. Ingest a document
 
@@ -61,12 +57,11 @@ Use Skill: kb-chat What's the difference between Docker containers and VMs?
 
 ```
 User: That's wrong — the JWT expiry is 24h, not 12h.
-Use Skill: kb-correct to persist this correction.
 ```
 
-`kb-correct` appends the correction (append-only) to `.kb/memory/corrections/`. Subsequent identical questions load the correction; when multiple users give the same answer to the same fact, duplicate records are treated as a consensus signal, reinforcing confidence. Conflicting corrections are shown side by side. Concurrent write conflicts are resolved by Git merge.
+Directly edit the source file (fix the fact in `docs/api/auth.md`), then re-ingest it so `tree.json` line numbers and checksum stay in sync with the corrected text. The source is the single source of truth — there is no separate correction layer.
 
-**Version awareness**: Each `tree.json` includes a top-level `source_sha256` checksum for the source file. When a source file is updated and re-ingested, the new tree replaces the old one. Corrections are loaded alongside the current `tree.json` — the LLM reads both and can disregard corrections that no longer apply to the current version. This is handled at read time, not index time.
+**Version awareness**: Each `tree.json` includes a top-level `source_sha256` checksum for the source file. When a source file is updated and re-ingested, the new tree replaces the old one and line anchors are recomputed against the corrected text. This is handled at index time, not read time.
 
 ### 4. Initialize from an existing Git repo
 
@@ -82,10 +77,9 @@ Use Skill: kb-ingest to initialize the knowledge base from https://github.com/or
 ```mermaid
 flowchart LR
     Q["Question"] --> M[".kb/manifest.json<br/>library card catalog"]
-    M --> T[".kb/index/.../tree.json<br/>chapter TOC"]
+    M --> T[".kb/index/.../tree.json<br/>document record + chapter TOC"]
     T --> S["Source file<br/>full original text"]
     S --> A["LLM reads<br/>+ answers"]
-    C[".kb/memory/corrections/<br/>correction records"] -.-> A
 ```
 
 ### System components
@@ -95,15 +89,14 @@ graph TB
     subgraph Agent["Agent (LLM)"]
         INGEST["kb-ingest<br/>build a TOC for a document"]
         CHAT["kb-chat<br/>read the TOC + answer questions"]
-        CORRECT["kb-correct<br/>persist a correction"]
     end
 
     subgraph KB["Knowledge base (Git repo)"]
         direction TB
         subgraph Meta[".kb/ metadata"]
             MANIFEST["manifest.json<br/>global card catalog"]
-            TREE["tree.json<br/>chapter TOC + keywords"]
-            MEMORY["memory/<br/>corrections + preferences"]
+            TREE["tree.json<br/>document record + chapter TOC"]
+            PREF["memory/<br/>route preferences"]
         end
         SOURCE["docs/.../*.md<br/>user's source (untouched)"]
     end
@@ -113,8 +106,6 @@ graph TB
     CHAT -->|"1. route"| MANIFEST
     CHAT -->|"2. localize"| TREE
     CHAT -->|"3. read"| SOURCE
-    CHAT -->|"4. load corrections"| MEMORY
-    CORRECT -->|"5. append correction"| MEMORY
 ```
 
 ### Knowledge base layout
@@ -122,16 +113,14 @@ graph TB
 ```
 {kb_path}/                          # Git repo root
 ├── .kb/                            # kb-pilot metadata (centralized)
-│   ├── manifest.json               # global routing table (script-generated)
+│   ├── manifest.json               # global routing table (script-generated, minified)
 │   ├── memory/
-│   │   ├── corrections/            # correction records
 │   │   └── route_preferences.json
 │   └── index/                      # mirrored directory
 │       └── docs/
 │           └── api/
 │               └── auth/           # corresponds to docs/api/auth.md
-│                   ├── metadata.yaml
-│                   └── tree.json
+│                   └── tree.json   # document record + heading skeleton (minified)
 ├── docs/                           # user's original documents (any structure, untouched)
 │   └── api/
 │       └── auth.md
@@ -145,15 +134,13 @@ Path mapping: source file `docs/api/auth.md` → metadata directory `.kb/index/d
 ```
 kb-pilot/
 ├── AGENTS.md           # design principles — scripts constrain skeleton, LLM fills content
-├── skills/             # Agent SKILL definitions
+├── .agents/skills/     # Agent SKILL definitions
 │   ├── kb-ingest/      # document ingestion
 │   │   ├── SKILL.md
 │   │   └── scripts/    # deterministic scripts
 │   │       ├── build_tree.py
 │   │       └── build_manifest.py
-│   ├── kb-chat/        # knowledge Q&A
-│   │   └── SKILL.md
-│   └── kb-correct/     # correction persistence
+│   └── kb-chat/        # knowledge Q&A
 │       └── SKILL.md
 └── knowledge_repo/     # knowledge base data (example, not committed)
 ```
@@ -170,9 +157,9 @@ kb-pilot/
 | **Deterministic skeleton + semantic flesh** | Skeleton (heading hierarchy, line numbers) is script-generated; flesh (summary, keywords) is LLM-injected |
 | **Git as the collaboration layer** | All metadata is text files; versioning, collaboration, sync, and conflicts can go through Git |
 | **Line-level tracing** | Answers cite `docs/api/auth.md#L16` — traceable and verifiable |
-| **Conversation-as-correction** | User corrections persist as jsonl; duplicates = consensus; conflicts shown side by side |
+| **Source is the correction** | A wrong answer is fixed by editing the source and re-ingesting — no separate correction layer |
 | **Less is more** | No vectors, no chunks, no graphs, no sharding, no format conversion |
-| **Skill-based** | Atomic capabilities (`kb-ingest`, `kb-chat`, `kb-correct`) are composable — integrate into larger Agents, combine for cross-repo queries, or extend with new Skills |
+| **Skill-based** | Atomic capabilities (`kb-ingest`, `kb-chat`) are composable — integrate into larger Agents, combine for cross-repo queries, or extend with new Skills |
 
 
 ## Best practice: End-to-end workflow
@@ -203,7 +190,7 @@ Use Skill: kb-ingest to initialize from https://github.com/org/docs.git
 
 Scripts generate `tree.json` (heading hierarchy + line numbers) and `manifest.json` (global routing table). LLM automatically injects summaries and keywords into each tree node.
 
-All metadata is **plain text JSON** — human-readable, editable, Git-tracked.
+All metadata is **JSON** — script-generated (minified by default to keep LLM token use low), Git-tracked, and easy to inspect or edit by regenerating with `--pretty`.
 
 ### Step 3: Ask questions
 
@@ -222,27 +209,29 @@ In VSCode, click the link — it jumps directly to the exact lines in the source
 
 ### Step 4: Maintain knowledge
 
-**Option A: Correct via conversation**
+**Correct an answer by editing the source**
 
 ```
 User: That's wrong — the JWT expiry is 24h, not 12h.
-Use Skill: kb-correct to persist this correction.
 ```
 
-`kb-correct` appends the correction (append-only) to `.kb/memory/corrections/`. Multiple identical corrections → consensus signal. Conflicting corrections → shown side by side.
+Locate the wrong lines in the source Markdown, fix the fact there, then re-ingest the document so `tree.json` line numbers and the checksum stay in sync with the corrected text. The source is the single source of truth.
 
-**Option B: Manual index edit**
+**Optionally edit the index**
 
 ```bash
-# Wrong summary? Adjust tree structure?
-vim .kb/manifest.json
-vim .kb/index/docs/api/auth/tree.json
+# Wrong summary? Adjust the document record?
+python .agents/skills/kb-ingest/scripts/build_manifest.py {kb_path} --pretty
+python .agents/skills/kb-ingest/scripts/build_tree.py docs/api/auth.md \
+  .kb/index/docs/api/auth/tree.json --source-path docs/api/auth.md --pretty
+# edit .kb/index/docs/api/auth/tree.json, then rebuild the (minified) manifest
+python .agents/skills/kb-ingest/scripts/build_manifest.py {kb_path}
 git commit -m "fix: update auth module summary"
 ```
 
-Plain text JSON means edits are simple, Git tracks every change.
+The index is JSON regenerated by scripts; use `--pretty` when you need a readable, editable copy. Git tracks every change.
 
-**Version drift protection**: Each `tree.json` contains a top-level `source_sha256` checksum for the source file. When the source file updates, the LLM reads the current tree alongside corrections and can disregard obsolete corrections at read time.
+**Version drift protection**: Each `tree.json` contains a top-level `source_sha256` checksum for the source file. When the source file updates and is re-ingested, line anchors are recomputed against the current text, so citations always point at the corrected source.
 
 ### Step 5: Team collaboration
 
@@ -268,8 +257,8 @@ flowchart TD
     D -->|"Answer is correct"| E["📤 git push origin main"]
     D -->|"Answer needs correction"| F{"Correction method"}
     
-    F -->|"Conversation"| G["📝 kb-correct<br/>Appends to corrections/"]
-    F -->|"Manual edit"| H["✏️ Edit .kb/*.json<br/>manifest.json or tree.json"]
+    F -->|"Edit source"| G["📝 Fix the fact in source<br/>then kb-ingest rebuild"]
+    F -->|"Edit index"| H["✏️ Edit .kb/*.json<br/>(regenerate with --pretty)"]
     
     G --> I["📤 git commit & push"]
     H --> I
@@ -291,8 +280,8 @@ flowchart TD
 ### Core value of this workflow
 
 - **Citation traceability**: Every answer maps to a specific source file and line range
-- **Knowledge as code**: Metadata is plain text JSON — editable, versioned, auditable
-- **Correction as commit**: Error found → correct → commit → push
+- **Knowledge as code**: Metadata is JSON — regenerated by scripts, versioned, auditable
+- **Correction as source edit**: Error found → fix the source → re-ingest → commit → push
 - **Collaboration as pull**: Team updates via `git pull`, no "re-index" delays
 - **Can benefit from better models**: LLM improvements may improve routing, reasoning, and self-verification without rebuilding the index format.
 

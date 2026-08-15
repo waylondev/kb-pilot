@@ -50,17 +50,17 @@ Script paths follow the standard skill convention: `scripts/...` is relative to 
 Progress:
 - [ ] **1. Prepare repo** — If `{kb_path}` does not exist, `git clone {repo_url} {kb_path}`; otherwise `git pull`. Ensure `.kb/index/` exists
 - [ ] **2. Locate source** — Confirm `{kb_path}/{source_rel_path}` exists; check that headings use valid `#`–`######` syntax. If the document has no usable headings, ask the user to fix the document and retry
-- [ ] **3. Assign doc_id** — Scan all tree.json under `.kb/index/`, take max sequence + 1 (e.g. `doc_007`). Never rely on memory
-- [ ] **4. Generate tree.json** — Run:
+- [ ] **3. Assign doc_id** — Omit `--doc-id` in Step 4; build_tree.py auto-infers `doc_{max_seq+1:03d}` by scanning existing tree.json under `.kb/index/`. Never count by hand
+- [ ] **4. Generate tree.json** — Run (omit `--doc-id`; it is inferred automatically):
   ```bash
   python scripts/build_tree.py {abs_kb}/{source_rel_path} \
     {abs_kb}/.kb/index/{source_rel_dir}/tree.json \
-    --doc-id {doc_id} --title "{title}" --domain "{domain}" \
+    --title "{title}" --domain "{domain}" \
     --source-path {source_rel_path}
   ```
   `{abs_kb}` = absolute path to the knowledge base root (resolve `{kb_path}` from the project root). `{source_rel_dir}` = source_rel_path with `.md` stripped (e.g. `docs/api/auth.md` → `docs/api/auth`). `{source_rel_path}` stays relative to the kb root — that is what the manifest stores and kb-chat reads. `{domain}` is user-specified or inferred from the top-level directory
 - [ ] **5. Validate skeleton** — Check the script reported `validation_issues: 0` (an empty tree — no H2+ headings — is itself an issue). Then review `validation_warnings`: currently (a) a heading that skips a level (e.g. H2 → H4), or (b) a tree whose top-level node is not an H2. Both are structurally allowed and nest correctly, but they usually signal a missing heading level in the source — if you see one, ask the user whether to insert the missing level before continuing
-- [ ] **6. LLM fills summary and keywords, then self-verifies** — Read each section's full content, then autonomously distill a concise summary and keywords. Also write a one-sentence document-level summary into the top-level `summary` field. Then re-read each filled entry against its source: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — stop when every node's filling holds up against its source
+- [ ] **6. LLM fills summary and keywords, then self-verifies** — Read each section's full content, then autonomously distill a concise summary and keywords. Also write a one-sentence document-level summary into the top-level `summary` field. Then re-read each filled entry against its source: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — stop when every node's filling holds up against its source. **User sees**: a one-line summary of each filled section, e.g. "→ filled ch_1 'Overview': <brief summary>; keywords: [auth, login]"
 - [ ] **7. Update manifest.json** — Run `scripts/build_manifest.py {abs_kb}` to aggregate all documents
 - [ ] **8. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
 - [ ] **9. Report to user** — doc_id, source path, tree.json node count

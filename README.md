@@ -198,12 +198,11 @@ All metadata is **JSON** — script-generated (minified by default to keep LLM t
 Use Skill: kb-chat How does the authentication flow work?
 ```
 
-**Answer format includes line-level citations**:
+**Answer format includes inline, clickable citations**:
 
-> The authentication flow is: user submits credentials → server validates → returns JWT token.
-> 📎 Reference: `docs/api/auth.md#L42-L58`
+> The authentication flow is: user submits credentials → server validates → returns JWT token.[docs/api/auth.md#L42-L58](docs/api/auth.md#L42-L58)
 
-In VSCode, click the link — it jumps directly to the exact lines in the source file.
+In VSCode, click the link — it jumps directly to the exact lines in the source file. The `#L{start}-L{end}` suffix is the standard GitHub line-range anchor.
 
 **Self-verify**: The LLM re-checks every claim before delivery. Simple facts may need one pass; complex reasoning may require multiple re-reads.
 

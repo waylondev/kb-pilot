@@ -28,6 +28,24 @@ def compute_sha256(filepath: Path) -> str:
     return hashlib.sha256(filepath.read_bytes()).hexdigest()
 
 
+def next_doc_id(kb_index_root: Path) -> str:
+    """Scan existing tree.json under .kb/index/ and return doc_{max_seq+1:03d}.
+
+    Deterministic counting — the LLM never has to scan and count by hand.
+    """
+    max_seq = 0
+    if kb_index_root.exists():
+        for tree_path in kb_index_root.rglob("tree.json"):
+            try:
+                doc_id = json.loads(tree_path.read_text(encoding="utf-8")).get("doc_id", "")
+            except (json.JSONDecodeError, OSError):
+                continue
+            m = re.match(r"doc_(\d+)", doc_id)
+            if m:
+                max_seq = max(max_seq, int(m.group(1)))
+    return f"doc_{max_seq + 1:03d}"
+
+
 def dump_json(obj: dict, pretty: bool) -> str:
     """Minified by default (fewer tokens for the LLM); pretty when --pretty."""
     if pretty:
@@ -150,7 +168,9 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> dict:
 
     Matching is anchored on (level, title) rather than positional node ids, so
     fillings survive headings being inserted or removed above or around them.
-    Best-effort: a renamed or fully restructured section loses its old filling.
+    Duplicate titles are matched in order (first new occurrence takes the first
+    old filling for that (level, title)). Best-effort: a renamed or fully
+    restructured section loses its old filling.
     """
     if not existing_path.exists():
         return new_tree
@@ -164,14 +184,15 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> dict:
     if old_tree.get("summary") and not new_tree.get("summary"):
         new_tree["summary"] = old_tree["summary"]
 
-    old_fillings = {}
+    # (level, title) -> queue of fillings, so duplicate titles are consumed in order
+    old_fillings: dict = {}
     def collect(nodes):
         for n in nodes:
             if n.get("summary") or n.get("keywords"):
-                old_fillings[(n.get("level"), n.get("title"))] = {
+                old_fillings.setdefault((n.get("level"), n.get("title")), []).append({
                     "summary": n.get("summary", ""),
                     "keywords": n.get("keywords", [])
-                }
+                })
             collect(n.get("children", []))
     collect(old_tree.get("nodes", []))
 
@@ -180,8 +201,9 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> dict:
 
     def fill(nodes):
         for n in nodes:
-            filling = old_fillings.get((n.get("level"), n.get("title")))
-            if filling:
+            queue = old_fillings.get((n.get("level"), n.get("title")))
+            if queue:
+                filling = queue.pop(0)
                 if filling["summary"]:
                     n["summary"] = filling["summary"]
                 if filling["keywords"]:
@@ -272,7 +294,7 @@ Exit codes:
     )
     parser.add_argument("source", help="Path to the Markdown source file")
     parser.add_argument("output", help="Output path for tree.json (under the .kb/index/ mirrored directory)")
-    parser.add_argument("--doc-id", default="", help="Document ID (e.g. doc_001)")
+    parser.add_argument("--doc-id", default="", help="Document ID (e.g. doc_001); auto-inferred from existing tree.json if omitted")
     parser.add_argument("--title", default="", help="Document title (inferred from H1 if omitted)")
     parser.add_argument("--domain", default="", help="Document domain, used as a routing hint")
     parser.add_argument("--source-path", required=True, help="Source path relative to the repo root, used in the manifest (e.g. docs/api/auth.md)")
@@ -280,11 +302,14 @@ Exit codes:
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON (default: minified)")
     args = parser.parse_args()
 
+    # infer doc_id from the .kb/index/ root (the output path sits under it)
+    doc_id = args.doc_id or next_doc_id(Path(args.output).parent)
+
     try:
         result = build(
             args.source,
             args.output,
-            doc_id=args.doc_id,
+            doc_id=doc_id,
             title=args.title,
             domain=args.domain,
             source_path=args.source_path,

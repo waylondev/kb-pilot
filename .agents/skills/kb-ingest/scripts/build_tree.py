@@ -291,9 +291,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""\
 Examples:
-  python scripts/build_tree.py {kb_path}/docs/api/auth.md {kb_path}/.kb/index/docs/api/auth/tree.json \\
+  python scripts/build_tree.py {abs_kb}/docs/api/auth.md {abs_kb}/.kb/index/docs/api/auth/tree.json \\
     --title "API Auth" --domain api --source-path docs/api/auth.md
-  python scripts/build_tree.py README.md .kb/index/README/tree.json --source-path README.md --pretty
+  python scripts/build_tree.py {abs_kb}/README.md {abs_kb}/.kb/index/README/tree.json --source-path README.md --pretty
 
 doc_id is auto-inferred (doc_{max_seq+1:03d} from the whole .kb/index/ root) and kept
 stable on re-ingest; pass --doc-id only when you must override. Output is minified

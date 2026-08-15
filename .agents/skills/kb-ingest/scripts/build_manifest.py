@@ -91,8 +91,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""\
 Examples:
-  python scripts/build_manifest.py {kb_path}
-  python scripts/build_manifest.py {kb_path} --pretty
+  python scripts/build_manifest.py {abs_kb}
+  python scripts/build_manifest.py {abs_kb} --pretty
 
 Output is minified JSON by default (fewer tokens when the LLM reads it); pass --pretty for a readable copy.
 

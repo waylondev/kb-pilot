@@ -50,7 +50,7 @@ Script paths follow the standard skill convention: `scripts/...` is relative to 
 Progress:
 - [ ] **1. Prepare repo** — If `{kb_path}` does not exist, `git clone {repo_url} {kb_path}`; otherwise `git pull`. Ensure `.kb/index/` exists
 - [ ] **2. Locate source** — Confirm `{kb_path}/{source_rel_path}` exists; check that headings use valid `#`–`######` syntax. If the document has no usable headings, ask the user to fix the document and retry
-- [ ] **3. Assign doc_id** — Omit `--doc-id` in Step 4; build_tree.py auto-infers `doc_{max_seq+1:03d}` by scanning existing tree.json under `.kb/index/`. Never count by hand
+- [ ] **3. Assign doc_id** — Omit `--doc-id` in Step 4; build_tree.py auto-infers it by scanning **all** tree.json under `.kb/index/` (`doc_{max_seq+1:03d}`), and **keeps the id stable on re-ingest** by reading the existing tree.json at the output path. Only pass `--doc-id` when you must force a specific id. Never count by hand
 - [ ] **4. Generate tree.json** — Run (omit `--doc-id`; it is inferred automatically):
   ```bash
   python scripts/build_tree.py {abs_kb}/{source_rel_path} \

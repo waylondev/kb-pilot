@@ -28,10 +28,21 @@ def compute_sha256(filepath: Path) -> str:
     return hashlib.sha256(filepath.read_bytes()).hexdigest()
 
 
-def next_doc_id(kb_index_root: Path) -> str:
-    """Scan existing tree.json under .kb/index/ and return doc_{max_seq+1:03d}.
+def index_root(output_parent: Path) -> Path:
+    """Walk up from an output tree.json's parent to the .kb/index/ root."""
+    p = output_parent
+    while p != p.parent:
+        if p.name == "index" and p.parent.name == ".kb":
+            return p
+        p = p.parent
+    return output_parent  # fallback: scan from the given directory as-is
 
-    Deterministic counting — the LLM never has to scan and count by hand.
+
+def next_doc_id(kb_index_root: Path) -> str:
+    """Scan every tree.json under .kb/index/ and return doc_{max_seq+1:03d}.
+
+    Deterministic counting across the whole index — so sibling documents never
+    collide on the same id. The LLM never has to scan and count by hand.
     """
     max_seq = 0
     if kb_index_root.exists():
@@ -281,10 +292,12 @@ def main():
         epilog="""\
 Examples:
   python scripts/build_tree.py {kb_path}/docs/api/auth.md {kb_path}/.kb/index/docs/api/auth/tree.json \\
-    --doc-id doc_001 --title "API Auth" --domain api --source-path docs/api/auth.md
+    --title "API Auth" --domain api --source-path docs/api/auth.md
   python scripts/build_tree.py README.md .kb/index/README/tree.json --source-path README.md --pretty
 
-Output is minified JSON by default (fewer tokens when the LLM reads it); pass --pretty for a readable copy.
+doc_id is auto-inferred (doc_{max_seq+1:03d} from the whole .kb/index/ root) and kept
+stable on re-ingest; pass --doc-id only when you must override. Output is minified
+JSON by default (fewer tokens when the LLM reads it); pass --pretty for a readable copy.
 
 Exit codes:
   0  success
@@ -302,8 +315,18 @@ Exit codes:
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON (default: minified)")
     args = parser.parse_args()
 
-    # infer doc_id from the .kb/index/ root (the output path sits under it)
-    doc_id = args.doc_id or next_doc_id(Path(args.output).parent)
+    # doc_id precedence: explicit --doc-id > the output's existing tree.json
+    # (re-ingest keeps its id, so the manifest reference stays stable) >
+    # auto-inferred by scanning the whole .kb/index/ root (so sibling
+    # documents never collide).
+    output_path = Path(args.output)
+    existing_doc_id = ""
+    if output_path.exists():
+        try:
+            existing_doc_id = json.loads(output_path.read_text(encoding="utf-8")).get("doc_id", "")
+        except (json.JSONDecodeError, OSError):
+            pass
+    doc_id = args.doc_id or existing_doc_id or next_doc_id(index_root(output_path.parent))
 
     try:
         result = build(

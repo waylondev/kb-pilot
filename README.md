@@ -218,13 +218,15 @@ Locate the wrong lines in the source Markdown, fix the fact there, then re-inges
 
 **Optionally edit the index**
 
+Script paths follow the same convention as the SKILLs: `scripts/...` is relative to the skill directory. Run the commands below from `.agents/skills/kb-ingest/`, and use `{abs_kb}` (the knowledge base absolute path) for file paths.
+
 ```bash
-# Wrong summary? Adjust the document record?
-python .agents/skills/kb-ingest/scripts/build_manifest.py {kb_path} --pretty
-python .agents/skills/kb-ingest/scripts/build_tree.py docs/api/auth.md \
-  .kb/index/docs/api/auth/tree.json --source-path docs/api/auth.md --pretty
+# Wrong summary? Adjust the document record? (run from .agents/skills/kb-ingest/)
+python scripts/build_manifest.py {abs_kb} --pretty
+python scripts/build_tree.py {abs_kb}/docs/api/auth.md \
+  {abs_kb}/.kb/index/docs/api/auth/tree.json --source-path docs/api/auth.md --pretty
 # edit .kb/index/docs/api/auth/tree.json, then rebuild the (minified) manifest
-python .agents/skills/kb-ingest/scripts/build_manifest.py {kb_path}
+python scripts/build_manifest.py {abs_kb}
 git commit -m "fix: update auth module summary"
 ```
 

@@ -94,7 +94,7 @@ Yes, that's the direct tradeoff. A few points to consider:
 
 ### Q: What about large document volumes? Won't the LLM be overwhelmed by the manifest?
 
-This is kb-pilot's design scope — **tens to hundreds of documents**, for team knowledge bases, technical docs, project specifications. Not a general-purpose search engine for millions of documents.
+This is kb-pilot's design scope — **tens to hundreds of documents**, for team knowledge bases, technical docs, project specifications, and other well-structured Markdown corpora where answers must be traceable to exact source lines. Not a general-purpose search engine for millions of documents.
 
 Beyond that, split by domain:
 - Engineering team knowledge base → one Git repo

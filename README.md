@@ -35,7 +35,7 @@ It works best for internal policies, product manuals, technical docs, compliance
 
 It is not designed for massive unstructured corpora, real-time web-scale search, millisecond-latency retrieval, or replacing document cleanup and human review.
 
-In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow. It is strongest when the source documents are clean, structured, and worth reading precisely.
+In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow. It is strongest when the source documents are clean, structured, and worth reading precisely. It is therefore best suited to a **bounded, well-structured Markdown corpus** — on the order of a few dozen to a few hundred documents within one team, product, or domain — where answers must be traceable to exact source lines.
 
 **When RAG is the better fit**: kb-pilot is not a general-purpose replacement for RAG. Choose a conventional RAG system when you need retrieval over large or unstructured corpora that lack heading structure, web-scale or real-time search, millisecond query latency, or resilience to documents that are messy and not worth reading precisely. In those cases kb-pilot's heading-first navigation and line-level citations offer less value than a vector index. The two are complementary: use kb-pilot where the source is clean and answers must be auditable; use RAG where the corpus is large, messy, and recall-by-similarity matters more than exact provenance.
 
@@ -99,7 +99,6 @@ graph TB
         subgraph Meta[".kb/ metadata"]
             MANIFEST["manifest.json<br/>global card catalog"]
             TREE["tree.json<br/>document record + chapter TOC"]
-            PREF["memory/<br/>route preferences"]
         end
         SOURCE["docs/.../*.md<br/>user's source (untouched)"]
     end
@@ -117,8 +116,6 @@ graph TB
 {kb_path}/                          # Git repo root
 ├── .kb/                            # kb-pilot metadata (centralized)
 │   ├── manifest.json               # global routing table (script-generated, minified)
-│   ├── memory/
-│   │   └── route_preferences.json
 │   └── index/                      # mirrored directory
 │       └── docs/
 │           └── api/

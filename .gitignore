@@ -224,3 +224,7 @@ data/
 # kb-pilot: test scripts and temporary tools (not source code)
 tests/
 
+# kb-pilot: test knowledge base and test suites (not source code)
+fixtures/
+docs/test-suites/
+

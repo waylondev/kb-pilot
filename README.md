@@ -19,6 +19,7 @@
 | Corrections | Requires a separate system | Edit the source, re-ingest — the source is the correction |
 | Deployment cost | High infrastructure cost | Low infrastructure cost |
 | User directory intrusion | Must migrate to a required layout | **Zero intrusion**, metadata in `.kb/` |
+| Robustness to messy sources / scale | Handles large, unstructured, heterogeneous corpora and fragmented docs | Depends on clear heading structure and a bounded corpus |
 
 ## Scope
 
@@ -35,6 +36,8 @@ It works best for internal policies, product manuals, technical docs, compliance
 It is not designed for massive unstructured corpora, real-time web-scale search, millisecond-latency retrieval, or replacing document cleanup and human review.
 
 In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow. It is strongest when the source documents are clean, structured, and worth reading precisely.
+
+**When RAG is the better fit**: kb-pilot is not a general-purpose replacement for RAG. Choose a conventional RAG system when you need retrieval over large or unstructured corpora that lack heading structure, web-scale or real-time search, millisecond query latency, or resilience to documents that are messy and not worth reading precisely. In those cases kb-pilot's heading-first navigation and line-level citations offer less value than a vector index. The two are complementary: use kb-pilot where the source is clean and answers must be auditable; use RAG where the corpus is large, messy, and recall-by-similarity matters more than exact provenance.
 
 
 ## Quick start

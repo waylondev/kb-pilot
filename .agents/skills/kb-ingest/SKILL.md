@@ -34,7 +34,7 @@ Output:
 - Source file missing → stop and ask the user to check the path
 - No usable headings or invalid Markdown syntax → return to Step 2 and ask the user to fix the document
 - `tree.json` validation reports issues → inspect source headings, regenerate, then re-fill
-- Git unavailable → report clearly and do not leave `.kb/` uncommitted
+- Git unavailable → report clearly and note that committing is the user's responsibility
 
 ## Available scripts
 
@@ -62,7 +62,7 @@ Progress:
 - [ ] **5. Validate skeleton** — Check the script reported `validation_issues: 0` (an empty tree — no H2+ headings — is itself an issue). Then review `validation_warnings`: currently (a) a heading that skips a level (e.g. H2 → H4), or (b) a tree whose top-level node is not an H2. Both are structurally allowed and nest correctly, but they usually signal a missing heading level in the source. Whether to act is the LLM's judgment: present the warning, and only ask the user whether to insert the missing level if you can't decide for the user — e.g. the fix is clearly a separate concern, or the source's intent is ambiguous. Do not interrupt for every warning
 - [ ] **6. LLM fills summary and keywords, then self-verifies** — Read each section's full content, then autonomously distill a concise summary and keywords. Also write a one-sentence document-level summary into the top-level `summary` field. Then re-read each filled entry against its source: does the summary capture the section's actual point? Would these keywords help a future question route here? The LLM decides how many rounds — stop when every node's filling holds up against its source. **User sees**: a one-line summary of each filled section, e.g. "→ filled ch_1 'Overview': <brief summary>; keywords: [auth, login]"
 - [ ] **7. Update manifest.json** — Run `scripts/build_manifest.py {abs_kb}` to aggregate all documents
-- [ ] **8. Commit to Git** — `git add .kb/` and any new source files, `git commit -m "kb: ingest {doc_id} - {title}"`, `git push`
+- [ ] **8. Hand off to user** — Remind the user that `.kb/` is now updated but **not committed**: committing is the user's responsibility (or CI's), not the ingest skill's. Leave the working tree as-is; do not run `git add`/`commit`/`push`
 - [ ] **9. Report to user** — doc_id, source path, tree.json node count
 
 ## Batch ingest
@@ -73,7 +73,7 @@ When the user says "ingest entire directory", "scan all md files", or "initializ
 - [ ] 2. Recursively scan `{kb_path}` for all `.md` files, excluding `.kb/` and `.git/`
 - [ ] 3. For each file without a tree.json in its mirrored `.kb/index/` directory, run ingest workflow from Step 3 (assign doc_id, generate tree.json, fill and verify)
 - [ ] 4. Finally run `scripts/build_manifest.py {abs_kb}` once
-- [ ] 5. Single Git commit + push
+- [ ] 5. Remind the user to commit — `.kb/` and any new source files are updated but uncommitted; the user (or CI) decides when to `git add`/`commit`/`push`
 
 ## Rebuild on change
 
@@ -82,7 +82,7 @@ When a source file is heavily modified, detect drift via `source_sha256` in tree
 - [ ] 1. Compare `source_sha256` in tree.json against the source file's current SHA256
 - [ ] 2. If equal → skip; if not → re-run ingest workflow Step 4 (the script preserves existing summary/keywords and the document-level summary where structure still matches)
 - [ ] 3. If structure changed, re-run Step 6 (old summary/keywords may not match new sections; re-fill and re-verify)
-- [ ] 4. Run Step 7 to update manifest, Step 8 to commit
+- [ ] 4. Run Step 7 to update the manifest; remind the user to commit (Step 8)
 
 ## Gotchas
 

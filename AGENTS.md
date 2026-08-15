@@ -75,7 +75,7 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
 .agents/
 └── skills/
     ├── kb-ingest/
-    │   ├── SKILL.md               # ingest workflow (9 steps: clone → tree → LLM fill → manifest → commit)
+    │   ├── SKILL.md               # ingest workflow (8 steps: clone → tree → LLM fill → manifest → hand off; git commit is the user's job)
     │   └── scripts/
     │       ├── build_tree.py      # Markdown → tree.json (document record + skeleton, deterministic)
     │       └── build_manifest.py  # tree.json × N → manifest.json (deterministic)

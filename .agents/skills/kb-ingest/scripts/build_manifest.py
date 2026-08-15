@@ -34,17 +34,16 @@ def collect_entry(tree_path: Path) -> dict:
         "path": tree.get("source_path", ""),
     }
 
-    # tags: collect keywords across the whole tree, dedupe, preserve traversal order
+    # tags: collect keywords from top-level sections only (the document theme),
+    # dedupe, preserve traversal order. Sub-section keywords stay in tree.json
+    # for localization — top-level tags keep routing focused and the manifest small.
     all_keywords = []
     seen = set()
-    def collect_keywords(nodes):
-        for n in nodes:
-            for kw in n.get("keywords", []):
-                if kw not in seen:
-                    seen.add(kw)
-                    all_keywords.append(kw)
-            collect_keywords(n.get("children", []))
-    collect_keywords(tree.get("nodes", []))
+    for n in tree.get("nodes", []):
+        for kw in n.get("keywords", []):
+            if kw not in seen:
+                seen.add(kw)
+                all_keywords.append(kw)
 
     entry["tags"] = all_keywords
     return entry

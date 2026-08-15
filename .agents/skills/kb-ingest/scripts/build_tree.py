@@ -104,8 +104,9 @@ def validate_tree(tree: dict) -> tuple:
 
     Returns (errors, warnings). Errors must be 0 — they indicate a broken
     skeleton (line ranges, parent/child containment, empty tree). Warnings are
-    advisory — e.g. a heading that skips a level (H2 → H4), which is structurally
-    valid but usually signals a missing level in the source. Whether to fix a
+    advisory — e.g. a heading that skips a level (H2 → H4), or a tree that
+    starts below H2 (top-level node is not an H2), which are structurally
+    valid but usually signal a missing level in the source. Whether to fix a
     warning is a judgment call for the LLM (and the user), not the script.
     """
     errors = []
@@ -115,6 +116,11 @@ def validate_tree(tree: dict) -> tuple:
 
     if not nodes:
         errors.append("no headings below H1; tree.json is empty (source has no H2+ sections)")
+    elif nodes[0].get("level", 0) != 2:
+        warnings.append(
+            f"top-level node {nodes[0]['id']} starts at level {nodes[0].get('level')} "
+            "(tree should start at H2)"
+        )
 
     def walk(nodes, parent=None):
         for n in nodes:

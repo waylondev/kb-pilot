@@ -6,7 +6,7 @@
 
 LLM Wiki is a **"compiler" model** — the LLM reads, reconstructs, and rewrites source documents into a structured set of Markdown Wiki pages. Queries read the compiled output, not the original text. Information loss occurs during compilation.
 
-kb-pilot is an **"index" model** — no compilation, no reconstruction, no modification of the source. `tree.json` only records heading hierarchy and line numbers. Queries read the **original source** via line-number anchors, so the source text itself is not rewritten during indexing.
+kb-pilot is an **"index" model** — no compilation, no reconstruction, no modification of the source. `tree.json` records heading hierarchy, line numbers, and index metadata — never the source text itself. Queries read the **original source** via line-number anchors, so the source text itself is not rewritten during indexing.
 
 **One reads compiled content; the other reads the original source.**
 
@@ -21,6 +21,46 @@ Yes, but the difference is that this directory is **executable, traceable, and c
 - **Correctable**: `manifest.json` and `tree.json` are JSON — regenerate with `--pretty`, fix directly, and Git tracks every change
 
 Not a static directory for humans, but the skeleton the system uses to retrieve.
+
+---
+
+## Scope & Trade-offs
+
+### Q: What kind of knowledge base is kb-pilot designed for?
+
+kb-pilot is a **focused choice**, not a universal RAG replacement. It is designed for **small to mid-sized, well-structured Markdown corpora** — tens to hundreds of documents within one team, product, or domain — where answers must be traceable to exact source lines and the source is worth reading precisely.
+
+Choose it when:
+
+- Documents have clear heading hierarchy (`#`, `##`, `###`) and stable source files
+- The corpus is maintained like a Git repo, with humans responsible for document quality
+- Answers must cite exact source lines and be auditable
+- The repository maps to one team, product, policy area, or technical domain
+
+Choose a conventional RAG system for large or unstructured corpora, web-scale or real-time search, millisecond latency, or resilience to messy documents. See the README's "Scope" and "When RAG is the better fit" sections for the full boundary.
+
+---
+
+### Q: What are kb-pilot's known boundaries?
+
+kb-pilot's "trust the LLM, no vectors, no graphs" design comes with honest trade-offs. These define *when* kb-pilot needs human review — they are properties of the design, not bugs to be fixed:
+
+- **Routing recall depends on summaries** — a question reaches a document only if the LLM routes to it via title/summary/keywords. If a summary happens not to mention the answer's keywords, the document may be missed. That is an index problem, not a source problem (see "What if the answer is wrong because a summary or keyword is misleading?").
+- **Conflicts are found when both sides are read** — if two documents disagree, kb-pilot can surface the conflict, but only when routing happens to land on both documents. There is no entity index or contradiction detector.
+- **Enumeration is the LLM's judgment** — for "list all X" questions, exhaustiveness depends on the LLM's patience to keep reading. There is no structural guarantee it scans the whole relevant domain.
+- **"Not mentioned" is a global claim** — deciding the corpus doesn't cover a topic requires scanning it; stop early, and "not found" can be mistaken for "doesn't exist".
+- **Self-verification checks what was answered** — Step 5 re-checks every claim against its cited lines, but it does not audit omitted facts or unrelated details in the answer.
+- **Version selection needs the current date** — choosing between dated document versions relies on "today's date" being available in context; the system has no built-in version timeline.
+
+These are exactly why line-level citations exist: when an answer matters, a human can click through and verify it in seconds.
+
+---
+
+### Q: What does "version awareness" in the README mean?
+
+The README's "Version awareness" refers to the `source_sha256` checksum in each `tree.json`: when a source file changes and is re-ingested, line anchors are recomputed against the corrected text, so citations never point at stale lines. It is handled at index time, not read time.
+
+It does **not** mean kb-pilot automatically selects between different document versions (e.g., an old and a new contract). Selecting "what applies now" depends on the LLM noticing version markers in the source and on the current date being provided in context — see "known boundaries" above.
 
 ---
 

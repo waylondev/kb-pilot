@@ -91,7 +91,7 @@ flowchart LR
 graph TB
     subgraph Agent["Agent (LLM)"]
         INGEST["kb-ingest<br/>build a TOC for a document"]
-        CHAT["kb-chat<br/>read the TOC + answer questions"]
+        CHAT["kb-chat<br/>5-step workflow: route → localize → read → answer → self-verify"]
     end
 
     subgraph KB["Knowledge base (Git repo)"]
@@ -108,6 +108,7 @@ graph TB
     CHAT -->|"1. route"| MANIFEST
     CHAT -->|"2. localize"| TREE
     CHAT -->|"3. read"| SOURCE
+    CHAT -->|"5. self-verify re-reads"| SOURCE
 ```
 
 ### Knowledge base layout

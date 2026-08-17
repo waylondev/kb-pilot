@@ -56,15 +56,13 @@ Use Skill: kb-ingest to ingest docs/api/auth.md into the knowledge base
 Use Skill: kb-chat What's the difference between Docker containers and VMs?
 ```
 
-### 3. Correct an answer
+### 3. Correct an answer by editing the source
 
 ```
 User: That's wrong — the JWT expiry is 24h, not 12h.
 ```
 
-Directly edit the source file (fix the fact in `docs/api/auth.md`), then re-ingest it so `tree.json` line numbers and checksum stay in sync with the corrected text. The source is the single source of truth — there is no separate correction layer.
-
-**Version awareness**: Each `tree.json` includes a top-level `source_sha256` checksum for the source file. When a source file is updated and re-ingested, the new tree replaces the old one and line anchors are recomputed against the corrected text. This is handled at index time, not read time.
+Directly edit the source file (fix the fact in `docs/api/auth.md`), then re-ingest it via `kb-ingest` so `tree.json` line numbers and checksum stay in sync with the corrected text. The source is the single source of truth — there is no separate correction layer. See Step 4 below for the full maintain workflow.
 
 ### 4. Initialize from an existing Git repo
 

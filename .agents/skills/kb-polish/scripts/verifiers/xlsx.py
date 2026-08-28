@@ -10,6 +10,7 @@ Each worksheet is restored as one table. .xlsb (binary) is out of scope.
 from __future__ import annotations
 
 import re
+import zipfile
 from pathlib import Path
 
 from .base import ZipXmlVerifier, ExtractResult, PKG_REL
@@ -95,6 +96,6 @@ class XlsxVerifier(ZipXmlVerifier):
         if targets:
             targets.sort(key=lambda t: int(re.search(r"\d+", t).group()))
             return targets
-        with __import__("zipfile").ZipFile(path) as z:
+        with zipfile.ZipFile(path) as z:
             cand = (n.replace("xl/", "", 1) for n in z.namelist())
             return sorted(c for c in cand if re.match(r"^worksheets/sheet\d+\.xml$", c))

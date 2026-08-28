@@ -117,7 +117,7 @@ The extraction in this step always runs. The LLM does a **full cross-check** of 
 
 * Step 2 score < 80
 
-* Heading-level score < 70
+* Heading-level continuity < 30
 
 * User explicitly asks for verification
 

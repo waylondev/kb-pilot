@@ -13,7 +13,6 @@ remain the LLM's job.
 
 Usage:
     python check_drift.py verify_text.txt final.md
-    python check_drift.py verify_text.txt final.md --stdout-json
     python check_drift.py verify_text.txt final_1.md final_2.md   # combine multiple outputs
 
 Output (stdout):
@@ -31,7 +30,9 @@ import re
 import sys
 from pathlib import Path
 
-# numeric/amount patterns (aligned with common document content: HKD/USD/CNY amounts, percentages, years, days, monthly interest)
+# numeric/amount patterns — finance/document-oriented (HKD/USD/CNY amounts, percentages,
+# years, days, monthly interest). Not exhaustive: tokens outside these shapes are NOT
+# checked, so "no missing tokens" proves only that these numeric forms did not drift.
 TOKEN_PATTERNS = [
     r"HK\$\s?[\d,]+(?:\.\d+)?",
     r"US\$\s?[\d,]+(?:\.\d+)?",
@@ -55,18 +56,19 @@ def extract_tokens(text: str) -> set:
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="content-drift spot check: do all ground-truth numeric tokens appear in the re-render output?",
-        epilog="""示例:
+        epilog="""Examples:
   python check_drift.py verify_text.txt final.md
-  python check_drift.py verify_text.txt final_1.md final_2.md --stdout-json
+  python check_drift.py verify_text.txt final_1.md final_2.md
 
 Rule: a token present in the truth but missing from the output is a content-loss or
 rewrite signal (e.g. HK$6,000 not appearing). The caller (LLM/user) judges whether the
-missing list is drift or an intentional removal (e.g. footer amounts).""",
+missing list is drift or an intentional removal (e.g. footer amounts).
+
+Output: JSON to stdout; progress to stderr.""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("truth", help="verify ground-truth file (extract_verify.py's verify_text.txt)")
     parser.add_argument("targets", nargs="+", help="re-render outputs (final.md or final_1.md final_2.md...)")
-    parser.add_argument("--stdout-json", action="store_true", help="output result as JSON on stdout")
     args = parser.parse_args()
 
     truth_path = Path(args.truth)
@@ -96,13 +98,12 @@ missing list is drift or an intentional removal (e.g. footer amounts).""",
         "note": "missing tokens need human judgment: could be drift, or an intentional removal in the output (e.g. footer amounts)",
     }
 
-    if args.stdout_json:
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-    else:
-        print(f"[check_drift] truth tokens {len(truth_tokens)}, missing {len(missing)}", file=sys.stderr)
-        for m in missing:
-            print(f"[check_drift]  MISSING: {m}", file=sys.stderr)
+    # progress to stderr, structured result to stdout (the LLM parses stdout)
+    print(f"[check_drift] truth tokens {len(truth_tokens)}, missing {len(missing)}", file=sys.stderr)
+    for m in missing:
+        print(f"[check_drift]  MISSING: {m}", file=sys.stderr)
 
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
 

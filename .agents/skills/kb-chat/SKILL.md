@@ -5,6 +5,7 @@ description: >-
   or wants to compare content across documents. Triggers on questions about ingested
   content — even when the user doesn't name the underlying system.
 compatibility: Requires Git and an initialized knowledge base (run kb-ingest first)
+allowed-tools: Bash(python:*) Read
 metadata:
   repo_url: ""
   kb_path: knowledge_repo

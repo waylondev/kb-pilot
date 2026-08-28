@@ -16,7 +16,7 @@ structure reasonable, where do images go) is the LLM's job.
 
 Usage:
     python convert_document.py input.docx -o outdir
-    python convert_document.py input.pdf -o outdir --stdout-json
+    python convert_document.py input.pdf -o outdir
 
 Output (stdout):
     {"ok": true, "input": "...", "output_dir": "...", "markdown": "...",
@@ -85,14 +85,13 @@ def main() -> int:
         description="source document -> Markdown + embedded asset extraction (AnyDoc-based, deterministic).",
         epilog="""Examples:
   python convert_document.py input.docx -o outdir
-  python convert_document.py input.pdf -o outdir --stdout-json
+  python convert_document.py input.pdf -o outdir
 
 Output: raw.md (first draft), images/, attachments/""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("input", help="input document path (PDF/Word/PPT/Excel/CSV etc.)")
     parser.add_argument("-o", "--output", required=True, help="output directory")
-    parser.add_argument("--stdout-json", action="store_true", help="output result as JSON on stdout")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -138,11 +137,10 @@ Output: raw.md (first draft), images/, attachments/""",
         print(f"[convert] conversion failed: {e}", file=sys.stderr)
         return 1
 
-    if args.stdout_json:
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-    else:
-        print(f"[convert] done: raw.md written ({len(markdown_text)} chars), images {len(images)}, attachments {len(attachments)}", file=sys.stderr)
+    # progress to stderr, structured result to stdout (the LLM parses stdout)
+    print(f"[convert] done: raw.md written ({len(markdown_text)} chars), images {len(images)}, attachments {len(attachments)}", file=sys.stderr)
 
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
 

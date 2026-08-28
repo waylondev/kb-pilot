@@ -62,7 +62,14 @@ def build(repo_root: str, pretty: bool = False) -> dict:
 
     entries = []
     for tree_path in sorted(kb_index.rglob("tree.json")):
-        entry = collect_entry(tree_path)
+        try:
+            entry = collect_entry(tree_path)
+        except (json.JSONDecodeError, OSError) as exc:
+            print(
+                f"[build_manifest] skipping unreadable tree.json: {tree_path} ({exc})",
+                file=sys.stderr,
+            )
+            continue
         entries.append(entry)
         print(
             f"[build_manifest] {entry['doc_id']}: {entry['title']} (domain={entry['domain']})",

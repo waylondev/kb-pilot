@@ -12,10 +12,9 @@ this script does no semantic judgment.
 
 Usage:
     python validate_structure.py raw.md
-    python validate_structure.py raw.md --stdout-json
 
 Output (stdout):
-    {"ok": true, "issues": [...], "mechanical_scores": {...}}
+    {"ok": true, "issues": [...], "mechanical_scores": {...}, "mechanical_total": N}
 
 Exit codes:
     0  success
@@ -28,15 +27,38 @@ import re
 import sys
 from pathlib import Path
 
-# mechanical check dimensions (the skeleton part of workflow.md Step 2)
-# semantic dimensions (heading-meaning clarity 20%, truncation & mojibake 10%) are the LLM's job
+# Mechanical check dimensions — the deterministic part of workflow.md Step 2's
+# 6-dimension (100-pt) rubric. The remaining 30 pts are semantic (heading-meaning
+# clarity 20% + content truncation & mojibake 10%) and are the LLM's job.
+# Weights mirror workflow.md: heading 30, table 20, list 10, code blocks & special
+# elements 10 (language tags + image paths are ONE dimension, not two).
 
 MAX_WEIGHT = {
-    "heading_continuity": 30,  # heading-level continuity (mechanically checkable part)
-    "table_integrity": 20,     # table structural integrity (mechanically checkable part)
-    "list_consistency": 10,    # list format consistency
-    "codeblock_lang": 10,      # code-block language annotation
-    "image_path": 10,          # image reference path existence
+    "heading_continuity": 30,
+    "table_integrity": 20,
+    "list_consistency": 10,
+    "special_elements": 10,
+}
+
+# issue type -> scoring dimension. Explicit, so every mechanical issue (including
+# duplicate_heading / multiple_h1) is actually counted — a prefix match missed them.
+ISSUE_DIMENSION = {
+    "heading_jump": "heading_continuity",
+    "duplicate_heading": "heading_continuity",
+    "multiple_h1": "heading_continuity",
+    "table_separator_mismatch": "table_integrity",
+    "table_col_mismatch": "table_integrity",
+    "list_marker_mixed": "list_consistency",
+    "codeblock_no_lang": "special_elements",
+    "image_missing": "special_elements",
+}
+
+# per-issue deduction: heading/table issues matter more than list/special-element ones
+PENALTY = {
+    "heading_continuity": 5,
+    "table_integrity": 5,
+    "list_consistency": 3,
+    "special_elements": 3,
 }
 
 
@@ -244,13 +266,13 @@ def main() -> int:
         description="mechanical Markdown structure validation (deterministic skeleton check; semantics left to the LLM).",
         epilog="""Examples:
   python validate_structure.py raw.md
-  python validate_structure.py raw.md --stdout-json
 
-Checks: heading jumps / duplicate headings / multiple H1 / table cols / list markers / code-block language / image paths""",
+Checks: heading jumps / duplicate headings / multiple H1 / table cols / list markers / code-block language / image paths
+
+Output: JSON to stdout; progress to stderr.""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("input", help="path to the Markdown file")
-    parser.add_argument("--stdout-json", action="store_true", help="output result as JSON on stdout")
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -270,11 +292,11 @@ Checks: heading jumps / duplicate headings / multiple H1 / table cols / list mar
     issues += validate_codeblock_lang(lines, regions)
     issues += validate_image_paths(lines, regions, input_path.parent)
 
-    # mechanical score: each dimension starts at 0 and is deducted per issue
+    # mechanical score: each dimension starts at full weight and is deducted per issue
     mechanical_scores = {}
     for dim, weight in MAX_WEIGHT.items():
-        dim_issues = [x for x in issues if x["type"].startswith(_dim_prefix(dim))]
-        mechanical_scores[dim] = max(0, weight - len(dim_issues) * _penalty_per_issue(dim))
+        dim_count = sum(1 for x in issues if ISSUE_DIMENSION.get(x["type"]) == dim)
+        mechanical_scores[dim] = max(0, weight - dim_count * PENALTY[dim])
 
     result = {
         "ok": True,
@@ -282,35 +304,20 @@ Checks: heading jumps / duplicate headings / multiple H1 / table cols / list mar
         "issue_count": len(issues),
         "issues": issues,
         "mechanical_scores": mechanical_scores,
-        "note": "mechanical score is indicative only; semantic dimensions (heading meaning / truncation / mojibake) need the LLM",
+        "mechanical_total": sum(mechanical_scores.values()),
+        "note": "mechanical score covers 70/100 pts; the remaining 30 (heading-meaning clarity 20 + truncation & mojibake 10) are the LLM's semantic judgment",
     }
 
-    if args.stdout_json:
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-    else:
-        print(f"[validate] found {len(issues)} issues", file=sys.stderr)
-        for iss in issues:
-            print(
-                f"[validate] L{iss['line']} [{iss['type']}] {iss['detail']}",
-                file=sys.stderr,
-            )
+    # progress to stderr, structured result to stdout (the LLM parses stdout)
+    print(f"[validate] found {len(issues)} issues", file=sys.stderr)
+    for iss in issues:
+        print(
+            f"[validate] L{iss['line']} [{iss['type']}] {iss['detail']}",
+            file=sys.stderr,
+        )
 
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
-
-
-def _dim_prefix(dim: str) -> str:
-    return {
-        "heading_continuity": "heading_",
-        "table_integrity": "table_",
-        "list_consistency": "list_",
-        "codeblock_lang": "codeblock_",
-        "image_path": "image_",
-    }.get(dim, dim + "_")
-
-
-def _penalty_per_issue(dim: str) -> int:
-    # heading jumps matter more: -5 each; others -3
-    return 5 if dim in ("heading_continuity", "table_integrity") else 3
 
 
 if __name__ == "__main__":

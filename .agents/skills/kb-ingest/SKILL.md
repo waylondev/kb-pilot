@@ -7,6 +7,7 @@ description: >-
   files", "set up the knowledge base from this repo" — even when the user doesn't
   name the underlying system. Markdown only; PDF/Word/HTML conversion is the user's job.
 compatibility: Requires Python 3.10+ and Git
+allowed-tools: Bash(python:* git:*) Read Write
 metadata:
   repo_url: ""
   kb_path: knowledge_repo

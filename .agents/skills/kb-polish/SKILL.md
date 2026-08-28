@@ -2,11 +2,10 @@
 name: kb-polish
 description: Convert source documents (PDF/Word/Excel/PPT/EPUB/CSV) into high-quality Markdown conforming to the kb-pilot spec. Runs AnyDoc coarse conversion, structure validation & scoring, content verification (deterministic extraction cross-check), and normalization. Does NOT OCR; pure scans (no text layer) are kept by embedding every page as an image. Use when the user needs a document converted to Markdown, PDF-to-MD, Word-to-MD, pre-ingestion preprocessing (kb-ingest), or conversion-quality verification.
 license: Proprietary
-compatibility: Requires Python 3.9+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment.
+compatibility: Requires Python 3.10+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment.
 allowed-tools: Bash(python:*) Read Write
 metadata:
   version: "1.3.1"
-  kb-path: .agents/skills/kb-polish
 ---
 # kb-polish Skill
 > Convert source documents into high-quality Markdown that meets kb-pilot ingestion standards.
@@ -14,7 +13,7 @@ metadata:
 ## Quick guide (5 steps, run in order; complete each before the next)
 
 - [ ] 1. **AnyDoc coarse conversion**: `python scripts/convert_document.py {input} -o {outdir}` — produces `raw.md` and extracts embedded assets (`images/`, `attachments/`)
-- [ ] 2. **Structure validation & scoring**: `python scripts/validate_structure.py {outdir}/raw.md --stdout-json` — mechanical checks (heading jumps/duplicates, table column counts, lists, code blocks, image paths); semantic dimensions are assessed by the LLM using the issue list
+- [ ] 2. **Structure validation & scoring**: `python scripts/validate_structure.py {outdir}/raw.md` — mechanical checks (heading jumps/duplicates, table column counts, lists, code blocks, image paths); semantic dimensions are assessed by the LLM using the issue list
 - [ ] 3. **Content verification**: `python scripts/extract_verify.py {input} -o {outdir} --save-text` dispatches to format plugins to extract a **deterministic source text** (`verify_text.txt`, text layer / OOXML plaintext, seconds; runs by default, whatever the Step 2 score). For PDF it **also extracts embedded images into `{outdir}/images/`** and emits `[image: <name>]` placeholders (the docx/pptx/epub convention), since AnyDoc does not expose PDF assets. The LLM cross-checks the source against `raw.md` — full comparison when the Step 2 score is low or the doc is table/number-heavy, otherwise a light spot-check. **Scans (no text layer): every page is rendered to `images/page_N.png` and embedded as `![page N](./images/page_N.png)`** so the asset survives for viewing — kb-polish still does no OCR, so tell the user the pages are images only (the LLM cannot read their content)
 - [ ] 4. **LLM re-render**: treat `verify_text.txt` as the **content ground truth** and `raw.md` as the structural skeleton, then organize into standard Markdown (see output template). **Hard rules: preserve original content and do not change logical relationships** (section order / table rows & columns / list nesting / clause ownership); **exactly one H1** — multiple H1 blocks are demoted & merged by default (the main title keeps H1, the rest become H2 with levels shifted down); split only when blocks are fully independent. After re-rendering, re-run Step 2 to confirm zero issues, and run `scripts/check_drift.py` to confirm **no numeric token is lost** (a numbers-only check — it proves no numeric drift, not zero content change)
 - [ ] 5. **Human confirmation**: after the user confirms, hand off to `kb-ingest`

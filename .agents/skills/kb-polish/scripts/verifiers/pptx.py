@@ -10,7 +10,6 @@ images (p:pic -> a:blip) are kept in place as `[image: <filename>]` placeholders
 from __future__ import annotations
 
 import re
-import zipfile
 from pathlib import Path
 
 from .base import ZipXmlVerifier, ExtractResult, PKG_REL

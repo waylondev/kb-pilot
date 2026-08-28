@@ -7,8 +7,6 @@ EPUB = zip + XHTML. Read XHTML content in spine order and extract the body text.
 
 from __future__ import annotations
 
-import re
-import zipfile
 from pathlib import Path
 
 from .base import ZipXmlVerifier, ExtractResult

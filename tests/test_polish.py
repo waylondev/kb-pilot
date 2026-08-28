@@ -109,11 +109,6 @@ class TestMechanicalChecks(unittest.TestCase):
         lines = ["| a | b |", "|---|---|", "| 1 | 2 |"]
         self.assertEqual(validate_structure.validate_tables(lines, _fence_checker(lines)), [])
 
-    def test_mixed_list_markers_are_reported(self):
-        lines = ["- one", "* two"]
-        issues = validate_structure.validate_lists(lines, _fence_checker(lines))
-        self.assertEqual([i["type"] for i in issues], ["list_marker_mixed"])
-
 
 class TestDriftTokens(unittest.TestCase):
     """The check must work on any corpus without knowing which corpus it is."""

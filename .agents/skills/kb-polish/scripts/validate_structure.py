@@ -6,7 +6,7 @@
 validate_structure.py — mechanical Markdown structure validation.
 
 Deterministic layer: checks only mechanical "skeleton" issues (heading jumps, table
-column counts, list indentation, etc.) and outputs a structured issue list for the LLM.
+column counts, code blocks, image paths, etc.) and outputs a structured issue list for the LLM.
 Severity is the LLM's judgment; this script does no semantic judgment and no scoring.
 
 Usage:
@@ -75,10 +75,10 @@ def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        m = re.match(r"^(#{1,6})\s+", line)
-        if not m:
+        h = skeleton_parser().heading(line)
+        if not h:
             continue
-        level = len(m.group(1))
+        level = h[0]
         if prev_level is not None and level > prev_level + 1:
             issues.append({
                 "type": "heading_jump",
@@ -96,10 +96,10 @@ def validate_duplicate_headings(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        m = re.match(r"^(#{1,6})\s+(.+?)\s*#*\s*$", line)
-        if not m:
+        h = skeleton_parser().heading(line)
+        if not h:
             continue
-        text = m.group(2).strip()
+        text = h[1]
         if text in seen:
             issues.append({
                 "type": "duplicate_heading",
@@ -125,7 +125,8 @@ def validate_single_h1(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        if re.match(r"^#\s+", line):
+        h = skeleton_parser().heading(line)
+        if h and h[0] == 1:
             h1_lines.append((i, line.strip()))
     issues = []
     if len(h1_lines) > 1:
@@ -187,27 +188,6 @@ def _count_cols(row: str) -> int:
     return len(re.findall(r"(?<!\\)\|", row.strip())) - 1
 
 
-def validate_lists(lines: list[str], is_inside_code) -> list[dict]:
-    issues = []
-    markers = {}
-    for i, line in enumerate(lines, 1):
-        if is_inside_code(i):
-            continue
-        stripped = line.strip()
-        m = re.match(r"^([-*+])\s+", stripped)
-        if m:
-            markers.setdefault(m.group(1), []).append(i)
-    if len(markers) > 1:
-        summary = ", ".join(f"{k}({len(v)}x)" for k, v in markers.items())
-        first_lines = [str(v[0]) for v in markers.values()]
-        issues.append({
-            "type": "list_marker_mixed",
-            "line": int(first_lines[0]),
-            "detail": f"mixed list markers: {summary}",
-        })
-    return issues
-
-
 def validate_codeblock_lang(lines: list[str], regions) -> list[dict]:
     issues = []
     # only check whether each code block's opening fence has a language tag
@@ -251,7 +231,7 @@ def main() -> int:
         epilog="""Examples:
   python validate_structure.py raw.md
 
-Checks: heading jumps / duplicate headings / multiple H1 / table cols / list markers / code-block language / image paths
+Checks: heading jumps / duplicate headings / multiple H1 / table cols / code-block language / image paths
 
 Output: JSON to stdout; progress to stderr. The issue list states mechanical
 facts; judging severity is the LLM's job.
@@ -280,7 +260,6 @@ Exit codes:
     issues += validate_duplicate_headings(lines, is_inside_code)
     issues += validate_single_h1(lines, is_inside_code)
     issues += validate_tables(lines, is_inside_code)
-    issues += validate_lists(lines, is_inside_code)
     issues += validate_codeblock_lang(lines, regions)
     issues += validate_image_paths(lines, is_inside_code, input_path.parent)
 

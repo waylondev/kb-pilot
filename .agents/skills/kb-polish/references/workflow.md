@@ -64,7 +64,7 @@ First run the mechanical structure check (deterministic skeleton):
 python scripts/validate_structure.py {output_dir}/raw.md
 ```
 
-The script outputs an `issues` list (heading jumps, duplicate headings, inconsistent table column counts, mixed list markers, code blocks without a language tag, missing image paths). Severity is not scored — the LLM judges it from the issue list.
+The script outputs an `issues` list (heading jumps, duplicate headings, inconsistent table column counts, code blocks without a language tag, missing image paths). Severity is not scored — the LLM judges it from the issue list.
 
 **LLM responsibility (scripts do no semantic judgment):**
 

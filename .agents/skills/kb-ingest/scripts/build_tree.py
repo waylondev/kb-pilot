@@ -113,6 +113,21 @@ def dump_json(obj: dict, pretty: bool) -> str:
 FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 FENCE_CLOSE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})\s*$")
 
+# What counts as a heading is decided here, in exactly one place: an ATX heading
+# with at least one non-space character after the #s, and a trailing closing
+# sequence of #s stripped from the title (CommonMark). kb-polish's validators
+# borrow `heading()` rather than keeping their own regexes, so a document that
+# validates clean here parses the same there.
+HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
+
+
+def heading(line: str):
+    """Return (level, title) if `line` is an ATX heading, else None."""
+    m = HEADING_RE.match(line)
+    if not m:
+        return None
+    return len(m.group(1)), m.group(2).strip()
+
 
 def find_code_fence_regions(lines: list) -> list:
     """Return fenced code regions as [(start, end), ...] with 1-based inclusive lines."""
@@ -167,7 +182,6 @@ def parse_headings(source_path: Path, lines: list = None) -> dict:
         lines = source_path.read_text(encoding="utf-8").splitlines()
     total_lines = len(lines)
 
-    heading_pattern = re.compile(r"^(#{1,6})\s+(.+)$")
     is_inside_code = make_fence_checker(find_code_fence_regions(lines))
     nodes = []
     stack = []
@@ -175,12 +189,11 @@ def parse_headings(source_path: Path, lines: list = None) -> dict:
     for i, line in enumerate(lines):
         if is_inside_code(i + 1):
             continue
-        m = heading_pattern.match(line)
-        if not m:
+        h = heading(line)
+        if not h:
             continue
 
-        level = len(m.group(1))
-        title = m.group(2).strip()
+        level, title = h
         line_num = i + 1
 
         if level == 1:
@@ -381,9 +394,9 @@ def first_h1(source_path: Path, lines: list = None) -> str:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        m = re.match(r"^#\s+(.+)$", line)
-        if m:
-            return m.group(1).strip()
+        h = heading(line)
+        if h and h[0] == 1:
+            return h[1]
     return ""
 
 

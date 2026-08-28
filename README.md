@@ -90,6 +90,7 @@ graph TB
     subgraph Agent["Agent (LLM)"]
         INGEST["kb-ingest<br/>build a TOC for a document"]
         CHAT["kb-chat<br/>5-step workflow: route → localize → read → answer → self-verify"]
+        CHECK["check_source.py<br/>SHA256 drift check"]
     end
 
     subgraph KB["Knowledge base (Git repo)"]
@@ -105,7 +106,8 @@ graph TB
     INGEST -->|"build_manifest.py"| MANIFEST
     CHAT -->|"1. route"| MANIFEST
     CHAT -->|"2. localize"| TREE
-    CHAT -->|"3. read"| SOURCE
+    CHAT -->|"3. check drift"| CHECK
+    CHECK -->|"read"| SOURCE
     CHAT -->|"5. self-verify re-reads"| SOURCE
 ```
 

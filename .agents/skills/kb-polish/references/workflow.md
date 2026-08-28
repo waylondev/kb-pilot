@@ -50,11 +50,11 @@ Internally the script uses the AnyDoc Python API (`anydoc.to_markdown(path)` for
 
 > **Batch use**: this workflow is per-file by design — no batch script. For many documents the LLM drives each file through Steps 1-5 one at a time (like kb-ingest's batch walk: repeat per file, isolated outputs). Scripts stay single-responsibility; the LLM handles repetition.
 
-## 2. Structure validation & scoring (Step 2)
+## 2. Structure validation (Step 2)
 
 ### Goal
 
-Assess the structural quality of the first-draft Markdown and decide how deep the Step 3 content cross-check should be. Step 3's deterministic extraction runs for every document regardless of this score.
+Assess the structural quality of the first-draft Markdown and decide how deep the Step 3 content cross-check should be. Step 3's deterministic extraction runs for every document regardless.
 
 ### Actions
 
@@ -64,68 +64,33 @@ First run the mechanical structure check (deterministic skeleton):
 python scripts/validate_structure.py {output_dir}/raw.md
 ```
 
-The script outputs an `issues` list (heading jumps, duplicate headings, inconsistent table column counts, mixed list markers, code blocks without a language tag, missing image paths), plus `mechanical_scores` per dimension and a `mechanical_total` (out of 70 — the mechanical portion of the 100-pt rubric below; the remaining 30 pts are the LLM's semantic judgment).
+The script outputs an `issues` list (heading jumps, duplicate headings, inconsistent table column counts, mixed list markers, code blocks without a language tag, missing image paths). Severity is not scored — the LLM judges it from the issue list.
 
 **LLM responsibility (scripts do no semantic judgment):**
 
-* Combine the script's issue list with semantic dimensions: heading-meaning clarity (20%), content truncation & mojibake (10%)
+* Weigh the issues against the document type (table/number-heavy, long, multi-format) and decide whether Step 3 does a full or a light cross-check
 
-* Aggregate the 6-dimension score and decide, with the threshold below, whether Step 3 does a full or a light cross-check
+### Cross-check depth
 
-### Validation dimensions & weights
+Step 3's deterministic extraction (`extract_verify.py`, seconds) runs **for every document, unconditionally** — it is cheap and it is what gives Step 4 a ground truth. How deep the LLM cross-checks is its own judgment: weigh the issue list against the document type. A well-headed document can still have mangled tables or numbers, so table/number-heavy documents warrant a full cross-check whatever the issue list says.
 
-| Dimension                      | Weight | What is checked                                                |
-| ------------------------------ | ------ | -------------------------------------------------------------- |
-| Heading-level continuity       | 30%    | `# → ## → ###` continuous, no jumps                            |
-| Heading-meaning clarity        | 20%    | vague headings (duplicates are scored mechanically — see note) |
-| Table structural integrity     | 20%    | header present, consistent column counts                       |
-| List format consistency        | 10%    | unified markers, sane indentation                              |
-| Code blocks & special elements | 10%    | language tags, image paths                                     |
-| Content truncation & mojibake  | 10%    | complete paragraphs, no garbage chars                          |
-
-> **Do not double-charge.** Every issue in `validate_structure.py`'s output carries a `dimension` field naming where it was already deducted. Exact duplicate headings are detected mechanically and deducted from *Heading-level continuity*, so they are not part of Heading-meaning clarity — that dimension covers *vague* headings, which only the LLM can judge.
-
-### Cross-check depth (score threshold)
-
-Step 3's deterministic extraction (`extract_verify.py`, seconds) runs **for every document, unconditionally** — it is cheap and it is what gives Step 4 a ground truth. The structure score below decides only **how deep the LLM's cross-check goes**; it never skips the extraction:
-
-| Score                         | Step 3 cross-check depth                                                 |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| ≥ 80                          | Light spot-check of `verify_text.txt` vs `raw.md`, then go to Step 4     |
-| < 80                          | Full cross-check of `verify_text.txt` vs `raw.md`                        |
-| Heading-level continuity < 30 | Always the full cross-check (headings are the skeleton, must be correct) |
-
-> Rationale: a high structure score says nothing about content accuracy — AnyDoc can mangle tables/numbers even in a well-headed document. Extraction is cheap and unconditional (Step 3); only the depth of the LLM's comparison is gated by the score.
+> Rationale: structure and content accuracy are independent — AnyDoc can mangle tables/numbers even in a well-headed document. Extraction is cheap and unconditional (Step 3); only the depth of the LLM's comparison is its own call.
 
 ### Outputs
 
-* Format score
-
-* Per-dimension breakdown
-
 * Issue list (specific locations and problems)
 
-* Recommendation on whether Step 3 does a full vs. light cross-check
+* The LLM's recommendation on whether Step 3 does a full vs. light cross-check
 
 ## 3. Content verification (Step 3)
 
 ### Goal
 
-Extract the deterministic ground-truth source (unconditional — runs for every document, whatever the Step 2 score) and cross-check `raw.md` against it to validate content accuracy.
+Extract the deterministic ground-truth source (unconditional — runs for every document, whatever the Step 2 issue list says) and cross-check `raw.md` against it to validate content accuracy.
 
-### When a full cross-check is needed
+### Cross-check depth
 
-The extraction in this step always runs. The LLM does a **full cross-check** of `verify_text.txt` against `raw.md` when:
-
-* Step 2 score < 80
-
-* Heading-level continuity < 30
-
-* User explicitly asks for verification
-
-* The document is table/number-heavy (PDF/Excel/Word/PPT) — content accuracy is the point, whatever the structure score
-
-Otherwise a light spot-check of the extraction suffices before Step 4.
+The extraction in this step always runs. Whether the LLM does a **full cross-check** of `verify_text.txt` against `raw.md` or a light spot-check is its judgment from the Step 2 issue list and the document type. Rule of thumb: table/number-heavy documents (PDF/Excel/Word/PPT) and documents with many issues warrant a full cross-check; a clean document warrants a light one. A user asking for verification always gets a full one.
 
 > **Boundary: no OCR, scans are kept as images.** A document with no text layer (scans / image-only PDF) has no deterministic text source, and OCR is probabilistic and costly — kb-polish does not OCR. Instead Step 3 renders every page to `images/page_N.png` and Step 4 keeps them as `![page N](./images/page_N.png)` with a "scanned / image-only (no text layer)" note, so the asset survives for viewing while its content stays unreadable to the LLM.
 
@@ -162,14 +127,17 @@ python scripts/extract_verify.py --list                            # list suppor
 
 These plugins output a **raw source independent of AnyDoc** (OOXML/ODF/EPUB zip+XML plaintext, PDF engine text layer); the LLM can check each item against `raw.md` to spot misalignments.
 
-### Verification dimensions & weights
+### Verification checklist
 
-| Dimension                       | Weight | How it is verified                                     |
-| ------------------------------- | ------ | ------------------------------------------------------ |
-| Text content completeness       | 35%    | Does the source text fully appear in the Markdown      |
-| Table data accuracy             | 30%    | Table values, row/column relations match the source    |
-| Heading & structure consistency | 20%    | Section order and heading levels match the source      |
-| Special elements preserved      | 15%    | Image refs, code blocks, footnotes correctly preserved |
+The LLM checks these against `verify_text.txt` — completeness, accuracy, and structure consistency, with no scores attached:
+
+* Text content completeness — does the source text fully appear in the Markdown
+
+* Table data accuracy — table values and row/column relations match the source
+
+* Heading & structure consistency — section order and heading levels match the source
+
+* Special elements preserved — image refs, code blocks, footnotes correctly preserved
 
 ### Flow
 

@@ -249,7 +249,7 @@ Differences:
 ## See also
 
 - [README.md](./README.md) — Project overview, scope and quick start. It owns the scope boundary and the end-to-end workflow
-- [AGENTS.md](./AGENTS.md) — The specification: what is forbidden and why, the file map, the data model, the script conventions
+- [AGENTS.md](./AGENTS.md) — The design principles: what the system does, what it forbids, and why
 
 Neither restates the other. Where a question is answered in more than one place, it is
 answered in full in exactly one of them and pointed at from the rest — see "Where each

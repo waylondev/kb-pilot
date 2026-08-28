@@ -133,11 +133,7 @@ Path mapping: source file `docs/api/auth.md` → metadata directory `.kb/index/d
 - **`tree.json`** (one per document) — the document record plus the heading skeleton
 - **`manifest.json`** (one per knowledge base) — a JSON **array** of routing entries, one per document
 
-Both are minified by default (fewer tokens when the LLM reads them); regenerate with `--pretty` for a readable copy. The authoritative field list lives in the **Data model** section of [AGENTS.md](./AGENTS.md) — this README does not restate it, because two copies of a schema stop agreeing the first time one of them is edited.
-
-### Project structure
-
-See the **File map** in [AGENTS.md](./AGENTS.md). It is the only file map in this repository; this README deliberately keeps no copy of its own.
+Both are minified by default (fewer tokens when the LLM reads them); regenerate with `--pretty` for a readable copy. Field shapes are defined where they are consumed — the `kb-ingest` and `kb-chat` SKILLs document what they write and read; this README keeps only the summary above.
 
 **Core vs. optional**: `kb-ingest` and `kb-chat` are the core and use only the Python standard library. `kb-polish` is optional, pulls in third-party conversion dependencies, and never has to run for the knowledge base to work.
 
@@ -145,9 +141,9 @@ See the **File map** in [AGENTS.md](./AGENTS.md). It is the only file map in thi
 
 | Document | It owns | It does not |
 |---|---|---|
-| [AGENTS.md](./AGENTS.md) | the specification: what is forbidden and why, the file map, the data model, the script conventions | anything a first-time reader needs before deciding to adopt |
+| [AGENTS.md](./AGENTS.md) | the design principles: what the system does, what it forbids, and why | anything a first-time reader needs before deciding to adopt |
 | [FAQ.md](./FAQ.md) | boundaries, trade-offs, comparisons, how to correct things | restating scope numbers or principles owned elsewhere |
-| README.md (this file) | what you get and how to start: scope, quick start, end-to-end workflow | a second copy of the file map, the schema, or the constraint list |
+| README.md (this file) | what you get and how to start: scope, quick start, end-to-end workflow | a second copy of the principles, the schema, or the constraint list |
 
 There is no precedence rule because there is no overlap to adjudicate. If you find these
 documents disagreeing, that is a defect in the README or the FAQ — not a tie to be broken.

@@ -7,14 +7,13 @@ validate_structure.py — mechanical Markdown structure validation.
 
 Deterministic layer: checks only mechanical "skeleton" issues (heading jumps, table
 column counts, list indentation, etc.) and outputs a structured issue list for the LLM.
-Semantic dimensions (heading-meaning clarity, truncation & mojibake) are the LLM's job;
-this script does no semantic judgment.
+Severity is the LLM's judgment; this script does no semantic judgment and no scoring.
 
 Usage:
     python validate_structure.py raw.md
 
 Output (stdout):
-    {"ok": true, "issues": [...], "mechanical_scores": {...}, "mechanical_total": N}
+    {"ok": true, "issues": [...]}
 
 Exit codes:
     0  success
@@ -27,57 +26,8 @@ import re
 import sys
 from pathlib import Path
 
-# Mechanical check dimensions — the deterministic part of workflow.md Step 2's
-# 6-dimension (100-pt) rubric. The remaining 30 pts are semantic (heading-meaning
-# clarity 20% + content truncation & mojibake 10%) and are the LLM's job.
-# Weights mirror workflow.md: heading 30, table 20, list 10, code blocks & special
-# elements 10 (language tags + image paths are ONE dimension, not two).
-
-MAX_WEIGHT = {
-    "heading_continuity": 30,
-    "table_integrity": 20,
-    "list_consistency": 10,
-    "special_elements": 10,
-}
-
-# issue type -> scoring dimension. Explicit, so every mechanical issue (including
-# duplicate_heading / multiple_h1) is actually counted — a prefix match missed them.
-#
-# Note: workflow.md's rubric files "duplicate headings" under the *semantic*
-# Heading-meaning clarity dimension. Detecting an exact duplicate is mechanical,
-# so it is deducted here instead — otherwise the issue would be reported but scored
-# nowhere. Each issue carries the `dimension` it was counted against, so the LLM
-# does not deduct for the same duplicate a second time in the semantic pass.
-ISSUE_DIMENSION = {
-    "heading_jump": "heading_continuity",
-    "duplicate_heading": "heading_continuity",
-    "multiple_h1": "heading_continuity",
-    "table_separator_mismatch": "table_integrity",
-    "table_col_mismatch": "table_integrity",
-    "list_marker_mixed": "list_consistency",
-    "codeblock_no_lang": "special_elements",
-    "image_missing": "special_elements",
-}
-
-# Per-issue-type deduction, taken from rules.md §2 — that rubric is the authority,
-# so a change to the score means a change there first:
-#   §2.1  heading jump −3, duplicate heading −2, multiple H1 −5
-#   §2.2  separator mismatch −5, column mismatch −3
-#   §2.4  unified list markers is worth 5 → one mixed-marker issue costs the
-#         sub-criterion in full
-#   §2.5  language tags and image paths are worth 5 each → same
-# "Misaligned data −2" (§2.2) is deliberately absent: no detector exists, because a
-# script cannot tell a shifted cell from an intended one. The LLM judges it in Step 3.
-PENALTY = {
-    "heading_jump": 3,
-    "duplicate_heading": 2,
-    "multiple_h1": 5,
-    "table_separator_mismatch": 5,
-    "table_col_mismatch": 3,
-    "list_marker_mixed": 5,
-    "codeblock_no_lang": 5,
-    "image_missing": 5,
-}
+# Issue types are typed strings (not free text) so the LLM can group and weigh
+# them. The script reports mechanical facts; severity is the LLM's call.
 
 
 _SKELETON_PARSER = None
@@ -303,8 +253,8 @@ def main() -> int:
 
 Checks: heading jumps / duplicate headings / multiple H1 / table cols / list markers / code-block language / image paths
 
-Output: JSON to stdout; progress to stderr. The mechanical score covers 70 of the
-100 pts in workflow.md's rubric; the other 30 are the LLM's semantic judgment.
+Output: JSON to stdout; progress to stderr. The issue list states mechanical
+facts; judging severity is the LLM's job.
 
 Exit codes:
   0  validation completed — read "issues" in the JSON (findings are a result,
@@ -334,33 +284,11 @@ Exit codes:
     issues += validate_codeblock_lang(lines, regions)
     issues += validate_image_paths(lines, is_inside_code, input_path.parent)
 
-    # mechanical score: each dimension starts at full weight and is deducted per
-    # issue using its own per-issue-type penalty (rules.md §2 deductions).
-    mechanical_scores = dict(MAX_WEIGHT)
-    for iss in issues:
-        dim = ISSUE_DIMENSION.get(iss["type"])
-        if dim:
-            mechanical_scores[dim] = max(0, mechanical_scores[dim] - PENALTY[iss["type"]])
-
-    # Tag each issue with the dimension it was already deducted from. The LLM owns
-    # the remaining 30 semantic points and needs to know what not to charge twice.
-    for iss in issues:
-        iss["dimension"] = ISSUE_DIMENSION.get(iss["type"], "")
-
     result = {
         "ok": True,
         "input": str(input_path),
         "issue_count": len(issues),
         "issues": issues,
-        "mechanical_scores": mechanical_scores,
-        "mechanical_total": sum(mechanical_scores.values()),
-        "note": (
-            "mechanical score covers 70/100 pts; the remaining 30 (heading-meaning clarity 20 + "
-            "truncation & mojibake 10) are the LLM's semantic judgment. Every issue carries the "
-            "`dimension` it was already deducted from — do not deduct again in the semantic pass. "
-            "duplicate_heading is counted mechanically here, so it is not part of heading-meaning "
-            "clarity (that dimension covers *vague* headings, which scripts cannot judge)."
-        ),
     }
 
     # progress to stderr, structured result to stdout (the LLM parses stdout)

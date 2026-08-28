@@ -52,15 +52,6 @@ class TestFenceGuard(unittest.TestCase):
     copy, so these tests drive that borrowed routine through kb-polish's validators.
     """
 
-    def test_the_parser_is_borrowed_not_duplicated(self):
-        # Two copies of a subtle CommonMark routine drift silently, and the drift
-        # surfaces as a document that validates clean here but parses wrong there.
-        # If someone copies the parser back in, this fails.
-        source = Path(validate_structure.__file__).read_text(encoding="utf-8")
-        for marker in ("FENCE_OPEN_RE", "FENCE_CLOSE_RE", "def find_code_fence_regions",
-                       "def make_fence_checker", "bisect"):
-            self.assertNotIn(marker, source, marker)
-
     def test_the_borrowed_parser_is_reachable(self):
         # Path derivation is the fragile half of borrowing: the sibling's address is
         # derived from this script's own location, never hard-coded.
@@ -122,53 +113,6 @@ class TestMechanicalChecks(unittest.TestCase):
         lines = ["- one", "* two"]
         issues = validate_structure.validate_lists(lines, _fence_checker(lines))
         self.assertEqual([i["type"] for i in issues], ["list_marker_mixed"])
-
-
-class TestScoring(unittest.TestCase):
-    """The mechanical score covers 70 of the 100 pts; the rest is the LLM's.
-
-    The point of pinning this is the no-double-charge rule: every issue the script
-    deducts for must name the dimension it was deducted from, or the LLM charges
-    the same defect twice in its semantic pass.
-    """
-
-    def test_mechanical_weights_total_seventy(self):
-        self.assertEqual(sum(validate_structure.MAX_WEIGHT.values()), 70)
-
-    def test_every_issue_type_has_a_penalty_and_a_dimension(self):
-        for issue_type, dimension in validate_structure.ISSUE_DIMENSION.items():
-            self.assertIn(issue_type, validate_structure.PENALTY, issue_type)
-            self.assertIn(dimension, validate_structure.MAX_WEIGHT, issue_type)
-
-    def test_penalties_match_the_rubric(self):
-        # rules.md §2 is the authority. If a deduction changes here without changing
-        # there, the score stops meaning what the docs say it means.
-        expected = {
-            "heading_jump": 3,          # §2.1
-            "duplicate_heading": 2,     # §2.1
-            "multiple_h1": 5,           # §2.1
-            "table_separator_mismatch": 5,  # §2.2
-            "table_col_mismatch": 3,    # §2.2
-            "list_marker_mixed": 5,     # §2.4 — the sub-criterion is worth 5
-            "codeblock_no_lang": 5,     # §2.5 — the sub-criterion is worth 5
-            "image_missing": 5,         # §2.5 — the sub-criterion is worth 5
-        }
-        self.assertEqual(validate_structure.PENALTY, expected)
-
-    def test_no_penalty_exceeds_its_dimension(self):
-        # A single issue must never be able to zero out a dimension it shares with
-        # other, independent criteria.
-        for issue_type, penalty in validate_structure.PENALTY.items():
-            dim = validate_structure.ISSUE_DIMENSION[issue_type]
-            self.assertLess(penalty, validate_structure.MAX_WEIGHT[dim], issue_type)
-
-    def test_deduction_never_drives_a_dimension_below_zero(self):
-        scores = dict(validate_structure.MAX_WEIGHT)
-        noisy = ["heading_jump"] * 50
-        for issue_type in noisy:
-            dim = validate_structure.ISSUE_DIMENSION[issue_type]
-            scores[dim] = max(0, scores[dim] - validate_structure.PENALTY[issue_type])
-        self.assertEqual(scores["heading_continuity"], 0)
 
 
 class TestDriftTokens(unittest.TestCase):

@@ -1,4 +1,4 @@
-# kb-polish processing boundaries & scoring criteria
+# kb-polish processing boundaries & principles
 
 ## 1. Processing boundaries
 
@@ -16,117 +16,11 @@
 >
 > **Single H1**: kb-pilot treats H1 as the document title (not in the tree; the tree starts at H2). Standard Markdown allows multiple H1s, but multiple H1 blocks in one input file are usually related (e.g. a credit-card PDF = notices/statements + product summary), so **merge into one final by default** (the main title keeps H1, the rest demote to H2 with internal levels shifted); split only when the blocks are fully independent and unrelated. Repeated H1s from headers/page breaks are cleaned and merged directly.
 
-## 2. Format scoring criteria
-
-### 2.1 Heading-level continuity (30 pts)
-
-| Criterion                                 | Score |
-| ----------------------------------------- | ----- |
-| `# → ## → ###` fully continuous, no jumps | 10    |
-| No duplicate headings                     | 10    |
-| Heading levels match the document logic   | 10    |
-
-**Deductions:**
-
-* one jump: −3
-
-* one duplicate heading: −2
-
-* more than one H1: −5 (a structural defect — §1 requires demoting and merging them)
-
-### 2.2 Table structural integrity (20 pts)
-
-| Criterion                              | Score |
-| -------------------------------------- | ----- |
-| Header present and correct             | 10    |
-| Consistent column counts, aligned data | 10    |
-
-**Deductions:**
-
-* separator row does not match the header's column count: −5
-
-* a data row's column count differs from the header's: −3
-
-* misaligned data (a value sitting under the wrong column): −2 — **not detected by
-  `validate_structure.py`**. A script cannot tell "shifted" from "intended"; the LLM
-  judges this in Step 3 against the verify source
-
-### 2.3 Heading-meaning clarity (20 pts)
-
-| Criterion                                    | Score |
-| -------------------------------------------- | ----- |
-| Each heading independently conveys its topic | 20    |
-
-**Deductions:**
-
-* too generic (e.g. "Overview", "Introduction"): −3
-
-* ambiguous heading: −2
-
-* heading does not match content: −5
-
-### 2.4 List format consistency (10 pts)
-
-| Criterion                                  | Score |
-| ------------------------------------------ | ----- |
-| Unified list markers (all `-` or all `1.`) | 5     |
-| Reasonable indentation levels              | 5     |
-
-### 2.5 Code blocks & special elements (10 pts)
-
-| Criterion                             | Score |
-| ------------------------------------- | ----- |
-| Code blocks annotated with a language | 5     |
-| Image reference paths correct         | 5     |
-
-### 2.6 Content truncation & mojibake (10 pts)
-
-| Criterion                          | Score |
-| ---------------------------------- | ----- |
-| No mojibake characters             | 5     |
-| Paragraphs complete, no truncation | 5     |
-
-## 3. Content verification scoring (Step 3 extraction cross-check)
-
-### 3.1 Text content completeness (35 pts)
-
-| Criterion                                 | Score |
-| ----------------------------------------- | ----- |
-| Source text fully appears in the Markdown | 35    |
-
-**Deductions:**
-
-* each missing piece of content: −5
-
-* each scrambled piece of content: −3
-
-### 3.2 Table data accuracy (30 pts)
-
-| Criterion                             | Score |
-| ------------------------------------- | ----- |
-| Table values match the source         | 15    |
-| Row/column relations match the source | 15    |
-
-### 3.3 Heading & structure consistency (20 pts)
-
-| Criterion                        | Score |
-| -------------------------------- | ----- |
-| Section order matches the source | 10    |
-| Heading levels match the source  | 10    |
-
-### 3.4 Special elements preserved (15 pts)
-
-| Criterion                       | Score |
-| ------------------------------- | ----- |
-| Images correctly preserved      | 5     |
-| Code blocks correctly preserved | 5     |
-| Footnotes correctly preserved   | 5     |
-
-## 4. Core principles
+## 2. Core principles
 
 1. **Content correctness first, format compliance second.** Verify content accuracy before adjusting format.
 2. **Structure controllable, content lossless.** Only adjust document structure; never alter body content.
-3. **Content verification is based on a deterministic source.** A text-only LLM cannot judge whether content matches the source; the deterministic extraction (PyMuPDF text layer / OOXML / ODF / EPUB plaintext, seconds) runs **by default for every document**, giving Step 4 a ground truth. The structure score only gates how deep the LLM's cross-check goes — it never skips the extraction. **No OCR; scans are kept as page images** — OCR is probabilistic recognition with high cost and is outside this skill's scope; a scan (no text layer) is preserved by rendering each page to `images/page_N.png` and embedding `![page N](./images/page_N.png)`, with the content itself left unreadable (never guessed).
+3. **Content verification is based on a deterministic source.** A text-only LLM cannot judge whether content matches the source; the deterministic extraction (PyMuPDF text layer / OOXML / ODF / EPUB plaintext, seconds) runs **by default for every document**, giving Step 4 a ground truth. How deep the LLM cross-checks is its own judgment from the issue list and the document type — the extraction itself is never skipped. **No OCR; scans are kept as page images** — OCR is probabilistic recognition with high cost and is outside this skill's scope; a scan (no text layer) is preserved by rendering each page to `images/page_N.png` and embedding `![page N](./images/page_N.png)`, with the content itself left unreadable (never guessed).
 4. **Human confirmation is the final backstop.** No automated flow fully replaces a human.
 
 <br />

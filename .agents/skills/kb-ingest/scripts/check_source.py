@@ -66,8 +66,6 @@ def check(source: str, tree: str) -> dict:
         "source": str(src),
         "tree": str(tree_path),
         "doc_id": tree_data.get("doc_id", ""),
-        "current_sha256": current_sha,
-        "recorded_sha256": recorded_sha,
         "drifted": drifted,
         "checksum_unknown": unknown,
         "current_total_lines": current_lines,

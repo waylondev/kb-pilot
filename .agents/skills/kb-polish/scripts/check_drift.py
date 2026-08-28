@@ -30,8 +30,7 @@ Usage:
         --extra-pattern 'ART-\d{4}' --extra-pattern 'clause \d+\.\d+'
 
 Output (stdout):
-    {"ok": true, "truth_chars": N, "target_chars": N,
-     "missing_structured": [...], "missing_numeric": [...], "missing_count": N, ...}
+    {"ok": true, "missing_structured": [...], "missing_numeric": [...], "missing_count": N, ...}
 
 Exit codes:
     0  success (missing may be 0 or >0 — the drift result is in the JSON; the LLM/caller judges)
@@ -142,29 +141,15 @@ Exit codes:
 
     result = {
         "ok": not missing_structured and not missing_numeric,
-        "truth_chars": len(truth_text),
-        "target_chars": len(target_text),
-        "truth_token_count": len(truth_structured | truth_numeric),
-        "target_token_count": len(target_structured | target_numeric),
         "missing_count": len(missing_structured) + len(missing_numeric),
         "missing_structured": missing_structured,
         "missing_numeric": missing_numeric,
         "extra_patterns": list(args.extra_pattern),
-        "coverage": (
-            f"structured figures ({len(TOKEN_PATTERNS)} built-in"
-            + (f" + {len(args.extra_pattern)} extra" if args.extra_pattern else "")
-            + ") + bare numbers"
-            if truth_structured
-            else "bare numbers only — the ground truth has no currency/percentage figures, "
-                 "so structured checking adds nothing for this document"
-                 + (" (supply --extra-pattern for this corpus's figures)"
-                    if not args.extra_pattern else "")
-        ),
         "note": (
-            "missing_structured (currency/percent/period) is almost certainly real content loss. "
-            "missing_numeric lists bare numbers and is noisier: a hit may be drift, an intentional "
-            "removal (footer amounts), or a reformat (6,000 -> 6000) — judge against the document. "
-            "Passing this check proves no numeric drift, never that the content is unchanged."
+            "missing_structured (currency/percent) is almost certainly real content loss; "
+            "missing_numeric lists bare numbers and is noisier — a hit may be drift, an "
+            "intentional removal (footer amounts), or a reformat (6,000 -> 6000). Passing "
+            "this check proves no numeric drift, never that the content is unchanged."
         ),
     }
 

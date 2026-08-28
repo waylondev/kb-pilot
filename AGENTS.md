@@ -32,9 +32,46 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 - **No keyword extraction algorithms** — TF-IDF, RAKE, TextRank all miss what the LLM catches
 - **No rigid decision trees for routing** — "If score > 0.8 then select" is not how a human browses a library
 - **No answer templates beyond citation** — The LLM knows how to write a good answer
-- **No format conversion** — PDF/Word/HTML → Markdown is the user's job, not the system's. The optional `kb-polish` skill is a user-side convenience (AnyDoc + LLM re-render → Markdown), never a required system stage
+- **No format conversion** — PDF/Word/HTML → Markdown is the user's job, not the system's. Optional user-side conversion helpers are a convenience, never a required system stage
 - **No sharding / physical splitting** — One repo = one cognitive boundary; split by team or domain, not by code
 - **No auxiliary structures beyond tree.json + manifest.json** — Aliases, infoboxes, inverted indexes, multi-level routing tables all add complexity without value
+
+## SKILL design principles
+
+SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guides. Do not improvise — read the guides, then implement. Key points adapted to this project:
+
+- **Frontmatter uses only official fields** — `name`, `description`, `compatibility`, `metadata`, `license`, `allowed-tools`. No custom fields. Project tunables go in `metadata`
+- **Add what the agent lacks, omit what it knows** — Only write what the LLM wouldn't figure out on its own
+- **Match specificity to fragility** — Be prescriptive where a wrong guess is costly; give freedom where multiple approaches are valid
+- **Favor procedures over declarations** — Teach *how to approach*, not *what to produce*
+- **Checklists, not decision trees** — Steps are progress markers, not if-else branches
+- **Validation loops** — Validate after fragile operations
+- **Bundling reusable scripts** — Deterministic logic lives in `scripts/`; the LLM handles semantics
+
+## Script design principles
+
+- **Self-contained with PEP 723 inline dependencies** — Declare external deps (e.g. `# /// script\n# dependencies = ["requests"]\n# ///`) so scripts run without separate install steps
+- **Borrow, do not duplicate** — When two skills need the same deterministic routine, one owns it and the other borrows it, deriving the path from its own location rather than hard-coding a sibling's address. Two copies of a subtle routine drift silently, and the drift surfaces as output that validates clean in one skill and parses wrong in the other. Borrowing always points optional → core, so the core never depends on an optional skill
+- **A skill carries no corpus vocabulary** — Scripts ship format-shaped logic (an amount, a percentage, a heading) and nothing that belongs to the documents being processed. Corpus-specific knowledge arrives as a parameter, so a shared skill stays ignorant of whose documents it is running on
+- **Declared dependencies live in one place** — An entry script declares its own with a PEP 723 block. A plugin that needs a third-party package declares it on the plugin class instead, so a capability listing stays accurate when a format is added and the entry script's dependency list stays the single place to update
+- **argparse CLI with `--help`** — Examples and exit codes in the epilog. Exit codes are declared **per script** — read the epilog rather than assuming
+- **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
+- **Single responsibility** — One script does one deterministic thing
+- **Preserve what a rebuild would blank, and report what was kept** — Expensive fillings (a document's worth of summaries) are carried over where the structure still matches; cheap semantic values (a title, a category) are re-derived every time, with the drop reported rather than silent. The script states the facts (how much was reused, whether the source moved); judging staleness is the LLM's job
+- **Parse real Markdown, not a toy subset** — Fenced code blocks are part of the format, and a `#` inside one is a comment, not a heading. A parser that skips this invents phantom sections and truncates line ranges while still reporting zero validation errors, because the mangled ranges remain internally consistent. Validate against the failures that are *silent*, not just the ones that crash
+
+## Official references
+
+When creating or modifying SKILLs, **read these first** — do not write SKILLs from scratch based on guesswork:
+
+| Guide | What it covers | URL |
+|-------|---------------|-----|
+| Quickstart | `SKILL.md` basic structure, discovery / activation / execution | https://agentskills.io/skill-creation/quickstart |
+| Best practices | Spending context wisely, calibrating control, patterns for effective instructions | https://agentskills.io/skill-creation/best-practices |
+| Optimizing descriptions | How to write the `description` field so the SKILL triggers on the right prompts | https://agentskills.io/skill-creation/optimizing-descriptions |
+| Specification | Complete format reference for `SKILL.md` (frontmatter fields, progressive disclosure, file layout) | https://agentskills.io/specification |
+| Using scripts in skills | When to bundle scripts, CLI interfaces, stdout / stderr conventions | https://agentskills.io/skill-creation/using-scripts |
+| Example skills | Real-world SKILLs on GitHub for reference | https://github.com/anthropics/skills |
 
 ## Optimization directions
 

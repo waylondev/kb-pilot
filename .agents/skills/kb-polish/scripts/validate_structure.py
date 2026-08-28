@@ -83,7 +83,7 @@ def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
             issues.append({
                 "type": "heading_jump",
                 "line": i,
-                "detail": f"heading level jump: {prev_level} -> {level} (fill in the missing levels)",
+                "detail": f"heading level jump: {prev_level} -> {level}",
                 "text": line.strip(),
             })
         prev_level = level
@@ -135,8 +135,8 @@ def validate_single_h1(lines: list[str], is_inside_code) -> list[dict]:
                 "type": "multiple_h1",
                 "line": i,
                 "detail": (
-                    f"multiple H1 headings (first at line {first_line}): {text}. "
-                    "kb-pilot requires a single H1 (document title); later blocks should be demoted to H2"
+                    f"multiple H1 headings (first at line {first_line}): {text} "
+                    "(kb-pilot requires exactly one H1)"
                 ),
                 "text": text,
             })

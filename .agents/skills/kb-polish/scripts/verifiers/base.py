@@ -38,6 +38,7 @@ class ExtractResult:
     text: str              # full text (blank line between pages/slides/sheets)
     pages: list = field(default_factory=list)   # [{"index": n, "text": "..."}] per-page text
     tables: list = field(default_factory=list)  # [{"name": "...", "rows": [["a","b"], ...]}]
+    images: list = field(default_factory=list)  # [{"name": "...", "data": bytes, "media_type": "..."}] embedded images
     warnings: list = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -47,6 +48,7 @@ class ExtractResult:
             "text": self.text,
             "pages": self.pages,
             "tables": self.tables,
+            "images": [{"name": i["name"], "media_type": i.get("media_type", "")} for i in self.images],
             "warnings": self.warnings,
             "stats": {
                 "chars": len(self.text),
@@ -74,10 +76,23 @@ class BaseVerifier(ABC):
 class ZipXmlVerifier(BaseVerifier):
     """Shared helpers for zip + XML formats (docx/pptx/xlsx/odt/epub are all zip containers)."""
 
+    def _open_zip(self, path: Path) -> zipfile.ZipFile | None:
+        """Open a zip container, or None on a corrupt/truncated file (never raises).
+
+        A corrupt file must yield a graceful warning downstream, not a crash.
+        """
+        try:
+            return zipfile.ZipFile(path)
+        except (zipfile.BadZipFile, OSError):
+            return None
+
     def _read_zip(self, path: Path, members: list[str]) -> dict[str, bytes]:
-        """Unzip, returning {internal path: bytes}."""
+        """Unzip, returning {internal path: bytes} (empty dict on corrupt files)."""
         out = {}
-        with zipfile.ZipFile(path) as z:
+        z = self._open_zip(path)
+        if z is None:
+            return out
+        with z:
             names = set(z.namelist())
             for m in members:
                 if m in names:

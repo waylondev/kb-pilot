@@ -110,7 +110,10 @@ class PptxVerifier(ZipXmlVerifier):
         if targets:
             targets.sort(key=lambda t: int(re.search(r"\d+", t).group()))
             return targets
-        with zipfile.ZipFile(path) as z:
+        z = self._open_zip(path)
+        if z is None:
+            return []
+        with z:
             cand = (n.replace("ppt/", "", 1) for n in z.namelist())
             return sorted(c for c in cand if re.match(r"^slides/slide\d+\.xml$", c))
 

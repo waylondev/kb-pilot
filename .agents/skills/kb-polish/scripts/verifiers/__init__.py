@@ -29,7 +29,7 @@ from .xlsx import XlsxVerifier
 from .odt import OdtVerifier
 from .epub import EpubVerifier
 from .rtf import RtfVerifier
-from .csv_tsv import CsvVerifier
+from .csv import CsvVerifier
 
 # plugin registry (extensions are mutually exclusive; order does not matter)
 REGISTRY: list[BaseVerifier] = [

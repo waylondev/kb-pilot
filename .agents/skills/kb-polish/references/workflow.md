@@ -31,15 +31,17 @@ Internally the script uses the AnyDoc Python API (`anydoc.to_markdown(path)` for
 - **AnyDoc handles .odp very weakly** (field-tested: only the title text survives; body/tables lost): convert ODP to .pptx first
 - **RTF Chinese is garbled by AnyDoc conversion** (UTF-8 decoded as Latin-1, field-tested); the verify source (striprtf) extracts correctly — **rely on Step 3/4 rebuilding from the ground truth**; this is the typical value case for double cross-checking
 - **PDFs using CID fonts (no ToUnicode CMap) are misjudged as "needs OCR"**: real scans take the "not processed" branch; if a text-layer PDF reports needs OCR it usually lacks ToUnicode — ask the user to re-export with an embedded font
-- **PDF images/attachments are not extracted as assets** (AnyDoc converts PDF via `to_markdown` directly; `to_document()` reports unsupported for PDF): PDF inline images stay in the text flow; no `images/` extraction
+- **PDF images need the PyMuPDF fallback**: AnyDoc's `to_document()` does not support PDF (PDF converts via `to_markdown` directly, so no `assets`), and PDF markdown carries no `![` references. kb-polish extracts PDF embedded images in Step 3 via PyMuPDF's block-level `get_text("dict")` view — image blocks appear **exactly where the source lays them out**, emitting `[image: <name>]` placeholders (and their bytes) in place. A geometry-matched `doc.extract_image()` fallback covers blocks whose decoded bytes are missing. Same convention as docx/pptx/epub
 - **EPUB heading levels get flattened** (`<h1>`/`<h2>` all become `#`, producing duplicate H1s, field-tested): Step 2's `multiple_h1`/`duplicate_heading` catches it; Step 4 applies the single-H1 rule
 - AnyDoc does not recursively convert nested files (e.g. an Excel attachment inside Word), but `to_document().assets` **can extract OLE embedded attachments** (field-tested: a .xlsx inside .docx lands in `attachments/`); handle that attachment separately, do not merge it into the body Markdown
 - In the converted Markdown, images appear as alt text; **image reference placement (`![](./images/xxx.png)`) is the LLM's job in Step 4**
 
+> **Batch use**: this workflow is per-file by design — no batch script. For many documents the LLM drives each file through Steps 1-5 one at a time (like kb-ingest's batch walk: repeat per file, isolated outputs). Scripts stay single-responsibility; the LLM handles repetition.
+
 ## 2. Structure validation & scoring (Step 2)
 
 ### Goal
-Assess the structural quality of the first-draft Markdown and decide whether Step 3 content verification is needed.
+Assess the structural quality of the first-draft Markdown and decide how deep the Step 3 content cross-check should be. Step 3's deterministic extraction runs for every document regardless of this score.
 
 ### Actions
 
@@ -53,7 +55,7 @@ The script outputs an `issues` list (heading jumps, duplicate headings, inconsis
 
 **LLM responsibility (scripts do no semantic judgment):**
 - Combine the script's issue list with semantic dimensions: heading-meaning clarity (20%), content truncation & mojibake (10%)
-- Aggregate the 6-dimension score and recommend whether Step 3 content verification should run
+- Aggregate the 6-dimension score and decide, with the threshold below, whether Step 3 does a full or a light cross-check
 
 ### Validation dimensions & weights
 
@@ -66,42 +68,49 @@ The script outputs an `issues` list (heading jumps, duplicate headings, inconsis
 | Code blocks & special elements | 10% | language tags, image paths |
 | Content truncation & mojibake | 10% | complete paragraphs, no garbage chars |
 
-### Score thresholds
+### Cross-check depth (score threshold)
 
-| Score | Handling |
+Step 3's deterministic extraction (`extract_verify.py`, seconds) runs **for every document, unconditionally** — it is cheap and it is what gives Step 4 a ground truth. The structure score below decides only **how deep the LLM's cross-check goes**; it never skips the extraction:
+
+| Score | Step 3 cross-check depth |
 |---|---|
-| ≥ 80 | Well-formed; skip Step 3 verification, go straight to Step 4 |
-| < 80 | Structural problems; trigger Step 3 content verification |
-| Heading-level score < 70 | Always trigger Step 3 (headings are the skeleton, must be correct) |
+| ≥ 80 | Light spot-check of `verify_text.txt` vs `raw.md`, then go to Step 4 |
+| < 80 | Full cross-check of `verify_text.txt` vs `raw.md` |
+| Heading-level score < 70 | Always the full cross-check (headings are the skeleton, must be correct) |
+
+> Rationale: a high structure score says nothing about content accuracy — AnyDoc can mangle tables/numbers even in a well-headed document. Extraction is cheap and unconditional (Step 3); only the depth of the LLM's comparison is gated by the score.
 
 ### Outputs
 - Format score
 - Per-dimension breakdown
 - Issue list (specific locations and problems)
-- Recommendation on whether to trigger Step 3
+- Recommendation on whether Step 3 does a full vs. light cross-check
 
 ## 3. Content verification (Step 3)
 
 ### Goal
-Extract the source text from a verify source independent of AnyDoc (text layer / OOXML / ODF / EPUB plaintext) and cross-check it against `raw.md` to validate content accuracy.
+Extract the deterministic ground-truth source (unconditional — runs for every document, whatever the Step 2 score) and cross-check `raw.md` against it to validate content accuracy.
 
-### Trigger conditions
+### When a full cross-check is needed
+The extraction in this step always runs. The LLM does a **full cross-check** of `verify_text.txt` against `raw.md` when:
 - Step 2 score < 80
 - Heading-level score < 70
 - User explicitly asks for verification
+- The document is table/number-heavy (PDF/Excel/Word/PPT) — content accuracy is the point, whatever the structure score
+
+Otherwise a light spot-check of the extraction suffices before Step 4.
 
 > **Boundary: no scans/images.** A document with no text layer (scans / image-only PDF) is outside this skill's scope — no deterministic source can validate pixel content, and OCR is probabilistic and costly. When `extract_verify.py` detects an empty text layer it emits a warning and the flow stops: tell the user "this document is a scan; kb-polish does not process images — please provide a text-layer version or handle it yourself".
 
 ### Actions
-Use `extract_verify.py` to dispatch to verifiers/ plugins and extract the source text (text + table structure), then compare with `raw.md`, focusing on:
+Run `extract_verify.py -o {outdir} --save-text` (unconditional) to produce the deterministic source `verify_text.txt`, then the LLM compares it with `raw.md`, focusing on:
 - Misaligned table data (digits, amounts, whether the card type and fee correspond 1:1)
 - Text split / reordered by AnyDoc
 - Missing content
 
 ```bash
-# Extract source text (auto-detects format → dispatches to plugin), JSON on stdout
-python scripts/extract_verify.py {input}
-python scripts/extract_verify.py {input} -o {outdir} --save-text   # also save verify_text.txt for the LLM
+# Extract the source text (auto-detects format → dispatches to plugin); save verify_text.txt for the LLM
+python scripts/extract_verify.py {input} -o {outdir} --save-text
 python scripts/extract_verify.py --list                            # list supported formats & plugins
 ```
 
@@ -116,7 +125,7 @@ python scripts/extract_verify.py --list                            # list suppor
 | .odt/.ods/.odp | odt.py | zipfile+xml | stdlib |
 | .epub | epub.py | zipfile+xml | stdlib |
 | .rtf | rtf.py | striprtf control-word stripping | striprtf |
-| .csv/.tsv | csv_tsv.py | csv stdlib | stdlib |
+| .csv | csv.py | csv stdlib | stdlib |
 
 > Note: formats AnyDoc supports but that currently lack a lightweight verify plugin — legacy binary .doc/.ppt (no lightweight library; convert with LibreOffice first), .xls/.xlsb (xlrd/pyxlsb available; add as needed). Verification may be skipped or the user informed explicitly.
 
@@ -132,7 +141,7 @@ These plugins output a **raw source independent of AnyDoc** (OOXML/ODF/EPUB zip+
 | Special elements preserved | 15% | Image refs, code blocks, footnotes correctly preserved |
 
 ### Flow
-1. Extract the source text with `extract_verify.py` (deterministic source)
+1. Run `extract_verify.py -o {outdir} --save-text` to produce the deterministic source
 2. If extraction is empty with a "text layer is empty" warning: it is a scan — **stop**, tell the user images are not processed
 3. Compare the extraction against `raw.md` segments
 4. Check only the points in the Step 2 issue list; output fix suggestions
@@ -189,8 +198,8 @@ On conflict: content text obeys the ground truth; structure obeys the corrected 
 ### Validation loop (must re-run after editing)
 1. Re-run Step 2 validation on every re-render output (default single `final.md`; `final_1.md`, `final_2.md`, … on the split exception): `python scripts/validate_structure.py final.md --stdout-json`
 2. If the issue list is not empty: fix and re-run until zero (output must have **exactly one H1**, no `multiple_h1`)
-3. Content-drift spot check (recommended, mechanical backstop): `python scripts/check_drift.py verify_text.txt final.md --stdout-json` — compare all numeric/amount tokens in the ground truth against the final; zero missing = zero drift; a missing token must be judged as drift vs an intentional removal (e.g. footer amounts)
-4. Only after no mechanical issues and zero content drift, proceed to Step 5 human confirmation
+3. Content-drift spot check (mechanical backstop): `python scripts/check_drift.py verify_text.txt final.md --stdout-json` — compares the numeric/amount token sets; **no missing tokens = no numeric drift detected** (it only verifies numbers, so it cannot prove "zero content change" — prose drift is the LLM's judgment). A missing token must be judged as drift vs an intentional removal (e.g. footer amounts)
+4. Only after no mechanical issues and no numeric drift, proceed to Step 5 human confirmation
 
 ## 5. Human confirmation (Step 5)
 
@@ -223,16 +232,14 @@ If human confirmation fails: record the problems and re-run Step 3 or Step 4 for
 ├── raw.md              # AnyDoc first draft
 ├── final.md            # LLM re-render (single H1, ingestible; final_1/2/…N.md on the split exception)
 ├── verify_text.txt     # deterministic verify source (content ground truth for re-render)
+├── verify_result.json  # extract_verify.py result (stats + source preview + images list)
 ├── images/             # extracted images
-├── attachments/        # extracted embedded files
-└── validation.log      # full processing log
+└── attachments/        # extracted embedded files
 ```
 
 ### Ingestion
 
-```bash
-kb-ingest ingest final.md
-```
+kb-polish only produces Markdown — it does not ingest. Place `final.md` (or the split `final_N.md` files) into `{kb_path}` alongside your other Markdown sources, then run the **kb-ingest** skill to add it to the index.
 
 ## 7. Error handling
 

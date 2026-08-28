@@ -103,5 +103,5 @@
 
 1. **Content correctness first, format compliance second.** Verify content accuracy before adjusting format.
 2. **Structure controllable, content lossless.** Only adjust document structure; never alter body content.
-3. **Content verification is based on a deterministic source and cannot be skipped.** A text-only LLM cannot judge whether content matches the source; extract the source with PyMuPDF text layer / OOXML / ODF / EPUB plaintext and cross-check (seconds, deterministic). **No scans/images (no OCR)** — that is probabilistic recognition with high cost, outside this skill's scope.
+3. **Content verification is based on a deterministic source.** A text-only LLM cannot judge whether content matches the source; the deterministic extraction (PyMuPDF text layer / OOXML / ODF / EPUB plaintext, seconds) runs **by default for every document**, giving Step 4 a ground truth. The structure score only gates how deep the LLM's cross-check goes — it never skips the extraction. **No scans/images (no OCR)** — that is probabilistic recognition with high cost, outside this skill's scope.
 4. **Human confirmation is the final backstop.** No automated flow fully replaces a human.

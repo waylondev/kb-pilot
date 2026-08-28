@@ -45,7 +45,10 @@ class EpubVerifier(ZipXmlVerifier):
         )
 
     def _chapter_targets(self, path: Path) -> list[str]:
-        with zipfile.ZipFile(path) as z:
+        z = self._open_zip(path)
+        if z is None:
+            return []
+        with z:
             names = set(z.namelist())
             # locate the OPF via container.xml
             opf_path = None

@@ -139,8 +139,9 @@ kb-pilot/
 │   │   └── scripts/    # deterministic scripts
 │   │       ├── build_tree.py
 │   │       └── build_manifest.py
-│   └── kb-chat/        # knowledge Q&A
-│       └── SKILL.md
+│   ├── kb-chat/        # knowledge Q&A
+│   │   └── SKILL.md
+│   └── kb-polish/      # OPTIONAL, non-core: PDF/Word/Excel/PPT/EPUB/CSV → Markdown (AnyDoc + LLM re-render)
 └── knowledge_repo/     # knowledge base data (example, not committed)
 ```
 
@@ -157,7 +158,7 @@ kb-pilot/
 | **Git as the collaboration layer** | All metadata is text files; versioning, collaboration, sync, and conflicts can go through Git |
 | **Line-level tracing** | Answers cite `docs/api/auth.md#L16` — traceable and verifiable |
 | **Source is the correction** | A wrong answer is fixed by editing the source and re-ingesting — no separate correction layer |
-| **Less is more** | No vectors, no chunks, no graphs, no sharding, no format conversion |
+| **Less is more** | No vectors, no chunks, no graphs, no sharding; no format conversion in the core — the optional `kb-polish` skill can convert PDF/Word/etc. to Markdown for you if you choose, but it is never required |
 | **Skill-based** | Atomic capabilities (`kb-ingest`, `kb-chat`) are composable — integrate into larger Agents, combine for cross-repo queries, or extend with new Skills |
 
 
@@ -173,7 +174,7 @@ git init kb-ops && cd kb-ops
 git add docs/ && git commit -m "docs: initial knowledge base"
 ```
 
-**Rule**: Source files must be Markdown with clear heading hierarchy (`#`, `##`, `###`). The author is responsible for structure accuracy. See AGENTS.md: *"No format conversion — PDF/Word/HTML → Markdown is the user's job, not the system's."*
+**Rule**: Source files must be Markdown with clear heading hierarchy (`#`, `##`, `###`). The author is responsible for structure accuracy. See AGENTS.md: *"No format conversion — PDF/Word/HTML → Markdown is the user's job, not the system's."* If your sources start as PDF/Word/Excel/PPT, you may optionally run the **kb-polish** skill to convert them to Markdown first — a user-side convenience, never a required stage.
 
 ### Step 2: Build the index
 

@@ -85,6 +85,17 @@ Supported formats: %s""" % ", ".join(supported_extensions()),
     except ImportError as e:
         print(f"[verify] missing dependency: {e}", file=sys.stderr)
         return 2
+    except Exception as e:  # noqa: BLE001 - a plugin crash must degrade to a warning, not a traceback
+        print(f"[verify] plugin raised for {input_path.name}: {e}", file=sys.stderr)
+        payload = {
+            "ok": False,
+            "input": str(input_path),
+            "verifier": verifier.name,
+            "warnings": [f"verifier failed: {e}"],
+            "hint": "the file may be corrupt or unsupported; review manually",
+        }
+        print(json.dumps(payload, ensure_ascii=False))
+        return 1
 
     payload = {
         "ok": True,
@@ -95,6 +106,7 @@ Supported formats: %s""" % ", ".join(supported_extensions()),
         "text_preview": result.text[:1500],
         "pages": result.pages if args.full_text else [p["index"] for p in result.pages],
         "tables": result.tables if args.full_text else [t["name"] for t in result.tables],
+        "images": [i["name"] for i in result.images],
         "warnings": result.warnings,
         "stats": result.to_dict()["stats"],
         "hint": "summary only by default; add --full-text or --save-text for the full text",
@@ -105,6 +117,16 @@ Supported formats: %s""" % ", ".join(supported_extensions()),
         out_dir.mkdir(parents=True, exist_ok=True)
         if args.save_text:
             (out_dir / "verify_text.txt").write_text(result.text, encoding="utf-8")
+        if result.images:
+            # land embedded images in out_dir/images/, so Step 4 can reference
+            # them as ![](./images/<name>) exactly like the zip-based formats
+            img_dir = out_dir / "images"
+            img_dir.mkdir(parents=True, exist_ok=True)
+            for img in result.images:
+                name, data = img.get("name"), img.get("data")
+                if not name or not data:
+                    continue
+                (img_dir / name).write_bytes(bytes(data))
         (out_dir / "verify_result.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"[verify] result saved to {out_dir}", file=sys.stderr)

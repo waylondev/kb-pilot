@@ -176,6 +176,8 @@ def validate_tables(lines: list[str], regions) -> list[dict]:
 
 def _count_cols(row: str) -> int:
     # count columns split by non-escaped pipes
+    # Known boundary: callers only reach this for lines whose first non-space char
+    # is "|", so pipe-less (raw pipe-text) or other table dialects are not counted.
     return len(re.findall(r"(?<!\\)\|", row.strip())) - 1
 
 

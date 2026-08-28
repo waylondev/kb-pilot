@@ -32,7 +32,7 @@ The boundary is absolute: **scripts never touch semantics; the LLM never touches
 - **No keyword extraction algorithms** — TF-IDF, RAKE, TextRank all miss what the LLM catches
 - **No rigid decision trees for routing** — "If score > 0.8 then select" is not how a human browses a library
 - **No answer templates beyond citation** — The LLM knows how to write a good answer
-- **No format conversion** — PDF/Word/HTML → Markdown is the user's job, not the system's
+- **No format conversion** — PDF/Word/HTML → Markdown is the user's job, not the system's. The optional `kb-polish` skill is a user-side convenience (AnyDoc + LLM re-render → Markdown), never a required system stage
 - **No sharding / physical splitting** — One repo = one cognitive boundary; split by team or domain, not by code
 - **No auxiliary structures beyond tree.json + manifest.json** — Aliases, infoboxes, inverted indexes, multi-level routing tables all add complexity without value
 
@@ -79,8 +79,14 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
     │   └── scripts/
     │       ├── build_tree.py      # Markdown → tree.json (document record + skeleton, deterministic)
     │       └── build_manifest.py  # tree.json × N → manifest.json (deterministic)
-    └── kb-chat/                   # QA workflow (5 steps: route → localize → read → answer → self-verify)
-        └── SKILL.md
+    ├── kb-chat/                   # QA workflow (5 steps: route → localize → read → answer → self-verify)
+    │   └── SKILL.md
+    └── kb-polish/                 # OPTIONAL, non-core: source doc (PDF/Word/Excel/PPT/EPUB/CSV) → Markdown
+        │                          #   (AnyDoc + LLM re-render, 5 steps). A user-side convenience only —
+        ├── SKILL.md               #   not a required system stage; the user may convert any way they want
+        ├── references/            #   workflow.md (full flow) + rules.md (boundaries & scoring)
+        └── scripts/               #   convert_document / validate_structure / extract_verify / check_drift
+            └── verifiers/         #   per-format deterministic verify-source plugins
 ```
 
 ## Optimization directions

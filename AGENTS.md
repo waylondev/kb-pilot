@@ -51,7 +51,10 @@ SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guide
 ## Script design principles
 
 - **Self-contained with PEP 723 inline dependencies** — Declare external deps (e.g. `# /// script\n# dependencies = ["requests"]\n# ///`) so scripts run without separate install steps
-- **argparse CLI with `--help`** — Examples and exit codes in the epilog
+- **Borrow, do not duplicate** — When two skills need the same deterministic routine, one owns it and the other borrows it, deriving the path from its own location rather than hard-coding a sibling's address (kb-chat → `check_source.py`, kb-polish → `build_tree.py`). Two copies of a subtle routine drift silently, and the drift surfaces as output that validates clean in one skill and parses wrong in the other. Borrowing always points optional → core, so the core never depends on an optional skill
+- **A skill carries no corpus vocabulary** — Scripts ship format-shaped logic (an amount, a percentage, a heading) and nothing that belongs to the documents being processed. Corpus-specific knowledge arrives as a parameter (`check_drift.py --extra-pattern`), so a shared skill stays ignorant of whose documents it is running on
+- **Declared dependencies live in one place** — An entry script declares its own with a PEP 723 block. A plugin that needs a third-party package declares it on the plugin class instead (see `verifiers/base.py`), so `extract_verify.py --list` stays accurate when a format is added and the entry script's dependency list stays the single place to update
+- **argparse CLI with `--help`** — Examples and exit codes in the epilog. Exit codes are declared **per script** and are not uniform across the two skill families: the core scripts use `2` for an expected failure (missing file, unusable index), while `extract_verify.py` uses `2` for a missing dependency and `1` for a runtime failure. Read the epilog rather than assuming
 - **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
 - **Single responsibility** — One script does one deterministic thing
 - **Preserve the fillings a rebuild would otherwise blank, and report what was kept** — Summary/keywords are carried over where the structure still matches, because regenerating them means re-reading the whole document. Record fields like `title` and `domain` are *not* carried over: they are single semantic values, so there is no cost argument for inheriting one, and keeping it would mean the script asserting that last time's classification still holds. For those the script reports what it dropped (`previous_title`, `previous_domain`) instead. Silence is the failure mode either way: an edit that changes only a number or a sentence preserves every heading, so every filling is inherited while quietly going stale. The script states the facts (how much was reused, whether the source moved); judging staleness — and re-deriving what was dropped — is the LLM's job
@@ -101,6 +104,27 @@ files; those are gitignored under `tests/`, never given a directory of their own
 kb-polish converts PDF, Word (`.docx`/`.docm`), Excel (`.xlsx`/`.xlsm`), PowerPoint
 (`.pptx`/`.pptm`/`.ppsx`/`.ppsm`), EPUB, CSV, RTF and OpenDocument (`.odt`/`.ods`/`.odp`).
 It does no OCR: a pure scan is kept by embedding every page as an image.
+
+## Data model
+
+Two metadata files, and no others — no aliases, no inverted indexes, no routing tables
+beyond the manifest. This section is the authoritative description of both; the README
+and the SKILLs point here rather than keeping their own copy.
+
+Both are minified by default (fewer tokens when the LLM reads them); `--pretty` writes a
+readable, hand-editable copy.
+
+- **`tree.json`** (one per document) — the document record plus the heading skeleton:
+  - record fields: `doc_id`, `title`, `domain`, `source_path`, `summary`, `ingested_at`, `source_sha256`, `total_lines`
+  - skeleton: one node per `##`–`######` heading, each carrying `id`, `level`, `title`, `start_line`, `end_line`, `children` and the LLM-filled `summary` / `keywords`
+  - H1 is the document title and does not appear as a node — the tree starts at H2
+  - text between the H1 and the first H2 is the document intro: it belongs to **no node**, so a fact stated only there is not reachable through the TOC. kb-chat Step 3 covers this by reading from the top of the file when the question may concern it
+- **`manifest.json`** (one per knowledge base) — a JSON **array** of routing entries, one per document: `doc_id`, `title`, `domain`, `summary`, `tags`, `updated_at`, `path`
+
+**`tags` come from top-level sections only.** Sub-section keywords stay in tree.json for
+localization, which keeps the manifest small and routing focused. A topic buried in a
+sub-section may therefore be absent from `tags` — which is why kb-chat walks the section
+tree instead of relying on tags alone.
 
 ## Tests
 

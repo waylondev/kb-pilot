@@ -28,16 +28,14 @@ Not a static directory for humans, but the skeleton the system uses to retrieve.
 
 ### Q: What kind of knowledge base is kb-pilot designed for?
 
-kb-pilot is a **focused choice**, not a universal RAG replacement. It is designed for **small to mid-sized, well-structured Markdown corpora** — tens to hundreds of documents within one team, product, or domain — where answers must be traceable to exact source lines and the source is worth reading precisely.
+A **bounded, well-structured Markdown corpus** — tens to hundreds of documents within one
+team, product, or domain — where answers must be traceable to exact source lines and the
+source is worth reading precisely. A focused choice, not a universal RAG replacement.
 
-Choose it when:
-
-- Documents have clear heading hierarchy (`#`, `##`, `###`) and stable source files
-- The corpus is maintained like a Git repo, with humans responsible for document quality
-- Answers must cite exact source lines and be auditable
-- The repository maps to one team, product, policy area, or technical domain
-
-Choose a conventional RAG system for large or unstructured corpora, web-scale or real-time search, millisecond latency, or resilience to messy documents. See the README's "Scope" and "When RAG is the better fit" sections for the full boundary.
+The full boundary, including when a conventional RAG system is the better fit, is stated
+once and only once: the README's ["Scope"](./README.md#scope) and "When RAG is the better
+fit" sections. What this FAQ adds is *why* the boundary sits there — see "What are
+kb-pilot's known boundaries?" below.
 
 ---
 
@@ -141,21 +139,18 @@ Yes, that's the direct tradeoff. A few points to consider:
 
 ### Q: What about large document volumes? Won't the LLM be overwhelmed by the manifest?
 
-This is kb-pilot's design scope — **tens to hundreds of documents**, for team knowledge bases, technical docs, project specifications, and other well-structured Markdown corpora where answers must be traceable to exact source lines. Not a general-purpose search engine for millions of documents.
+The design target is **tens to hundreds of documents** in one coherent team or domain —
+not an ever-growing universal corpus, and not a general-purpose search engine. Past
+roughly a few hundred, kb-pilot's intended boundary starts to matter, and scale is
+handled by clearer repo boundaries rather than by adding vector search or a sharding
+layer:
 
-Beyond that, split by domain:
 - Engineering team knowledge base → one Git repo
 - Finance team knowledge base → another Git repo
 
-**One knowledge base = one Git repo = one cognitive boundary** — this is a design decision, not a technical limitation.
-
----
-
-### Q: What if the repository grows beyond a few hundred Markdown files?
-
-This is where kb-pilot's intended boundary starts to matter. The design target is tens to hundreds of documents in one coherent team or domain, not an ever-growing universal corpus.
-
-If the repository grows beyond that boundary, split it by ownership or subject area. The project principle is "one knowledge base = one Git repo = one cognitive boundary," so scale is handled by clearer repo boundaries rather than adding vector search or sharding layers.
+**One knowledge base = one Git repo = one cognitive boundary** — a design decision, not a
+technical limitation. If one repo needs to grow past that, the answer is a second
+cognitive boundary, not a bigger index.
 
 ---
 
@@ -253,5 +248,9 @@ Differences:
 
 ## See also
 
-- [README.md](./README.md) — Project overview and quick start
-- [AGENTS.md](./AGENTS.md) — Design principles
+- [README.md](./README.md) — Project overview, scope and quick start. It owns the scope boundary and the end-to-end workflow
+- [AGENTS.md](./AGENTS.md) — The specification: what is forbidden and why, the file map, the data model, the script conventions
+
+Neither restates the other. Where a question is answered in more than one place, it is
+answered in full in exactly one of them and pointed at from the rest — see "Where each
+document is authoritative" in the README.

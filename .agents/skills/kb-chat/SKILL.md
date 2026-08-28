@@ -8,7 +8,6 @@ license: MIT
 compatibility: Requires Git and an initialized knowledge base (run kb-ingest first)
 allowed-tools: Bash(python:*) Read
 metadata:
-  repo_url: ""
   kb_path: knowledge_repo
 ---
 
@@ -41,6 +40,10 @@ Output:
 
 ## Data it reads
 
+A shape recap, so you can parse both files without a detour — the authoritative field
+list is the **Data model** section of AGENTS.md. If the two ever disagree, AGENTS.md is
+the specification.
+
 Both files are minified JSON — parse them, do not read them as prose.
 
 - **`.kb/manifest.json`** — a JSON **array** of document entries (not an object):
@@ -50,7 +53,9 @@ Both files are minified JSON — parse them, do not read them as prose.
     "tags":["auth","jwt"],"updated_at":"2026-08-28T...","path":"docs/api/auth.md"}]
   ```
 
-  `tags` come from **top-level sections only**; sub-section keywords stay in tree.json for localization, which keeps the manifest small and routing focused. A topic buried in a sub-section may therefore not appear in `tags` — fall back to the section walk in Step 2 rather than concluding the document is unrelated.
+  `tags` hold **top-level section keywords only**, so a topic buried in a sub-section may
+  be absent from them. Never read that as "this document is unrelated" — fall back to the
+  section walk in Step 2.
 
 - **`.kb/index/{path without .md}/tree.json`** — the document record plus the heading skeleton:
 

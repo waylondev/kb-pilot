@@ -22,7 +22,6 @@ Exit codes:
 """
 
 import argparse
-import bisect
 import json
 import re
 import sys
@@ -60,72 +59,64 @@ ISSUE_DIMENSION = {
     "image_missing": "special_elements",
 }
 
-# Per-issue-type deduction, aligned with rules.md §2. Heading jump −3 and duplicate
-# −2 come straight from §2.1; the separator −5 and column mismatch −3 from §2.2.
-# multiple_h1 is a structural defect (rules.md §1 "Multiple H1 blocks") and costs
-# more than a skip. List/special elements have no explicit per-item deduction in
-# rules.md, so each issue costs the sub-criterion's unit share (3).
+# Per-issue-type deduction, taken from rules.md §2 — that rubric is the authority,
+# so a change to the score means a change there first:
+#   §2.1  heading jump −3, duplicate heading −2, multiple H1 −5
+#   §2.2  separator mismatch −5, column mismatch −3
+#   §2.4  unified list markers is worth 5 → one mixed-marker issue costs the
+#         sub-criterion in full
+#   §2.5  language tags and image paths are worth 5 each → same
+# "Misaligned data −2" (§2.2) is deliberately absent: no detector exists, because a
+# script cannot tell a shifted cell from an intended one. The LLM judges it in Step 3.
 PENALTY = {
     "heading_jump": 3,
     "duplicate_heading": 2,
     "multiple_h1": 5,
     "table_separator_mismatch": 5,
     "table_col_mismatch": 3,
-    "list_marker_mixed": 3,
-    "codeblock_no_lang": 3,
-    "image_missing": 3,
+    "list_marker_mixed": 5,
+    "codeblock_no_lang": 5,
+    "image_missing": 5,
 }
 
 
-# CommonMark fenced-code detection — same rules as kb-ingest's build_tree.py.
-# A `# comment` inside a ``` or ~~~ block is not a heading; treating it as one
-# invents phantom jump/duplicate/multiple-H1 issues that are not really there,
-# so the LLM would "fix" a non-issue. Both ``` and ~~~ are fences; the closing
-# fence must use the same character and be at least as long as the opening one.
-
-FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
-FENCE_CLOSE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})\s*$")
+_SKELETON_PARSER = None
 
 
-def find_code_fence_regions(lines: list[str]) -> list[tuple[int, int]]:
-    """Return fenced code regions as [(start, end), ...] (1-based inclusive lines)."""
-    regions = []
-    open_char = ""
-    open_len = 0
-    start = 0
+def skeleton_parser():
+    """Return kb-ingest's `build_tree` module, which owns the Markdown skeleton parser.
 
-    for i, line in enumerate(lines, 1):
-        if open_char:
-            m = FENCE_CLOSE_RE.match(line)
-            if m and m.group(1)[0] == open_char and len(m.group(1)) >= open_len:
-                regions.append((start, i))
-                open_char, open_len, start = "", 0, 0
-            continue
+    Both skills need to know what a heading is: kb-polish validates the Markdown it
+    produced, and kb-ingest is what will later parse it. Two copies of that decision
+    drift silently — a document validates clean here and parses wrong there, with
+    nothing reporting the disagreement.
 
-        m = FENCE_OPEN_RE.match(line)
-        if not m:
-            continue
-        fence = m.group(1)
-        if fence[0] == "`" and "`" in m.group(2):
-            continue
-        open_char, open_len, start = fence[0], len(fence), i
+    The fix is the one kb-chat already established for `check_source.py`: one skill
+    owns the routine, the other borrows it, deriving the path from its own location
+    rather than hard-coding a sibling's address. That keeps each skill independently
+    installable without making either one carry a second copy of the logic. The
+    direction is always optional → core, never the reverse, so the core never
+    depends on an optional skill.
+    """
+    global _SKELETON_PARSER
+    if _SKELETON_PARSER is not None:
+        return _SKELETON_PARSER
 
-    if open_char:
-        regions.append((start, len(lines)))
-    return regions
+    # …/kb-polish/scripts/validate_structure.py -> parents[2] is .agents/skills/
+    ingest_scripts = Path(__file__).resolve().parents[2] / "kb-ingest" / "scripts"
+    candidate = ingest_scripts / "build_tree.py"
+    if not candidate.is_file():
+        raise SystemExit(
+            f"[validate] kb-ingest's build_tree.py not found at {candidate}. "
+            "kb-polish borrows the Markdown skeleton parser from kb-ingest instead of "
+            "keeping a second copy; both skills must be installed together."
+        )
 
+    sys.path.insert(0, str(ingest_scripts))
+    import build_tree
 
-def make_fence_checker(regions: list[tuple[int, int]]):
-    """Return an O(log n) predicate `is_inside_code(line_no)` for the given regions."""
-    if not regions:
-        return lambda line_no: False
-    starts = [r[0] for r in regions]
-
-    def is_inside_code(line_no: int) -> bool:
-        idx = bisect.bisect_right(starts, line_no) - 1
-        return idx >= 0 and line_no <= regions[idx][1]
-
-    return is_inside_code
+    _SKELETON_PARSER = build_tree
+    return build_tree
 
 
 def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
@@ -330,8 +321,9 @@ Exit codes:
         return 1
 
     lines = input_path.read_text(encoding="utf-8-sig").splitlines()
-    regions = find_code_fence_regions(lines)
-    is_inside_code = make_fence_checker(regions)
+    skeleton = skeleton_parser()
+    regions = skeleton.find_code_fence_regions(lines)
+    is_inside_code = skeleton.make_fence_checker(regions)
 
     issues = []
     issues += validate_heading_continuity(lines, is_inside_code)

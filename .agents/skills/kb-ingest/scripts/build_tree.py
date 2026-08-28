@@ -156,12 +156,15 @@ def make_fence_checker(regions: list):
     return is_inside_code
 
 
-def parse_headings(source_path: Path) -> dict:
+def parse_headings(source_path: Path, lines: list = None) -> dict:
     """Single-pass scan of Markdown headings to build the node tree.
 
     Lines inside fenced code blocks are never treated as headings.
+    `lines` may be passed in by a caller that already read them, so a build does
+    not read the same file once per consumer.
     """
-    lines = source_path.read_text(encoding="utf-8").splitlines()
+    if lines is None:
+        lines = source_path.read_text(encoding="utf-8").splitlines()
     total_lines = len(lines)
 
     heading_pattern = re.compile(r"^(#{1,6})\s+(.+)$")
@@ -362,7 +365,7 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> tuple:
     return new_tree, info
 
 
-def first_h1(source_path: Path) -> str:
+def first_h1(source_path: Path, lines: list = None) -> str:
     """Return the first H1's text, or "" when the source has none.
 
     Lines inside fenced code blocks are skipped — otherwise a shell comment such
@@ -372,7 +375,8 @@ def first_h1(source_path: Path) -> str:
     to tell the two apart: only a *missing* H1 means a previously authored title
     is still the best one available. Falling back here would overwrite it.
     """
-    lines = source_path.read_text(encoding="utf-8").splitlines()
+    if lines is None:
+        lines = source_path.read_text(encoding="utf-8").splitlines()
     is_inside_code = make_fence_checker(find_code_fence_regions(lines))
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
@@ -406,7 +410,11 @@ def build(
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    tree = parse_headings(src)
+    # Read the source once as text and hand the same lines to both consumers;
+    # the checksum reads bytes separately on purpose (re-encoding text would
+    # lose BOM/CRLF differences that the checksum exists to catch).
+    lines = src.read_text(encoding="utf-8").splitlines()
+    tree = parse_headings(src, lines)
     # doc_id is part of the skeleton, so it is resolved here rather than left to
     # the caller: a re-ingest keeps its id, a new document takes the next free one.
     tree["doc_id"] = doc_id or resolve_doc_id(output)
@@ -414,7 +422,7 @@ def build(
     # the LLM's call (domain is a routing hint; neither appears in the source),
     # and both are a single value, so there is nothing to save by keeping the old
     # one. Title falls back to the source's H1, then the file stem.
-    h1 = first_h1(src)
+    h1 = first_h1(src, lines)
     tree["title"] = title or h1 or src.stem
     tree["domain"] = domain
     tree["source_path"] = source_path

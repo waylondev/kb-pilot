@@ -40,18 +40,37 @@ from verifiers import (  # noqa: E402
 
 
 def _fence_checker(lines):
-    return validate_structure.make_fence_checker(
-        validate_structure.find_code_fence_regions(lines)
-    )
+    skeleton = validate_structure.skeleton_parser()
+    return skeleton.make_fence_checker(skeleton.find_code_fence_regions(lines))
 
 
 class TestFenceGuard(unittest.TestCase):
     """A `#` inside a fenced block is code, not heading material.
 
-    Same hazard as kb-ingest's parser, and the same consequence: mistaking one for
-    a heading invents issues the LLM would then "fix". validate_structure.py owns a
-    second copy of this parser, so it is pinned here independently.
+    Mistaking one for a heading invents issues the LLM would then "fix". kb-polish
+    borrows the parser from kb-ingest's build_tree.py instead of keeping a second
+    copy, so these tests drive that borrowed routine through kb-polish's validators.
     """
+
+    def test_the_parser_is_borrowed_not_duplicated(self):
+        # Two copies of a subtle CommonMark routine drift silently, and the drift
+        # surfaces as a document that validates clean here but parses wrong there.
+        # If someone copies the parser back in, this fails.
+        source = Path(validate_structure.__file__).read_text(encoding="utf-8")
+        for marker in ("FENCE_OPEN_RE", "FENCE_CLOSE_RE", "def find_code_fence_regions",
+                       "def make_fence_checker", "bisect"):
+            self.assertNotIn(marker, source, marker)
+
+    def test_the_borrowed_parser_is_reachable(self):
+        # Path derivation is the fragile half of borrowing: the sibling's address is
+        # derived from this script's own location, never hard-coded.
+        parser = validate_structure.skeleton_parser()
+        self.assertTrue(hasattr(parser, "find_code_fence_regions"))
+        self.assertTrue(hasattr(parser, "make_fence_checker"))
+        self.assertEqual(
+            parser.find_code_fence_regions(["```", "x", "```"]),
+            [(1, 3)],
+        )
 
     def test_heading_inside_fence_creates_no_jump(self):
         lines = ["# T", "", "## A", "", "```python", "#### deep note", "x = 1", "```"]
@@ -69,14 +88,16 @@ class TestFenceGuard(unittest.TestCase):
         self.assertEqual(issues, [])
 
     def test_unterminated_fence_runs_to_end_of_file(self):
-        regions = validate_structure.find_code_fence_regions(["```", "## never a heading"])
+        regions = validate_structure.skeleton_parser().find_code_fence_regions(
+            ["```", "## never a heading"]
+        )
         self.assertEqual(regions, [(1, 2)])
 
     def test_tilde_fence_only_closes_with_tilde(self):
         # A backtick fence must not close a ~~~ block, or everything between them
         # is treated as prose and any `#` in it becomes a heading.
         lines = ["~~~", "## not a heading", "```", "## still not", "~~~"]
-        regions = validate_structure.find_code_fence_regions(lines)
+        regions = validate_structure.skeleton_parser().find_code_fence_regions(lines)
         self.assertEqual(regions, [(1, 5)])
 
 
@@ -119,6 +140,28 @@ class TestScoring(unittest.TestCase):
             self.assertIn(issue_type, validate_structure.PENALTY, issue_type)
             self.assertIn(dimension, validate_structure.MAX_WEIGHT, issue_type)
 
+    def test_penalties_match_the_rubric(self):
+        # rules.md §2 is the authority. If a deduction changes here without changing
+        # there, the score stops meaning what the docs say it means.
+        expected = {
+            "heading_jump": 3,          # §2.1
+            "duplicate_heading": 2,     # §2.1
+            "multiple_h1": 5,           # §2.1
+            "table_separator_mismatch": 5,  # §2.2
+            "table_col_mismatch": 3,    # §2.2
+            "list_marker_mixed": 5,     # §2.4 — the sub-criterion is worth 5
+            "codeblock_no_lang": 5,     # §2.5 — the sub-criterion is worth 5
+            "image_missing": 5,         # §2.5 — the sub-criterion is worth 5
+        }
+        self.assertEqual(validate_structure.PENALTY, expected)
+
+    def test_no_penalty_exceeds_its_dimension(self):
+        # A single issue must never be able to zero out a dimension it shares with
+        # other, independent criteria.
+        for issue_type, penalty in validate_structure.PENALTY.items():
+            dim = validate_structure.ISSUE_DIMENSION[issue_type]
+            self.assertLess(penalty, validate_structure.MAX_WEIGHT[dim], issue_type)
+
     def test_deduction_never_drives_a_dimension_below_zero(self):
         scores = dict(validate_structure.MAX_WEIGHT)
         noisy = ["heading_jump"] * 50
@@ -129,19 +172,40 @@ class TestScoring(unittest.TestCase):
 
 
 class TestDriftTokens(unittest.TestCase):
+    """The check must work on any corpus without knowing which corpus it is."""
+
     def test_missing_structured_figure_is_caught(self):
-        truth = "Annual fee is HK$6,000."
-        final = "Annual fee is six thousand."
+        truth = "Annual fee is ¥6,000 and the rate is 3.5%."
+        final = "Annual fee is six thousand and the rate is three percent."
         missing = check_drift.extract_tokens(truth, check_drift.TOKEN_PATTERNS) - \
             check_drift.extract_tokens(final, check_drift.TOKEN_PATTERNS)
-        self.assertIn("HK$6,000", missing)
+        self.assertEqual(missing, {"¥6,000", "3.5%"})
 
     def test_present_figure_is_not_reported(self):
-        truth = "Annual fee is HK$6,000."
-        final = "## Fees\n\nAnnual fee is HK$6,000."
+        truth = "Annual fee is ¥6,000."
+        final = "## Fees\n\nAnnual fee is ¥6,000."
         missing = check_drift.extract_tokens(truth, check_drift.TOKEN_PATTERNS) - \
             check_drift.extract_tokens(final, check_drift.TOKEN_PATTERNS)
         self.assertEqual(missing, set())
+
+    def test_no_corpus_vocabulary_is_baked_into_the_patterns(self):
+        # A skill is shared; the documents it runs on are not. Vocabulary from one
+        # corpus (a local currency word, a statutory period, a product name) must be
+        # supplied with --extra-pattern, never hard-coded. This asserts against what
+        # the script actually matches with, not against its comments.
+        joined = "".join(check_drift.TOKEN_PATTERNS)
+        for token in ("人民幣", "月息", "HK", "US\\$", "信用卡", "card", "年", "天"):
+            self.assertNotIn(token, joined, token)
+
+    def test_corpus_patterns_can_be_supplied_without_touching_the_skill(self):
+        # The escape hatch that makes the rule above affordable: a corpus's own
+        # figures come in as extra patterns and are checked the same way.
+        patterns = check_drift.TOKEN_PATTERNS + [r"人民幣\s?[\d,]+元"]
+        truth = "罰款為人民幣500元。"
+        final = "罰款為 500 。"
+        missing = check_drift.extract_tokens(truth, patterns) - \
+            check_drift.extract_tokens(final, patterns)
+        self.assertEqual(missing, {"人民幣500元"})
 
     def test_bare_numbers_keep_the_check_from_being_a_no_op(self):
         # A document with no currency or percentages would otherwise match nothing

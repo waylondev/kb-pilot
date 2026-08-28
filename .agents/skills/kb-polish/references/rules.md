@@ -32,6 +32,8 @@
 
 * one duplicate heading: −2
 
+* more than one H1: −5 (a structural defect — §1 requires demoting and merging them)
+
 ### 2.2 Table structural integrity (20 pts)
 
 | Criterion                              | Score |
@@ -41,11 +43,13 @@
 
 **Deductions:**
 
-* missing header: −5
+* separator row does not match the header's column count: −5
 
-* inconsistent column counts: −3
+* a data row's column count differs from the header's: −3
 
-* misaligned data: −2
+* misaligned data (a value sitting under the wrong column): −2 — **not detected by
+  `validate_structure.py`**. A script cannot tell "shifted" from "intended"; the LLM
+  judges this in Step 3 against the verify source
 
 ### 2.3 Heading-meaning clarity (20 pts)
 

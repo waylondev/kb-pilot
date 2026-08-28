@@ -2,7 +2,7 @@
 
 > TOC + source = knowledge base. Let the LLM read like a human, instead of shredding books into a vector database.
 
-**Core insight**: For well-structured Markdown knowledge bases, an LLM can often answer accurately with **a precise TOC and the relevant source text**, without adding vector embeddings, chunk splitting, or entity-relationship graphs. Scripts constrain the skeleton; the LLM fills the content. See [AGENTS.md](./AGENTS.md) for design principles.
+**Core insight**: For well-structured Markdown knowledge bases, an LLM can often answer accurately with **a precise TOC and the relevant source text**, without adding vector embeddings, chunk splitting, or entity-relationship graphs. See [AGENTS.md](./AGENTS.md) for the design principles — what the system forbids and why. They are stated there and only there; this README does not paraphrase them.
 
 **Forward-looking**: This design benefits from stronger LLMs — routing, reasoning, and self-verification can improve without rebuilding a retrieval stack.
 
@@ -23,7 +23,7 @@
 
 ## Scope
 
-kb-pilot is not a universal replacement for every RAG system. It is a focused choice for **small to mid-sized, well-structured Markdown knowledge bases** where traceability matters more than millisecond retrieval speed.
+kb-pilot is not a universal replacement for every RAG system. It is a focused choice for **bounded, well-structured Markdown knowledge bases** — tens to hundreds of documents within one team, product, or domain — where traceability matters more than millisecond retrieval speed.
 
 It works best for internal policies, product manuals, technical docs, compliance notes, financial procedures, and other sources where:
 
@@ -35,9 +35,9 @@ It works best for internal policies, product manuals, technical docs, compliance
 
 It is not designed for massive unstructured corpora, real-time web-scale search, millisecond-latency retrieval, or replacing document cleanup and human review.
 
-In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow. It is strongest when the source documents are clean, structured, and worth reading precisely. It is therefore best suited to a **bounded, well-structured Markdown corpus** — on the order of a few dozen to a few hundred documents within one team, product, or domain — where answers must be traceable to exact source lines.
+In short: kb-pilot trades broad retrieval infrastructure for a transparent, line-level, auditable workflow.
 
-**When RAG is the better fit**: kb-pilot is not a general-purpose replacement for RAG. Choose a conventional RAG system when you need retrieval over large or unstructured corpora that lack heading structure, web-scale or real-time search, millisecond query latency, or resilience to documents that are messy and not worth reading precisely. In those cases kb-pilot's heading-first navigation and line-level citations offer less value than a vector index. The two are complementary: use kb-pilot where the source is clean and answers must be auditable; use RAG where the corpus is large, messy, and recall-by-similarity matters more than exact provenance.
+**When RAG is the better fit**: choose a conventional RAG system when you need retrieval over large or unstructured corpora that lack heading structure, web-scale or real-time search, millisecond query latency, or resilience to documents that are messy and not worth reading precisely. The two are complementary: use kb-pilot where the source is clean and answers must be auditable; use RAG where the corpus is large, messy, and recall-by-similarity matters more than exact provenance.
 
 
 ## Quick start
@@ -130,49 +130,27 @@ Path mapping: source file `docs/api/auth.md` → metadata directory `.kb/index/d
 
 ### What the two metadata files hold
 
-Both are minified by default (fewer tokens when the LLM reads them); regenerate with `--pretty` for a readable copy.
+- **`tree.json`** (one per document) — the document record plus the heading skeleton
+- **`manifest.json`** (one per knowledge base) — a JSON **array** of routing entries, one per document
 
-- **`tree.json`** (one per document) — the document record (`doc_id`, `title`, `domain`, `source_path`, `summary`, `ingested_at`, `source_sha256`, `total_lines`) plus the heading skeleton: one node per `##`–`######` heading, each carrying `start_line` / `end_line` and the LLM-filled `summary` / `keywords`. H1 is the title and does not appear as a node.
-- **`manifest.json`** (one per knowledge base) — a JSON **array** of routing entries, one per document: `doc_id`, `title`, `domain`, `summary`, `tags`, `updated_at`, `path`.
-
-> **`tags` come from top-level sections only.** Sub-section keywords stay in tree.json for localization, which keeps the manifest small and routing focused. A topic buried in a sub-section may therefore be absent from `tags` — that is why kb-chat walks the section tree instead of relying on tags alone.
+Both are minified by default (fewer tokens when the LLM reads them); regenerate with `--pretty` for a readable copy. The authoritative field list lives in the **Data model** section of [AGENTS.md](./AGENTS.md) — this README does not restate it, because two copies of a schema stop agreeing the first time one of them is edited.
 
 ### Project structure
 
-```
-kb-pilot/
-├── AGENTS.md           # design principles — scripts constrain skeleton, LLM fills content
-├── README.md           # project overview and end-to-end workflow
-├── FAQ.md              # scope, trade-offs, and design comparisons
-├── .agents/skills/     # Agent SKILL definitions (kb-ingest / kb-chat / kb-polish)
-├── tests/              # all tests — core path + kb-polish (nothing test-related lives elsewhere)
-└── knowledge_repo/     # knowledge base data (example, not committed)
-```
-
-For the full file map — every script and reference file, and what each one is for — see the **File map** in [AGENTS.md](./AGENTS.md).
+See the **File map** in [AGENTS.md](./AGENTS.md). It is the only file map in this repository; this README deliberately keeps no copy of its own.
 
 **Core vs. optional**: `kb-ingest` and `kb-chat` are the core and use only the Python standard library. `kb-polish` is optional, pulls in third-party conversion dependencies, and never has to run for the knowledge base to work.
 
+### Where each document is authoritative
 
-## Design philosophy
+| Document | It owns | It does not |
+|---|---|---|
+| [AGENTS.md](./AGENTS.md) | the specification: what is forbidden and why, the file map, the data model, the script conventions | anything a first-time reader needs before deciding to adopt |
+| [FAQ.md](./FAQ.md) | boundaries, trade-offs, comparisons, how to correct things | restating scope numbers or principles owned elsewhere |
+| README.md (this file) | what you get and how to start: scope, quick start, end-to-end workflow | a second copy of the file map, the schema, or the constraint list |
 
-What each principle means for the knowledge base you get:
-
-| Principle | Meaning |
-|------|------|
-| **TOC + source = knowledge base** | For structured Markdown, a precise TOC plus source text can often be enough — no vectors, chunks, or graphs by default |
-| **Trust the LLM** | Scripts only constrain the skeleton (headings, line numbers); summary, keywords, routing, and answers are all LLM-autonomous — no templates, no extraction algorithms |
-| **LLM is the routing engine** | Locates documents via semantic understanding of title/summary/keywords, not keyword matching |
-| **Zero intrusion** | User's source stays in place; metadata centralized under `.kb/`; delete to uninstall |
-| **Git as the collaboration layer** | All metadata is text files; versioning, collaboration, sync, and conflicts can go through Git |
-| **Line-level tracing** | Answers cite `docs/api/auth.md#L16` — traceable and verifiable |
-| **Source is the correction** | A wrong answer is fixed by editing the source and re-ingesting — no separate correction layer |
-| **Less is more** | No vectors, no chunks, no graphs, no sharding; no format conversion in the core — the optional `kb-polish` skill can convert PDF/Word/etc. to Markdown for you if you choose, but it is never required |
-| **Skill-based** | Atomic capabilities (`kb-ingest`, `kb-chat`) are composable — integrate into larger Agents, combine for cross-repo queries, or extend with new Skills |
-
-These are the same principles [AGENTS.md](./AGENTS.md) states as constraints — phrased here
-by what they give you, there by what they forbid. Where the two differ, AGENTS.md wins: it
-is the specification the skills and scripts are written against.
+There is no precedence rule because there is no overlap to adjudicate. If you find these
+documents disagreeing, that is a defect in the README or the FAQ — not a tie to be broken.
 
 
 ## Best practice: End-to-end workflow

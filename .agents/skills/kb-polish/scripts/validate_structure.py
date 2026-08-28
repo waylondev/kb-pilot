@@ -203,7 +203,7 @@ def validate_lists(lines: list[str], is_inside_code) -> list[dict]:
         issues.append({
             "type": "list_marker_mixed",
             "line": int(first_lines[0]),
-            "detail": f"mixed list markers: {summary} (recommend unifying to one)",
+            "detail": f"mixed list markers: {summary}",
         })
     return issues
 

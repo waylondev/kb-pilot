@@ -7,15 +7,20 @@ implementation. Uses the block-level ``get_text("dict")`` view so embedded
 images appear exactly where the source lays them out: text blocks contribute
 their text, image blocks contribute an ``[image: <name>]`` placeholder (and
 their bytes) right in place — the same 1-pass, position-exact output that the
-zip-based plugins get from the document model. Scans (no text layer) extract to
-empty — kb-polish does not process images, the caller tells the user to provide
-a text-layer version.
+zip-based plugins get from the document model.
+
+Scans (no text layer) are NOT dropped: every page is rendered to an image
+(page_N.png) and embedded as ``![page N](./images/page_N.png)`` so the document
+asset survives in the knowledge base for viewing. kb-polish still performs no
+OCR and the LLM cannot read page content — the empty-text-layer warning stays
+so the caller knows the semantics.
 
 Dependency: pip install pymupdf
 """
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 from .base import BaseVerifier, ExtractResult
@@ -24,6 +29,10 @@ from .base import BaseVerifier, ExtractResult
 class PdfVerifier(BaseVerifier):
     name = "pdf"
     extensions = [".pdf"]
+
+    #: render resolution for scanned pages; 150 dpi keeps text legible for
+    #: viewing while bounding the asset size
+    SCAN_DPI = 150
 
     def extract(self, path: Path) -> ExtractResult:
         import pymupdf  # lazy import so the entry gives a clear error when the dependency is missing
@@ -56,18 +65,43 @@ class PdfVerifier(BaseVerifier):
                         lines.append(f"[image: {name}]")
                 else:  # text block: keep readable line order
                     for entry in block.get("lines", []):
-                        text = entry.get("spans", [])
-                        if not text:
+                        spans = entry.get("spans", [])
+                        if not spans:
                             continue
-                        lines.append("".join(s.get("text", "") for s in text).strip())
+                        lines.append("".join(s.get("text", "") for s in spans).strip())
             text = "\n".join(line for line in lines if line)
             pages.append({"index": i, "text": text})
             page_texts.append(text)
         doc.close()
 
         full_text = "\n\n".join(page_texts)
-        if not full_text.strip() and not images:
-            warnings.append("empty text layer: scanned/pure-image PDF; kb-polish does not process images, please provide a text-layer version")
+        # A scan has no real text even if image placeholders were emitted: decide on
+        # the text layer after stripping `[image: ...]` markers, so an image-only PDF
+        # is reported as a scan rather than treated as body content.
+        real_text = re.sub(r"\[image: [^\]]+\]", "", full_text).strip()
+        if not real_text:
+            # Pure scan: no text layer. Keep the document by embedding every page as
+            # an image (rendered, not the original embedded bytes, so it works for
+            # every scan incl. JPEG2000 / layered ones). kb-polish does no OCR and
+            # the LLM cannot read page content — the warning states the semantics.
+            warnings.append("empty text layer: scanned/pure-image PDF; pages embedded as images only (no OCR, LLM cannot read page content)")
+            scan_doc = pymupdf.open(str(path))
+            images = []
+            rendered = []
+            for i, page in enumerate(scan_doc, 1):
+                name = f"page_{i}.png"
+                pix = page.get_pixmap(dpi=self.SCAN_DPI, colorspace=pymupdf.csRGB, alpha=False)
+                images.append({
+                    "name": name,
+                    "data": pix.tobytes("png"),
+                    "media_type": "image/png",
+                })
+                ref = f"![page {i}](./images/{name})"
+                rendered.append({"index": i, "text": ref})
+                page_texts[i - 1] = ref
+            pages = rendered
+            full_text = "\n\n".join(page_texts)
+            scan_doc.close()
 
         return ExtractResult(
             format="pdf",

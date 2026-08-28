@@ -26,11 +26,11 @@ Internally the script uses the AnyDoc Python API (`anydoc.to_markdown(path)` for
 - `attachments/`: extracted embedded files (PDF, Excel, etc.)
 
 ### Boundaries (field-tested on 2026-08-28 full-format matrix)
-- AnyDoc supports Excel (.xlsx/.xls/.xlsm/.xlsb/.ods), Word (.docx/.doc/.docm/.odt/.rtf), PowerPoint (.pptx/.ppt/.pptm/.odp), EPUB (.epub), CSV (.csv), PDF (.pdf), but **does not support OCR**; pure scans (no text layer) are **outside this skill's scope — do not process**; ask the user for a text-layer version
+- AnyDoc supports Excel (.xlsx/.xls/.xlsm/.xlsb/.ods), Word (.docx/.doc/.docm/.odt/.rtf), PowerPoint (.pptx/.ppt/.pptm/.odp), EPUB (.epub), CSV (.csv), PDF (.pdf), but **does not support OCR**; pure scans (no text layer) are **kept by embedding every page as an image** (no OCR — see the scan branch in Step 4)
 - AnyDoc **does not support .html/.md/.txt/.doc/.ppt/.tsv** (raises `UnsupportedError` / unrecognized extension): html/md/txt are already text, ingest directly; legacy .doc/.ppt must be converted to OOXML or via LibreOffice; **.tsv must be renamed to .csv** before conversion (content is identical)
 - **AnyDoc handles .odp very weakly** (field-tested: only the title text survives; body/tables lost): convert ODP to .pptx first
 - **RTF Chinese is garbled by AnyDoc conversion** (UTF-8 decoded as Latin-1, field-tested); the verify source (striprtf) extracts correctly — **rely on Step 3/4 rebuilding from the ground truth**; this is the typical value case for double cross-checking
-- **PDFs using CID fonts (no ToUnicode CMap) are misjudged as "needs OCR"**: real scans take the "not processed" branch; if a text-layer PDF reports needs OCR it usually lacks ToUnicode — ask the user to re-export with an embedded font
+- **PDFs using CID fonts (no ToUnicode CMap) are misjudged as "needs OCR"**: real scans take the image-embedding branch; if a text-layer PDF reports needs OCR it usually lacks ToUnicode — ask the user to re-export with an embedded font
 - **PDF images need the PyMuPDF fallback**: AnyDoc's `to_document()` does not support PDF (PDF converts via `to_markdown` directly, so no `assets`), and PDF markdown carries no `![` references. kb-polish extracts PDF embedded images in Step 3 via PyMuPDF's block-level `get_text("dict")` view — image blocks appear **exactly where the source lays them out**, emitting `[image: <name>]` placeholders (and their bytes) in place. A geometry-matched `doc.extract_image()` fallback covers blocks whose decoded bytes are missing. Same convention as docx/pptx/epub
 - **EPUB heading levels get flattened** (`<h1>`/`<h2>` all become `#`, producing duplicate H1s, field-tested): Step 2's `multiple_h1`/`duplicate_heading` catches it; Step 4 applies the single-H1 rule
 - AnyDoc does not recursively convert nested files (e.g. an Excel attachment inside Word), but `to_document().assets` **can extract OLE embedded attachments** (field-tested: a .xlsx inside .docx lands in `attachments/`); handle that attachment separately, do not merge it into the body Markdown
@@ -100,7 +100,7 @@ The extraction in this step always runs. The LLM does a **full cross-check** of 
 
 Otherwise a light spot-check of the extraction suffices before Step 4.
 
-> **Boundary: no scans/images.** A document with no text layer (scans / image-only PDF) is outside this skill's scope — no deterministic source can validate pixel content, and OCR is probabilistic and costly. When `extract_verify.py` detects an empty text layer it emits a warning and the flow stops: tell the user "this document is a scan; kb-polish does not process images — please provide a text-layer version or handle it yourself".
+> **Boundary: no OCR, scans are kept as images.** A document with no text layer (scans / image-only PDF) has no deterministic text source, and OCR is probabilistic and costly — kb-polish does not OCR. Instead Step 3 renders every page to `images/page_N.png` and Step 4 keeps them as `![page N](./images/page_N.png)` with a "scanned / image-only (no text layer)" note, so the asset survives for viewing while its content stays unreadable to the LLM.
 
 ### Actions
 Run `extract_verify.py -o {outdir} --save-text` (unconditional) to produce the deterministic source `verify_text.txt`, then the LLM compares it with `raw.md`, focusing on:
@@ -142,7 +142,7 @@ These plugins output a **raw source independent of AnyDoc** (OOXML/ODF/EPUB zip+
 
 ### Flow
 1. Run `extract_verify.py -o {outdir} --save-text` to produce the deterministic source
-2. If extraction is empty with a "text layer is empty" warning: it is a scan — **stop**, tell the user images are not processed
+2. If extraction is empty with a "text layer is empty" warning: it is a scan — keep the rendered page images (`images/page_N.png`) and build a final.md whose body is only the `![page N](./images/page_N.png)` references plus a one-line "scanned / image-only (no text layer), no OCR" note; do not invent page content
 3. Compare the extraction against `raw.md` segments
 4. Check only the points in the Step 2 issue list; output fix suggestions
 
@@ -248,5 +248,5 @@ kb-polish only produces Markdown — it does not ingest. Place `final.md` (or th
 | AnyDoc conversion fails | Tell the user to check whether the file format is supported |
 | Verification finds misalignment that cannot be auto-fixed | Mark the region and request human intervention |
 | Human confirmation fails | Record the problems; re-run Step 3 verification or Step 4 re-render for targeted fixes |
-| Scan (empty text layer) | **Do not process**; tell the user kb-polish does no OCR, please provide a text-layer version |
+| Scan (empty text layer) | **Keep as images**: render pages to `images/page_N.png`, final.md body = `![page N](./images/page_N.png)` references + "image-only (no text layer), no OCR" note; LLM must not guess content |
 | Unsupported special format | Ask the user to prepare a Markdown version manually |

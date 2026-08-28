@@ -229,4 +229,5 @@ fixtures/
 docs/test-suites/
 # hangseng-cards / hangseng-cards-md: now tracked in git as the knowledge base
 # (source .md + .kb/ skeleton & semantic fillings). Removed from ignore on purpose.
+examples/
 

@@ -1,0 +1,66 @@
+---
+name: kb-polish
+description: Convert source documents (PDF/Word/Excel/PPT/EPUB/CSV) into high-quality Markdown conforming to the kb-pilot spec. Runs AnyDoc coarse conversion, structure validation & scoring, content verification (deterministic extraction cross-check), and normalization. Does NOT handle scans/images (no OCR). Use when the user needs a document converted to Markdown, PDF-to-MD, Word-to-MD, pre-ingestion preprocessing (kb-ingest), or conversion-quality verification.
+license: Proprietary
+compatibility: Requires Python 3.9+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment.
+allowed-tools: Bash(python:*) Read Write
+metadata:
+  version: "1.3.0"
+  kb-path: .agents/skills/kb-polish
+---
+# kb-polish Skill
+> Convert source documents into high-quality Markdown that meets kb-pilot ingestion standards.
+
+## Quick guide (5 steps, run in order; complete each before the next)
+
+- [ ] 1. **AnyDoc coarse conversion**: `python scripts/convert_document.py {input} -o {outdir}` — produces `raw.md` and extracts embedded assets (`images/`, `attachments/`)
+- [ ] 2. **Structure validation & scoring**: `python scripts/validate_structure.py {outdir}/raw.md --stdout-json` — mechanical checks (heading jumps/duplicates, table column counts, lists, code blocks, image paths); semantic dimensions are assessed by the LLM using the issue list
+- [ ] 3. **Content verification**: `python scripts/extract_verify.py {input}` dispatches to format plugins to extract a **deterministic source text** (text layer / OOXML plaintext, seconds). The LLM cross-checks it against `raw.md`. **Scans (no text layer) are NOT processed** — when extraction is empty, tell the user explicitly; kb-polish does no OCR
+- [ ] 4. **LLM re-render**: treat `verify_text.txt` as the **content ground truth** and `raw.md` as the structural skeleton, then organize into standard Markdown (see output template). **Hard rules: preserve original content and do not change logical relationships** (section order / table rows & columns / list nesting / clause ownership); **exactly one H1** — multiple H1 blocks are demoted & merged by default (the main title keeps H1, the rest become H2 with levels shifted down); split only when blocks are fully independent. After re-rendering, re-run Step 2 to confirm zero issues, and run `scripts/check_drift.py` to confirm zero drift
+- [ ] 5. **Human confirmation**: after the user confirms, hand off to `kb-ingest`
+
+## Output structure template (standard skeleton for final.md)
+
+```markdown
+# [Single document title]              ← only one # in the whole file (kb-pilot: H1 is the title, not part of the tree)
+## [Section]                           ← tree starts at H2
+### [Subsection, optional]             ← continuous levels, no jumps
+| Header | Col | ... |                ← rows/columns map 1:1 to the source
+|---|---|---|
+| data | ... | ... |                  ← values/wording preserved verbatim
+## [Next section]
+```
+
+> Constraints: body text is preserved verbatim (including traditional characters / original spelling / terms); no polishing, no completion, no reordering of logic; strip headers/footers; demote & merge multiple H1 by default.
+
+> Scripts only do deterministic work (conversion, extraction, mechanical validation). Semantic judgments (heading meaning, truncation, image placement) are entirely the LLM's job, following the kb-pilot principle "scripts own the skeleton, the LLM owns the content".
+
+## Gotchas (field-tested pitfalls, read first)
+
+- **No scans/images (no OCR)**: this is a scope boundary, not a missing capability. For scans (no text layer) AnyDoc cannot convert and the verify source is empty — detect and tell the user "please provide a text-layer version"; do not render-and-read or invent content
+- **AnyDoc does not support .html/.md/.txt/.doc/.ppt/.tsv**: raises `UnsupportedError` / unrecognized extension. html/md/txt are already text — ingest directly, do not run this skill; legacy .doc/.ppt need conversion to OOXML or LibreOffice; **.tsv must be renamed to .csv** first (content is identical)
+- **AnyDoc handles .odp very weakly** (field-tested: only the title text is converted; body/tables are lost): convert ODP to .pptx first
+- **Complex merged-cell tables get mangled by AnyDoc** (misaligned data, split text, reordered cells): such documents must go through Step 3 verification
+- **RTF Chinese text is garbled by AnyDoc conversion** (UTF-8 decoded as Latin-1, field-tested); but the verify source (striprtf) extracts correctly — **rely on Step 3/4 rebuilding from the ground truth**; this is the typical value case for double cross-checking
+- **PDFs using CID fonts (no ToUnicode CMap) are misjudged as "needs OCR"** by AnyDoc: real scans take the "not processed" branch; if a text-layer PDF reports needs OCR it is usually missing ToUnicode — ask the user to re-export with an embedded font
+- **PDF images/attachments are not extracted as assets** (AnyDoc converts PDF via `to_markdown` directly; `to_document()` reports unsupported for PDF): PDF inline images stay in the text flow, no `images/` extraction
+- **EPUB heading levels get flattened** (`<h1>`/`<h2>` are all turned into `#`, producing duplicate H1s, field-tested): Step 2's `multiple_h1`/`duplicate_heading` catches this; Step 4 handles the single-H1 rule
+- **Headers/footers misread as headings** (page numbers, org names, doc numbers): Step 4 demotes them to body text or deletes them; repeated document titles across pages are merged
+- **Empty PDF text layer = scan signal**: `extract_verify.py` issues a warning and the flow stops; tell the user it is not processed
+- **Image placement**: inline images in docx/pptx/epub appear in the verify source as `[image: <filename>]` placeholders (structural markers emitted by scripts, not body content); Step 4 converts them to `![](./images/<filename>)` (files were already extracted to `images/` by convert). PDF images are not extracted — leave them in the text flow. If raw.md has image alt text but the ground truth has no placeholder, trust the ground truth; do not insert images speculatively
+- **Re-render is not rewriting**: Step 4 rebuilds Markdown from the verified ground truth, but content must change by zero — no polishing, no completion, no reordering (section order / table rows & columns / list nesting / clause ownership). When ground truth is missing, mark "original is empty here", never guess
+- **Exactly one H1; multiple H1s demote & merge by default**: kb-pilot treats H1 as the document title (not in the tree; the tree starts at H2). Standard Markdown allows multiple H1s, but multiple H1 blocks in one input file are usually related (e.g. a credit-card PDF = notices/statements + product summary), so **merge into one final by default: keep the main title as H1, demote the rest to H2 with internal levels shifted**; delete redundant headers/cross-page duplicates. Only split when the blocks are fully independent. `validate_structure.py`'s `multiple_h1` guards against multiple H1s in a single file
+- **Do not use scripts for semantic judgment**: `validate_structure.py` only checks mechanical structure; heading semantics / content truncation are for the LLM to assess — don't expect the script score to replace the LLM
+
+## Detailed docs (when to load)
+
+- `references/workflow.md`: complete 5-step execution flow. **Read when reaching Step 2 scoring / Step 3 verification / Step 4 re-render**, includes verification details and the format mapping table
+- `references/rules.md`: processing boundaries and scoring criteria. **Read before Step 4 re-render**, to avoid altering body content, misaligning tables, or changing logical relationships
+
+## Scripts
+
+- `scripts/convert_document.py`: AnyDoc conversion + embedded asset extraction (markdown + images/ + attachments/)
+- `scripts/validate_structure.py`: mechanical Markdown structure validation (issue list + mechanical score, for the LLM to score)
+- `scripts/extract_verify.py`: verify-source extraction entry (dispatches to verifiers/ plugins by format; outputs source text for LLM cross-check)
+- `scripts/check_drift.py`: content-drift spot check (numeric tokens in verify_text vs final.md; outputs the missing list; used in the Step 4 validation loop)
+- `scripts/verifiers/`: format verification plugins, one file per format (pdf/docx/pptx/xlsx/odt/epub/rtf/csv), aligned with AnyDoc-supported formats

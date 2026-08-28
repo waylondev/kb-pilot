@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+# /// script
+# dependencies = ["firecrawl-anydoc"]
+# ///
+"""
+convert_document.py — source document -> first-draft Markdown + embedded asset extraction.
+
+Uses AnyDoc to convert PDF/Word/Excel/PPT/EPUB/CSV/OpenDocument etc. into Markdown,
+and extracts embedded images (-> images/) and other files (-> attachments/).
+
+Note: AnyDoc does not support .html/.md/.txt/.doc/.ppt (legacy binaries) or image OCR;
+do not run these formats through this script.
+
+Deterministic layer: conversion and asset landing only; semantic judgment (is the
+structure reasonable, where do images go) is the LLM's job.
+
+Usage:
+    python convert_document.py input.docx -o outdir
+    python convert_document.py input.pdf -o outdir --stdout-json
+
+Output (stdout):
+    {"ok": true, "input": "...", "output_dir": "...", "markdown": "...",
+     "images": ["..."], "attachments": ["..."], "format": "pdf"}
+
+Exit codes:
+    0  success
+    1  bad args / file not found / conversion failed
+"""
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+try:
+    import anydoc
+except ImportError as e:
+    print("[convert] missing dependency firecrawl-anydoc; run: pip install firecrawl-anydoc", file=sys.stderr)
+    sys.exit(1)
+
+
+def sanitize_filename(name: str, fallback: str) -> str:
+    """Extract a safe filename from an asset's original path."""
+    name = (name or "").replace("\\", "/").split("/")[-1].strip()
+    name = "".join(c for c in name if c.isalnum() or c in "._- ").strip()
+    return name or fallback
+
+
+def write_asset(asset, index: int, out_dir: Path, category: str) -> Path | None:
+    """Write a single asset to disk, returning the path or None."""
+    try:
+        data = bytes(asset.data) if not isinstance(asset.data, bytes) else asset.data
+    except AttributeError:
+        data = asset  # in some versions data is already bytes
+    if not data:
+        return None
+
+    media_type = getattr(asset, "media_type", "") or ""
+    origin = getattr(asset, "origin_part", "") or ""
+    name = sanitize_filename(origin, f"{category}_{index}")
+
+    ext = Path(name).suffix
+    if not ext:
+        # infer the extension from media_type
+        ext = {
+            "image/png": ".png",
+            "image/jpeg": ".jpg",
+            "image/gif": ".gif",
+            "image/webp": ".webp",
+            "application/pdf": ".pdf",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+        }.get(media_type, ".bin")
+        name += ext
+
+    target_dir = out_dir / category
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / name
+    target.write_bytes(data)
+    return target
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="source document -> Markdown + embedded asset extraction (AnyDoc-based, deterministic).",
+        epilog="""Examples:
+  python convert_document.py input.docx -o outdir
+  python convert_document.py input.pdf -o outdir --stdout-json
+
+Output: raw.md (first draft), images/, attachments/""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("input", help="input document path (PDF/Word/PPT/Excel/CSV etc.)")
+    parser.add_argument("-o", "--output", required=True, help="output directory")
+    parser.add_argument("--stdout-json", action="store_true", help="output result as JSON on stdout")
+    args = parser.parse_args()
+
+    input_path = Path(args.input)
+    if not input_path.is_file():
+        print(f"[convert] file not found: {input_path}", file=sys.stderr)
+        return 1
+
+    out_dir = Path(args.output)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        # 1) convert the body to Markdown
+        markdown_text = anydoc.to_markdown(str(input_path))
+        raw_md = out_dir / "raw.md"
+        raw_md.write_text(markdown_text, encoding="utf-8")
+
+        # 2) extract embedded assets (images -> images/, others -> attachments/)
+        images, attachments = [], []
+        try:
+            document = anydoc.to_document(bytes(input_path.read_bytes()))
+            for idx, asset in enumerate(document.assets, 1):
+                media_type = getattr(asset, "media_type", "") or ""
+                is_image = media_type.startswith("image/")
+                category = "images" if is_image else "attachments"
+                target = write_asset(asset, idx, out_dir, category)
+                if target is not None:
+                    (images if is_image else attachments).append(str(target))
+                    print(f"[convert] extracted {category}: {target.name}", file=sys.stderr)
+        except Exception as e:
+            # asset-extraction failure must not block the main conversion
+            print(f"[convert] asset extraction skipped: {e}", file=sys.stderr)
+
+        result = {
+            "ok": True,
+            "input": str(input_path),
+            "output_dir": str(out_dir),
+            "markdown": str(raw_md),
+            "images": images,
+            "attachments": attachments,
+            "format": input_path.suffix.lstrip(".").lower(),
+        }
+    except Exception as e:
+        print(f"[convert] conversion failed: {e}", file=sys.stderr)
+        return 1
+
+    if args.stdout_json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        print(f"[convert] done: raw.md written ({len(markdown_text)} chars), images {len(images)}, attachments {len(attachments)}", file=sys.stderr)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,245 @@
+# kb-polish detailed workflow
+
+## 1. AnyDoc coarse conversion (Step 1)
+
+### Goal
+Convert the source document into a first-draft Markdown and extract all embedded files.
+
+### Actions
+
+Call the bundled script (deterministic conversion + asset extraction in one step):
+
+```bash
+# Install dependencies (one-time)
+pip install firecrawl-anydoc
+
+# Convert + extract (markdown + images/ + attachments/)
+python scripts/convert_document.py {input_file} -o {output_dir}
+python scripts/convert_document.py {input_file} -o {output_dir} --stdout-json   # result as JSON on stdout
+```
+
+Internally the script uses the AnyDoc Python API (`anydoc.to_markdown(path)` for conversion, `anydoc.to_document(bytes)` for asset extraction). No hand-written parsing. Source: `scripts/convert_document.py`.
+
+### Outputs
+- `raw.md`: first-draft Markdown
+- `images/`: extracted image files
+- `attachments/`: extracted embedded files (PDF, Excel, etc.)
+
+### Boundaries (field-tested on 2026-08-28 full-format matrix)
+- AnyDoc supports Excel (.xlsx/.xls/.xlsm/.xlsb/.ods), Word (.docx/.doc/.docm/.odt/.rtf), PowerPoint (.pptx/.ppt/.pptm/.odp), EPUB (.epub), CSV (.csv), PDF (.pdf), but **does not support OCR**; pure scans (no text layer) are **outside this skill's scope — do not process**; ask the user for a text-layer version
+- AnyDoc **does not support .html/.md/.txt/.doc/.ppt/.tsv** (raises `UnsupportedError` / unrecognized extension): html/md/txt are already text, ingest directly; legacy .doc/.ppt must be converted to OOXML or via LibreOffice; **.tsv must be renamed to .csv** before conversion (content is identical)
+- **AnyDoc handles .odp very weakly** (field-tested: only the title text survives; body/tables lost): convert ODP to .pptx first
+- **RTF Chinese is garbled by AnyDoc conversion** (UTF-8 decoded as Latin-1, field-tested); the verify source (striprtf) extracts correctly — **rely on Step 3/4 rebuilding from the ground truth**; this is the typical value case for double cross-checking
+- **PDFs using CID fonts (no ToUnicode CMap) are misjudged as "needs OCR"**: real scans take the "not processed" branch; if a text-layer PDF reports needs OCR it usually lacks ToUnicode — ask the user to re-export with an embedded font
+- **PDF images/attachments are not extracted as assets** (AnyDoc converts PDF via `to_markdown` directly; `to_document()` reports unsupported for PDF): PDF inline images stay in the text flow; no `images/` extraction
+- **EPUB heading levels get flattened** (`<h1>`/`<h2>` all become `#`, producing duplicate H1s, field-tested): Step 2's `multiple_h1`/`duplicate_heading` catches it; Step 4 applies the single-H1 rule
+- AnyDoc does not recursively convert nested files (e.g. an Excel attachment inside Word), but `to_document().assets` **can extract OLE embedded attachments** (field-tested: a .xlsx inside .docx lands in `attachments/`); handle that attachment separately, do not merge it into the body Markdown
+- In the converted Markdown, images appear as alt text; **image reference placement (`![](./images/xxx.png)`) is the LLM's job in Step 4**
+
+## 2. Structure validation & scoring (Step 2)
+
+### Goal
+Assess the structural quality of the first-draft Markdown and decide whether Step 3 content verification is needed.
+
+### Actions
+
+First run the mechanical structure check (deterministic skeleton):
+
+```bash
+python scripts/validate_structure.py {output_dir}/raw.md --stdout-json
+```
+
+The script outputs an `issues` list (heading jumps, duplicate headings, inconsistent table column counts, mixed list markers, code blocks without a language tag, missing image paths) and a `mechanical_scores` mechanical score.
+
+**LLM responsibility (scripts do no semantic judgment):**
+- Combine the script's issue list with semantic dimensions: heading-meaning clarity (20%), content truncation & mojibake (10%)
+- Aggregate the 6-dimension score and recommend whether Step 3 content verification should run
+
+### Validation dimensions & weights
+
+| Dimension | Weight | What is checked |
+|---|---|---|
+| Heading-level continuity | 30% | `# → ## → ###` continuous, no jumps |
+| Heading-meaning clarity | 20% | duplicate / vague headings |
+| Table structural integrity | 20% | header present, consistent column counts |
+| List format consistency | 10% | unified markers, sane indentation |
+| Code blocks & special elements | 10% | language tags, image paths |
+| Content truncation & mojibake | 10% | complete paragraphs, no garbage chars |
+
+### Score thresholds
+
+| Score | Handling |
+|---|---|
+| ≥ 80 | Well-formed; skip Step 3 verification, go straight to Step 4 |
+| < 80 | Structural problems; trigger Step 3 content verification |
+| Heading-level score < 70 | Always trigger Step 3 (headings are the skeleton, must be correct) |
+
+### Outputs
+- Format score
+- Per-dimension breakdown
+- Issue list (specific locations and problems)
+- Recommendation on whether to trigger Step 3
+
+## 3. Content verification (Step 3)
+
+### Goal
+Extract the source text from a verify source independent of AnyDoc (text layer / OOXML / ODF / EPUB plaintext) and cross-check it against `raw.md` to validate content accuracy.
+
+### Trigger conditions
+- Step 2 score < 80
+- Heading-level score < 70
+- User explicitly asks for verification
+
+> **Boundary: no scans/images.** A document with no text layer (scans / image-only PDF) is outside this skill's scope — no deterministic source can validate pixel content, and OCR is probabilistic and costly. When `extract_verify.py` detects an empty text layer it emits a warning and the flow stops: tell the user "this document is a scan; kb-polish does not process images — please provide a text-layer version or handle it yourself".
+
+### Actions
+Use `extract_verify.py` to dispatch to verifiers/ plugins and extract the source text (text + table structure), then compare with `raw.md`, focusing on:
+- Misaligned table data (digits, amounts, whether the card type and fee correspond 1:1)
+- Text split / reordered by AnyDoc
+- Missing content
+
+```bash
+# Extract source text (auto-detects format → dispatches to plugin), JSON on stdout
+python scripts/extract_verify.py {input}
+python scripts/extract_verify.py {input} -o {outdir} --save-text   # also save verify_text.txt for the LLM
+python scripts/extract_verify.py --list                            # list supported formats & plugins
+```
+
+**Plugins are split by format** (`scripts/verifiers/`, one file per format), all independent of AnyDoc's implementation, and **strictly aligned with AnyDoc-supported formats** (per the official format list, excluding html/md/txt — those do not go through this skill's conversion):
+
+| Format | Plugin | Extraction | Dependency |
+|---|---|---|---|
+| .pdf | pdf.py | PyMuPDF text layer | pymupdf |
+| .docx/.docm | docx.py | zipfile+xml | stdlib |
+| .pptx/.pptm/.ppsx/.ppsm | pptx.py | zipfile+xml | stdlib |
+| .xlsx/.xlsm | xlsx.py | zipfile+xml | stdlib |
+| .odt/.ods/.odp | odt.py | zipfile+xml | stdlib |
+| .epub | epub.py | zipfile+xml | stdlib |
+| .rtf | rtf.py | striprtf control-word stripping | striprtf |
+| .csv/.tsv | csv_tsv.py | csv stdlib | stdlib |
+
+> Note: formats AnyDoc supports but that currently lack a lightweight verify plugin — legacy binary .doc/.ppt (no lightweight library; convert with LibreOffice first), .xls/.xlsb (xlrd/pyxlsb available; add as needed). Verification may be skipped or the user informed explicitly.
+
+These plugins output a **raw source independent of AnyDoc** (OOXML/ODF/EPUB zip+XML plaintext, PDF engine text layer); the LLM can check each item against `raw.md` to spot misalignments.
+
+### Verification dimensions & weights
+
+| Dimension | Weight | How it is verified |
+|---|---|---|
+| Text content completeness | 35% | Does the source text fully appear in the Markdown |
+| Table data accuracy | 30% | Table values, row/column relations match the source |
+| Heading & structure consistency | 20% | Section order and heading levels match the source |
+| Special elements preserved | 15% | Image refs, code blocks, footnotes correctly preserved |
+
+### Flow
+1. Extract the source text with `extract_verify.py` (deterministic source)
+2. If extraction is empty with a "text layer is empty" warning: it is a scan — **stop**, tell the user images are not processed
+3. Compare the extraction against `raw.md` segments
+4. Check only the points in the Step 2 issue list; output fix suggestions
+
+### Outputs
+- Corrected Markdown (fix content errors only, do not change the structure)
+- Verification report (list which errors were fixed)
+- Keep questionable content for Step 5 human confirmation
+
+## 4. LLM re-render (Step 4) — standard Markdown from the verified ground truth
+
+### Goal
+On top of Step 3 verification, the LLM uses the **deterministic source as the content ground truth** and **re-renders** `raw.md` into complete, standards-compliant Markdown for kb-pilot ingestion. This is "rebuild", not "patch": emit clean, complete, logically coherent standard Markdown in one pass. **Two hard rules: ① preserve the original content, ② do not change logical relationships.**
+
+### Re-render source priority (where content comes from)
+| Layer | Source | Note |
+|---|---|---|
+| Content text (body / table data / list text) | `verify_text.txt` | **the only content ground truth**; fixes raw.md's split/reordered/misaligned text |
+| Structural skeleton (heading levels / section organization / image positions) | `raw.md` | AnyDoc's inferred structure + Step 2 issue-list corrections |
+
+On conflict: content text obeys the ground truth; structure obeys the corrected skeleton.
+
+### Content hard rules (violation = redo)
+1. **Zero content change**: do not add content not in the source, do not delete source content, do not rewrite numbers, amounts, terms, or proper nouns (keep original traditional/simplified and spelling), do not polish wording
+2. **No filling from memory**: when the ground truth is missing (e.g. an empty table cell, a missing text-layer page), keep the slot and mark "original is empty here" — never guess
+3. **Logical relationships unchanged**: check the checklist below item by item after re-rendering
+4. **Exactly one H1; multiple H1s demote & merge by default**: kb-pilot treats H1 as the document title (not in the tree; the tree starts at H2). Multiple H1 blocks in one input file are usually related (e.g. a credit-card PDF = notices/statements + product summary), so **keep one final by default: the main title stays H1, the rest demote to H2 with their internal levels shifted (H2→H3, H3→H4)**. Split into multiple finals only when the blocks are completely independent and unrelated (e.g. multiple unrelated documents stitched into one PDF). The LLM decides (excluding header misreads and cross-page duplicate titles — those are simply deleted as redundant)
+
+### Logical-relationship checklist (self-check each item after re-render)
+- [ ] Section order matches the source (including the order and nesting of clause numbers 1.2.3)
+- [ ] Table rows/columns map 1:1; values keep their column-head ownership; merged-cell relations preserved
+- [ ] List nesting and ownership unchanged (indentation, numbering continuity)
+- [ ] Heading-to-content ownership unchanged (each paragraph stays under its heading)
+- [ ] Conditional/logical statements not split or reordered (e.g. "if … then …" clauses, cross-paragraph qualifiers)
+- [ ] Footnote/reference/cross-reference relations unchanged
+
+### Normalization rules (applied uniformly during re-render)
+| Item | Rule |
+|---|---|
+| **Single H1** | Each final.md has exactly one H1 (kb-ingest: H1 is the title, not in the tree). Multiple H1 blocks **demote & merge by default**: the main title stays H1, the rest become H2 with internal levels shifted (H2→H3, H3→H4); redundant headers/cross-page duplicates are deleted. Split only when fully independent |
+| Heading-level completion | Fill skipped levels (# → ### becomes # → ## → ###) |
+| Heading-meaning optimization | Vague headings made specific (Instructions → Configuration parameter instructions) |
+| Duplicate heading disambiguation | Add a semantic prefix to duplicates (Notes → Module A notes) |
+| Table format unification | Simple tables as Markdown tables, complex tables as HTML tables |
+| List indentation fixes | Fix unreasonable indentation levels |
+| Image reference fixes | Ensure correct paths, uniform `![](./images/xxx.png)` |
+
+### Common cleanup items (PDF-to-Markdown specific)
+- Headers/footers (page numbers, bank names, doc numbers) must not remain as body text or headings
+- Cross-page repeated document titles merge into one
+- Headers misread as headings (e.g. an org name) demote to body text or delete
+- Bold markers (`**`) keep only real emphasis from the source, not conversion noise
+
+### Validation loop (must re-run after editing)
+1. Re-run Step 2 validation on every re-render output (default single `final.md`; `final_1.md`, `final_2.md`, … on the split exception): `python scripts/validate_structure.py final.md --stdout-json`
+2. If the issue list is not empty: fix and re-run until zero (output must have **exactly one H1**, no `multiple_h1`)
+3. Content-drift spot check (recommended, mechanical backstop): `python scripts/check_drift.py verify_text.txt final.md --stdout-json` — compare all numeric/amount tokens in the ground truth against the final; zero missing = zero drift; a missing token must be judged as drift vs an intentional removal (e.g. footer amounts)
+4. Only after no mechanical issues and zero content drift, proceed to Step 5 human confirmation
+
+## 5. Human confirmation (Step 5)
+
+### Goal
+The user confirms the final Markdown.
+
+### Confirmation strategy
+
+| Stage | Strategy |
+|---|---|
+| First use | Full confirmation (page-by-page for every document) |
+| After building confidence | Sampling (20%–30% spot check) |
+| High trust | Confirm only key documents; trust verification for routine ones |
+
+### Confirmation points
+1. Body content matches the source
+2. Heading levels are reasonable
+3. Table data is correct
+4. Image references are correct
+5. No structural problems
+
+If human confirmation fails: record the problems and re-run Step 3 or Step 4 for targeted fixes.
+
+## 6. Outputs
+
+### Output files
+
+```
+{output_dir}/
+├── raw.md              # AnyDoc first draft
+├── final.md            # LLM re-render (single H1, ingestible; final_1/2/…N.md on the split exception)
+├── verify_text.txt     # deterministic verify source (content ground truth for re-render)
+├── images/             # extracted images
+├── attachments/        # extracted embedded files
+└── validation.log      # full processing log
+```
+
+### Ingestion
+
+```bash
+kb-ingest ingest final.md
+```
+
+## 7. Error handling
+
+| Situation | Handling |
+|---|---|
+| AnyDoc conversion fails | Tell the user to check whether the file format is supported |
+| Verification finds misalignment that cannot be auto-fixed | Mark the region and request human intervention |
+| Human confirmation fails | Record the problems; re-run Step 3 verification or Step 4 re-render for targeted fixes |
+| Scan (empty text layer) | **Do not process**; tell the user kb-polish does no OCR, please provide a text-layer version |
+| Unsupported special format | Ask the user to prepare a Markdown version manually |

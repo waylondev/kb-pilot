@@ -60,8 +60,9 @@ Supported formats: %s""" % ", ".join(supported_extensions()),
         print("Supported formats:")
         for ext in supported_extensions():
             v = find_verifier(Path("x" + ext))
-            dep = "pymupdf" if ext == ".pdf" else ("striprtf" if ext == ".rtf" else "stdlib")
-            print(f"  {ext:<10} -> verifiers/{v.name}.py  (dep: {dep})")
+            # the plugin declares its own dependency, so this listing cannot go
+            # stale when a format is added
+            print(f"  {ext:<10} -> verifiers/{v.name}.py  (dep: {v.dependency or 'stdlib'})")
         return 0
 
     if not args.input:

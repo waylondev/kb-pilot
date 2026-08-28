@@ -54,7 +54,8 @@ SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guide
 - **argparse CLI with `--help`** — Examples and exit codes in the epilog
 - **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
 - **Single responsibility** — One script does one deterministic thing
-- **Preserve LLM work on rebuild** — Keep existing summary/keywords where structure still matches
+- **Preserve LLM work on rebuild** — Keep existing summary/keywords where structure still matches, and **report what was kept**. Silence is the failure mode: an edit that changes only a number or a sentence preserves every heading, so every filling is inherited while quietly going stale. The script states the facts (how much was reused, whether the source moved); judging staleness is the LLM's job
+- **Parse real Markdown, not a toy subset** — Fenced code blocks are part of the format, and a `#` inside one is a comment, not a heading. A parser that skips this invents phantom sections and truncates line ranges while still reporting zero validation errors, because the mangled ranges remain internally consistent. Validate against the failures that are *silent*, not just the ones that crash
 
 ## Official references
 
@@ -78,9 +79,10 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
     │   ├── SKILL.md               # ingest workflow (8 steps: clone → tree → LLM fill → manifest → hand off; git commit is the user's job)
     │   └── scripts/
     │       ├── build_tree.py      # Markdown → tree.json (document record + skeleton, deterministic)
-    │       └── build_manifest.py  # tree.json × N → manifest.json (deterministic)
+    │       ├── build_manifest.py  # tree.json × N → manifest.json (deterministic)
+    │       └── check_source.py    # source SHA256 vs tree.json's recorded checksum → drift (read-only)
     ├── kb-chat/                   # QA workflow (5 steps: route → localize → read → answer → self-verify)
-    │   └── SKILL.md
+    │   └── SKILL.md               #   Step 3 reuses kb-ingest's check_source.py; kb-chat ships no scripts
     └── kb-polish/                 # OPTIONAL, non-core: source doc (PDF/Word/Excel/PPT/EPUB/CSV) → Markdown
         │                          #   (AnyDoc + LLM re-render, 5 steps). A user-side convenience only —
         ├── SKILL.md               #   not a required system stage; the user may convert any way they want
@@ -88,6 +90,18 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
         └── scripts/               #   convert_document / validate_structure / extract_verify / check_drift
             └── verifiers/         #   per-format deterministic verify-source plugins
 ```
+
+## Tests
+
+```
+tests/
+└── test_core.py   # regression tests for the core path — stdlib unittest, zero dependencies
+                   #   run: python tests/test_core.py
+```
+
+The suite targets failures that are *silent* rather than loud. A parser that crashes gets noticed on the first run; one that invents a section, truncates a line range, or carries a stale summary forward does not — so those are what get pinned down.
+
+Each test writes to a self-cleaning `tempfile.TemporaryDirectory` (system temp), so nothing under `tests/` is modified by the run — the only file shipped is `test_core.py` itself.
 
 ## Optimization directions
 

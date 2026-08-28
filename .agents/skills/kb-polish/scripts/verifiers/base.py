@@ -65,6 +65,11 @@ class BaseVerifier(ABC):
     name: str = ""
     extensions: list[str] = []
 
+    #: Third-party package this plugin needs, if any. Declared here rather than
+    #: in the entry script so `--list` stays correct when a format is added.
+    #: Empty means the plugin runs on the standard library alone.
+    dependency: str = ""
+
     @abstractmethod
     def extract(self, path: Path) -> ExtractResult:
         """Extract the source text from a file, returning a unified ExtractResult."""

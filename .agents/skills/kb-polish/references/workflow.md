@@ -77,11 +77,13 @@ The script outputs an `issues` list (heading jumps, duplicate headings, inconsis
 | Dimension                      | Weight | What is checked                          |
 | ------------------------------ | ------ | ---------------------------------------- |
 | Heading-level continuity       | 30%    | `# → ## → ###` continuous, no jumps      |
-| Heading-meaning clarity        | 20%    | duplicate / vague headings               |
+| Heading-meaning clarity        | 20%    | vague headings (duplicates are scored mechanically — see note) |
 | Table structural integrity     | 20%    | header present, consistent column counts |
 | List format consistency        | 10%    | unified markers, sane indentation        |
 | Code blocks & special elements | 10%    | language tags, image paths               |
 | Content truncation & mojibake  | 10%    | complete paragraphs, no garbage chars    |
+
+> **Do not double-charge.** Every issue in `validate_structure.py`'s output carries a `dimension` field naming where it was already deducted. Exact duplicate headings are detected mechanically and deducted from *Heading-level continuity*, so they are not part of Heading-meaning clarity — that dimension covers *vague* headings, which only the LLM can judge.
 
 ### Cross-check depth (score threshold)
 

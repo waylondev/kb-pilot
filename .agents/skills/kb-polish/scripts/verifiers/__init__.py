@@ -6,16 +6,20 @@ To add a format: create a plugin file under verifiers/ extending BaseVerifier an
 implementing extract(), then import it here and add it to REGISTRY — the entry script
 needs no changes.
 
-Plugins align strictly with the formats AnyDoc supports (official site):
-Excel(xlsx/xls/xlsm/xlsb/ods), Word(docx/doc/docm/odt/rtf),
-PowerPoint(pptx/ppt/pptm/odp), EPUB, CSV, PDF.
-html/md/txt are not supported (AnyDoc does not support them, no verification needed)
-and neither are legacy .doc/.ppt (no lightweight library).
+The registry covers every format with a lightweight text layer (stdlib, or a
+single small dependency — pymupdf for PDF, striprtf for RTF):
+PDF (.pdf), Word (.docx/.docm), Excel (.xlsx/.xlsm),
+PowerPoint (.pptx/.pptm/.ppsx/.ppsm), OpenDocument (.odt/.ods/.odp),
+RTF (.rtf), EPUB (.epub), CSV (.csv).
+Not covered: html/md/txt (AnyDoc does not support them, no verification needed)
+and the legacy binary formats .doc/.ppt/.xls/.xlsb, which have no lightweight
+library — those extensions stay out of the whitelist.
 
 Dependencies:
-- pdf:  pymupdf
-- rtf:  striprtf
-- others: stdlib
+Each plugin declares its own third-party requirement via the `dependency`
+attribute (see base.py), so `extract_verify.py --list` stays accurate when a
+format is added. Currently pdf -> pymupdf, rtf -> striprtf, other plugins run
+on the standard library alone.
 """
 
 from __future__ import annotations

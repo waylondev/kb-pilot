@@ -221,13 +221,9 @@ __marimo__/
 knowledge_repo/
 data/
 
-# kb-pilot: test scripts and temporary tools (not source code)
-tests/
-
 # kb-pilot: test knowledge base and test suites (not source code)
 fixtures/
 docs/test-suites/
 # hangseng-cards / hangseng-cards-md: now tracked in git as the knowledge base
 # (source .md + .kb/ skeleton & semantic fillings). Removed from ignore on purpose.
 examples/
-

@@ -18,6 +18,7 @@ from .base import BaseVerifier, ExtractResult
 class RtfVerifier(BaseVerifier):
     name = "rtf"
     extensions = [".rtf"]
+    dependency = "striprtf"
 
     def extract(self, path: Path) -> ExtractResult:
         from striprtf.striprtf import rtf_to_text  # lazy import

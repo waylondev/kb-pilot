@@ -1,7 +1,7 @@
 ---
 name: kb-polish
-description: Convert source documents (PDF/Word/Excel/PPT/EPUB/CSV) into high-quality Markdown conforming to the kb-pilot spec. Runs AnyDoc coarse conversion, structure validation & scoring, content verification (deterministic extraction cross-check), and normalization. Does NOT OCR; pure scans (no text layer) are kept by embedding every page as an image. Use when the user needs a document converted to Markdown, PDF-to-MD, Word-to-MD, pre-ingestion preprocessing (kb-ingest), or conversion-quality verification.
-license: Proprietary
+description: Convert source documents into high-quality Markdown conforming to the kb-pilot spec — PDF, Word (docx/docm), Excel (xlsx/xlsm), PowerPoint (pptx/pptm/ppsx/ppsm), EPUB, CSV, RTF and OpenDocument (odt/ods/odp). Runs AnyDoc coarse conversion, structure validation & scoring, content verification (deterministic extraction cross-check), and normalization. Does NOT OCR; pure scans (no text layer) are kept by embedding every page as an image. Use when the user needs a document converted to Markdown, PDF-to-MD, Word-to-MD, ODT-to-MD, RTF-to-MD, pre-ingestion preprocessing (kb-ingest), or conversion-quality verification.
+license: MIT
 compatibility: Requires Python 3.10+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment.
 allowed-tools: Bash(python:*) Read Write
 metadata:

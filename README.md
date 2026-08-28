@@ -42,7 +42,7 @@ In short: kb-pilot trades broad retrieval infrastructure for a transparent, line
 
 ## Quick start
 
-**Prerequisites**: Python 3.10+, Git. The scripts use only the Python standard library — no extra dependencies.
+**Prerequisites**: Python 3.10+, Git. The **core** scripts (`kb-ingest`, `kb-chat`) use only the Python standard library — no extra dependencies. The optional `kb-polish` skill converts source documents with AnyDoc and needs a few third-party packages; see its `compatibility` field.
 
 ### 1. Ingest a document
 
@@ -128,6 +128,15 @@ graph TB
 
 Path mapping: source file `docs/api/auth.md` → metadata directory `.kb/index/docs/api/auth/`.
 
+### What the two metadata files hold
+
+Both are minified by default (fewer tokens when the LLM reads them); regenerate with `--pretty` for a readable copy.
+
+- **`tree.json`** (one per document) — the document record (`doc_id`, `title`, `domain`, `source_path`, `summary`, `ingested_at`, `source_sha256`, `total_lines`) plus the heading skeleton: one node per `##`–`######` heading, each carrying `start_line` / `end_line` and the LLM-filled `summary` / `keywords`. H1 is the title and does not appear as a node.
+- **`manifest.json`** (one per knowledge base) — a JSON **array** of routing entries, one per document: `doc_id`, `title`, `domain`, `summary`, `tags`, `updated_at`, `path`.
+
+> **`tags` come from top-level sections only.** Sub-section keywords stay in tree.json for localization, which keeps the manifest small and routing focused. A topic buried in a sub-section may therefore be absent from `tags` — that is why kb-chat walks the section tree instead of relying on tags alone.
+
 ### Project structure
 
 ```
@@ -137,11 +146,12 @@ kb-pilot/
 │   ├── kb-ingest/      # document ingestion
 │   │   ├── SKILL.md
 │   │   └── scripts/    # deterministic scripts
-│   │       ├── build_tree.py
-│   │       └── build_manifest.py
+│   │       ├── build_tree.py       # Markdown → tree.json (skeleton + document record)
+│   │       ├── build_manifest.py   # tree.json × N → manifest.json (routing table)
+│   │       └── check_source.py     # SHA256 vs tree.json → drift detection (read-only)
 │   ├── kb-chat/        # knowledge Q&A
-│   │   └── SKILL.md
-│   └── kb-polish/      # OPTIONAL, non-core: PDF/Word/Excel/PPT/EPUB/CSV → Markdown (AnyDoc + LLM re-render)
+│   │   └── SKILL.md    # reuses kb-ingest's check_source.py; ships no scripts of its own
+│   └── kb-polish/      # OPTIONAL, non-core: PDF/Word/Excel/PPT/EPUB/CSV/ODT/RTF → Markdown (AnyDoc + LLM re-render)
 └── knowledge_repo/     # knowledge base data (example, not committed)
 ```
 

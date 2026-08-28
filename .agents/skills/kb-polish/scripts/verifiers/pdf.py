@@ -29,6 +29,7 @@ from .base import BaseVerifier, ExtractResult
 class PdfVerifier(BaseVerifier):
     name = "pdf"
     extensions = [".pdf"]
+    dependency = "pymupdf"
 
     #: render resolution for scanned pages; 150 dpi keeps text legible for
     #: viewing while bounding the asset size

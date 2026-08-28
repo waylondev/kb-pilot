@@ -32,11 +32,22 @@ import json
 import sys
 from pathlib import Path
 
-try:
-    import anydoc
-except ImportError as e:
-    print("[convert] missing dependency firecrawl-anydoc; run: pip install firecrawl-anydoc", file=sys.stderr)
-    sys.exit(1)
+def load_anydoc():
+    """Import AnyDoc lazily.
+
+    Kept out of module scope so `--help` still works when the dependency is not
+    installed — which is exactly when someone needs to read the usage text.
+    """
+    try:
+        import anydoc
+    except ImportError:
+        print(
+            "[convert] missing dependency firecrawl-anydoc; install it with:\n"
+            "          pip install firecrawl-anydoc",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    return anydoc
 
 
 def sanitize_filename(name: str, fallback: str) -> str:
@@ -101,6 +112,8 @@ Output: raw.md (first draft), images/, attachments/""",
 
     out_dir = Path(args.output)
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    anydoc = load_anydoc()
 
     try:
         # 1) convert the body to Markdown

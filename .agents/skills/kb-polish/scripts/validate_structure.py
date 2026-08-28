@@ -42,6 +42,12 @@ MAX_WEIGHT = {
 
 # issue type -> scoring dimension. Explicit, so every mechanical issue (including
 # duplicate_heading / multiple_h1) is actually counted — a prefix match missed them.
+#
+# Note: workflow.md's rubric files "duplicate headings" under the *semantic*
+# Heading-meaning clarity dimension. Detecting an exact duplicate is mechanical,
+# so it is deducted here instead — otherwise the issue would be reported but scored
+# nowhere. Each issue carries the `dimension` it was counted against, so the LLM
+# does not deduct for the same duplicate a second time in the semantic pass.
 ISSUE_DIMENSION = {
     "heading_jump": "heading_continuity",
     "duplicate_heading": "heading_continuity",
@@ -298,6 +304,11 @@ Output: JSON to stdout; progress to stderr.""",
         dim_count = sum(1 for x in issues if ISSUE_DIMENSION.get(x["type"]) == dim)
         mechanical_scores[dim] = max(0, weight - dim_count * PENALTY[dim])
 
+    # Tag each issue with the dimension it was already deducted from. The LLM owns
+    # the remaining 30 semantic points and needs to know what not to charge twice.
+    for iss in issues:
+        iss["dimension"] = ISSUE_DIMENSION.get(iss["type"], "")
+
     result = {
         "ok": True,
         "input": str(input_path),
@@ -305,7 +316,13 @@ Output: JSON to stdout; progress to stderr.""",
         "issues": issues,
         "mechanical_scores": mechanical_scores,
         "mechanical_total": sum(mechanical_scores.values()),
-        "note": "mechanical score covers 70/100 pts; the remaining 30 (heading-meaning clarity 20 + truncation & mojibake 10) are the LLM's semantic judgment",
+        "note": (
+            "mechanical score covers 70/100 pts; the remaining 30 (heading-meaning clarity 20 + "
+            "truncation & mojibake 10) are the LLM's semantic judgment. Every issue carries the "
+            "`dimension` it was already deducted from — do not deduct again in the semantic pass. "
+            "duplicate_heading is counted mechanically here, so it is not part of heading-meaning "
+            "clarity (that dimension covers *vague* headings, which scripts cannot judge)."
+        ),
     }
 
     # progress to stderr, structured result to stdout (the LLM parses stdout)

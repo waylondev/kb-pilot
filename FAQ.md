@@ -45,7 +45,7 @@ Choose a conventional RAG system for large or unstructured corpora, web-scale or
 
 kb-pilot's "trust the LLM, no vectors, no graphs" design comes with honest trade-offs. These define *when* kb-pilot needs human review — they are properties of the design, not bugs to be fixed:
 
-- **Routing recall depends on summaries** — a question reaches a document only if the LLM routes to it via title/summary/keywords. If a summary happens not to mention the answer's keywords, the document may be missed. That is an index problem, not a source problem (see "What if the answer is wrong because a summary or keyword is misleading?").
+- **Routing recall depends on summaries** — a question reaches a document only if the LLM routes to it via title/summary/keywords. If a summary happens not to mention the answer's keywords, the document may be missed. Note that `manifest.json` `tags` are collected from **top-level sections only**, so a topic confined to a sub-section may not appear in the routing entry at all. That is an index problem, not a source problem (see "What if the answer is wrong because a summary or keyword is misleading?").
 - **Conflicts are found when both sides are read** — if two documents disagree, kb-pilot can surface the conflict, but only when routing happens to land on both documents. There is no entity index or contradiction detector.
 - **Enumeration is the LLM's judgment** — for "list all X" questions, exhaustiveness depends on the LLM's patience to keep reading. There is no structural guarantee it scans the whole relevant domain.
 - **"Not mentioned" is a global claim** — deciding the corpus doesn't cover a topic requires scanning it; stop early, and "not found" can be mistaken for "doesn't exist".
@@ -58,9 +58,14 @@ These are exactly why line-level citations exist: when an answer matters, a huma
 
 ### Q: What does "version awareness" in the README mean?
 
-The README's "Version awareness" refers to the `source_sha256` checksum in each `tree.json`: when a source file changes and is re-ingested, line anchors are recomputed against the corrected text, so citations never point at stale lines. It is handled at index time, not read time.
+The README's "Version awareness" refers to the `source_sha256` checksum in each `tree.json`, and it does two things:
 
-It does **not** mean kb-pilot automatically selects between different document versions (e.g., an old and a new contract). Selecting "what applies now" depends on the LLM noticing version markers in the source and on the current date being provided in context — see "known boundaries" above.
+- **Detects drift before reading** — kb-chat compares the source's current checksum against the recorded one and warns if they differ, because citations may then point at text that has since changed. This compares checksums, not line counts: an edit that changes a number or rewords a sentence keeps the line count identical while silently making a citation wrong.
+- **Re-anchors on re-ingest** — re-ingesting recomputes line anchors against the corrected text, so citations land on the new lines.
+
+What it does **not** do is decide whether an existing LLM-written summary is still accurate. `build_tree.py` preserves previous summaries by matching `(level, title)`, so an edit that leaves the headings intact carries every old summary forward — including ones that edit invalidated. The script reports `source_changed` and how many fillings were reused; judging whether they are now stale, and re-verifying them, is the LLM's job. That is the boundary between the two layers: scripts state facts about the skeleton, the LLM decides what the text means.
+
+It also does **not** mean kb-pilot automatically selects between different document versions (e.g., an old and a new contract). Selecting "what applies now" depends on the LLM noticing version markers in the source and on the current date being provided in context — see "known boundaries" above.
 
 ---
 

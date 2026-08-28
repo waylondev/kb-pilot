@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# /// script
+# dependencies = []
+# ///
 """
 build_tree.py — Markdown heading tree parser + document record builder
 
@@ -22,9 +26,6 @@ Two correctness guarantees the skeleton depends on:
 
 See --help for usage. Emits JSON result to stdout, progress to stderr.
 """
-# /// script
-# dependencies = []
-# ///
 import argparse
 import bisect
 import hashlib

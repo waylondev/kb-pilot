@@ -8,8 +8,8 @@ convert_document.py — source document -> first-draft Markdown + embedded asset
 Uses AnyDoc to convert PDF/Word/Excel/PPT/EPUB/CSV/OpenDocument etc. into Markdown,
 and extracts embedded images (-> images/) and other files (-> attachments/).
 
-Note: AnyDoc does not support .html/.md/.txt/.doc/.ppt (legacy binaries) or image OCR;
-do not run these formats through this script.
+Note: AnyDoc does not support .html/.md/.txt (already text) or .tsv (rename to .csv),
+and does no image OCR; do not run these through this script.
 
 Deterministic layer: conversion and asset landing only; semantic judgment (is the
 structure reasonable, where do images go) is the LLM's job.

@@ -22,6 +22,7 @@ Exit codes:
 """
 
 import argparse
+import bisect
 import json
 import re
 import sys
@@ -59,43 +60,79 @@ ISSUE_DIMENSION = {
     "image_missing": "special_elements",
 }
 
-# per-issue deduction: heading/table issues matter more than list/special-element ones
+# Per-issue-type deduction, aligned with rules.md §2. Heading jump −3 and duplicate
+# −2 come straight from §2.1; the separator −5 and column mismatch −3 from §2.2.
+# multiple_h1 is a structural defect (rules.md §1 "Multiple H1 blocks") and costs
+# more than a skip. List/special elements have no explicit per-item deduction in
+# rules.md, so each issue costs the sub-criterion's unit share (3).
 PENALTY = {
-    "heading_continuity": 5,
-    "table_integrity": 5,
-    "list_consistency": 3,
-    "special_elements": 3,
+    "heading_jump": 3,
+    "duplicate_heading": 2,
+    "multiple_h1": 5,
+    "table_separator_mismatch": 5,
+    "table_col_mismatch": 3,
+    "list_marker_mixed": 3,
+    "codeblock_no_lang": 3,
+    "image_missing": 3,
 }
 
 
+# CommonMark fenced-code detection — same rules as kb-ingest's build_tree.py.
+# A `# comment` inside a ``` or ~~~ block is not a heading; treating it as one
+# invents phantom jump/duplicate/multiple-H1 issues that are not really there,
+# so the LLM would "fix" a non-issue. Both ``` and ~~~ are fences; the closing
+# fence must use the same character and be at least as long as the opening one.
+
+FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+FENCE_CLOSE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})\s*$")
+
+
 def find_code_fence_regions(lines: list[str]) -> list[tuple[int, int]]:
-    """Return code-fence line regions [(start, end), ...] (inclusive 1-based lines)."""
+    """Return fenced code regions as [(start, end), ...] (1-based inclusive lines)."""
     regions = []
-    in_fence = False
+    open_char = ""
+    open_len = 0
     start = 0
+
     for i, line in enumerate(lines, 1):
-        stripped = line.strip()
-        if stripped.startswith("```"):
-            if not in_fence:
-                in_fence = True
-                start = i
-            else:
-                in_fence = False
+        if open_char:
+            m = FENCE_CLOSE_RE.match(line)
+            if m and m.group(1)[0] == open_char and len(m.group(1)) >= open_len:
                 regions.append((start, i))
-    if in_fence:
+                open_char, open_len, start = "", 0, 0
+            continue
+
+        m = FENCE_OPEN_RE.match(line)
+        if not m:
+            continue
+        fence = m.group(1)
+        if fence[0] == "`" and "`" in m.group(2):
+            continue
+        open_char, open_len, start = fence[0], len(fence), i
+
+    if open_char:
         regions.append((start, len(lines)))
     return regions
 
 
-def is_inside_code(i: int, regions: list[tuple[int, int]]) -> bool:
-    return any(start <= i <= end for start, end in regions)
+def make_fence_checker(regions: list[tuple[int, int]]):
+    """Return an O(log n) predicate `is_inside_code(line_no)` for the given regions."""
+    if not regions:
+        return lambda line_no: False
+    starts = [r[0] for r in regions]
+
+    def is_inside_code(line_no: int) -> bool:
+        idx = bisect.bisect_right(starts, line_no) - 1
+        return idx >= 0 and line_no <= regions[idx][1]
+
+    return is_inside_code
 
 
-def validate_heading_continuity(lines: list[str], regions) -> list[dict]:
+def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
     issues = []
     prev_level = None
     for i, line in enumerate(lines, 1):
-        if is_inside_code(i, regions):
+        if is_inside_code(i):
             continue
         m = re.match(r"^(#{1,6})\s+", line)
         if not m:
@@ -112,11 +149,11 @@ def validate_heading_continuity(lines: list[str], regions) -> list[dict]:
     return issues
 
 
-def validate_duplicate_headings(lines: list[str], regions) -> list[dict]:
+def validate_duplicate_headings(lines: list[str], is_inside_code) -> list[dict]:
     seen = {}
     issues = []
     for i, line in enumerate(lines, 1):
-        if is_inside_code(i, regions):
+        if is_inside_code(i):
             continue
         m = re.match(r"^(#{1,6})\s+(.+?)\s*#*\s*$", line)
         if not m:
@@ -134,7 +171,7 @@ def validate_duplicate_headings(lines: list[str], regions) -> list[dict]:
     return issues
 
 
-def validate_single_h1(lines: list[str], regions) -> list[dict]:
+def validate_single_h1(lines: list[str], is_inside_code) -> list[dict]:
     """A document must have exactly one H1.
 
     kb-pilot rule: H1 is the document title, not in the tree (the tree starts at H2),
@@ -145,7 +182,7 @@ def validate_single_h1(lines: list[str], regions) -> list[dict]:
     """
     h1_lines = []
     for i, line in enumerate(lines, 1):
-        if is_inside_code(i, regions):
+        if is_inside_code(i):
             continue
         if re.match(r"^#\s+", line):
             h1_lines.append((i, line.strip()))
@@ -165,12 +202,12 @@ def validate_single_h1(lines: list[str], regions) -> list[dict]:
     return issues
 
 
-def validate_tables(lines: list[str], regions) -> list[dict]:
+def validate_tables(lines: list[str], is_inside_code) -> list[dict]:
     issues = []
     i = 0
     while i < len(lines):
         line = lines[i]
-        if is_inside_code(i + 1, regions) or not line.strip().startswith("|"):
+        if is_inside_code(i + 1) or not line.strip().startswith("|"):
             i += 1
             continue
         # find the contiguous table block
@@ -209,11 +246,11 @@ def _count_cols(row: str) -> int:
     return len(re.findall(r"(?<!\\)\|", row.strip())) - 1
 
 
-def validate_lists(lines: list[str], regions) -> list[dict]:
+def validate_lists(lines: list[str], is_inside_code) -> list[dict]:
     issues = []
     markers = {}
     for i, line in enumerate(lines, 1):
-        if is_inside_code(i, regions):
+        if is_inside_code(i):
             continue
         stripped = line.strip()
         m = re.match(r"^([-*+])\s+", stripped)
@@ -244,10 +281,10 @@ def validate_codeblock_lang(lines: list[str], regions) -> list[dict]:
     return issues
 
 
-def validate_image_paths(lines: list[str], regions, base_dir: Path) -> list[dict]:
+def validate_image_paths(lines: list[str], is_inside_code, base_dir: Path) -> list[dict]:
     issues = []
     for i, line in enumerate(lines, 1):
-        if is_inside_code(i, regions):
+        if is_inside_code(i):
             continue
         for m in re.finditer(r"!\[[^\]]*\]\(([^)]+)\)", line):
             raw_path = m.group(1).strip()
@@ -288,21 +325,24 @@ Output: JSON to stdout; progress to stderr.""",
 
     lines = input_path.read_text(encoding="utf-8-sig").splitlines()
     regions = find_code_fence_regions(lines)
+    is_inside_code = make_fence_checker(regions)
 
     issues = []
-    issues += validate_heading_continuity(lines, regions)
-    issues += validate_duplicate_headings(lines, regions)
-    issues += validate_single_h1(lines, regions)
-    issues += validate_tables(lines, regions)
-    issues += validate_lists(lines, regions)
+    issues += validate_heading_continuity(lines, is_inside_code)
+    issues += validate_duplicate_headings(lines, is_inside_code)
+    issues += validate_single_h1(lines, is_inside_code)
+    issues += validate_tables(lines, is_inside_code)
+    issues += validate_lists(lines, is_inside_code)
     issues += validate_codeblock_lang(lines, regions)
-    issues += validate_image_paths(lines, regions, input_path.parent)
+    issues += validate_image_paths(lines, is_inside_code, input_path.parent)
 
-    # mechanical score: each dimension starts at full weight and is deducted per issue
-    mechanical_scores = {}
-    for dim, weight in MAX_WEIGHT.items():
-        dim_count = sum(1 for x in issues if ISSUE_DIMENSION.get(x["type"]) == dim)
-        mechanical_scores[dim] = max(0, weight - dim_count * PENALTY[dim])
+    # mechanical score: each dimension starts at full weight and is deducted per
+    # issue using its own per-issue-type penalty (rules.md §2 deductions).
+    mechanical_scores = dict(MAX_WEIGHT)
+    for iss in issues:
+        dim = ISSUE_DIMENSION.get(iss["type"])
+        if dim:
+            mechanical_scores[dim] = max(0, mechanical_scores[dim] - PENALTY[iss["type"]])
 
     # Tag each issue with the dimension it was already deducted from. The LLM owns
     # the remaining 30 semantic points and needs to know what not to charge twice.

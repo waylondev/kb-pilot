@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# /// script
+# dependencies = []
+# ///
 """
 build_manifest.py — Global routing table generator
 
@@ -11,9 +15,6 @@ kb-chat Step 1); pass --pretty for a human-readable copy.
 
 See --help for usage. Emits JSON result to stdout, progress to stderr.
 """
-# /// script
-# dependencies = []
-# ///
 import argparse
 import json
 import sys

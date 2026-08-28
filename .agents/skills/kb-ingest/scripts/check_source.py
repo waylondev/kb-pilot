@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# /// script
+# dependencies = []
+# ///
 """
 check_source.py — Has the source drifted from what tree.json recorded?
 
@@ -18,9 +22,6 @@ whether to re-ingest now or continue with a warning, is the caller's judgment.
 
 See --help for usage. Emits JSON result to stdout, progress to stderr.
 """
-# /// script
-# dependencies = []
-# ///
 import argparse
 import hashlib
 import json

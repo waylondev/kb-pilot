@@ -37,7 +37,7 @@ metadata:
 ## Gotchas (field-tested pitfalls, read first)
 
 - **No OCR on scans — embed pages as images instead**: scans (no text layer) are not readable as text, but the document is not dropped. Step 3 renders every page to `images/page_N.png` and the re-render keeps them as `![page N](./images/page_N.png)` (with a "scanned / image-only, no text layer" note). The LLM must not guess page content — it is an image-only asset for viewing, not a text source
-- **AnyDoc does not support .html/.md/.txt/.doc/.ppt/.tsv**: raises `UnsupportedError` / unrecognized extension. html/md/txt are already text — ingest directly, do not run this skill; legacy .doc/.ppt need conversion to OOXML or LibreOffice; **.tsv must be renamed to .csv** first (content is identical)
+- **AnyDoc does not support .html/.md/.txt/.tsv**: raises `UnsupportedError` / unrecognized extension. html/md/txt are already text — ingest directly, do not run this skill; **.tsv must be renamed to .csv** first (content is identical)
 - **AnyDoc handles .odp very weakly** (field-tested: only the title text is converted; body/tables are lost): convert ODP to .pptx first
 - **Complex merged-cell tables get mangled by AnyDoc** (misaligned data, split text, reordered cells): such documents must go through Step 3 verification
 - **RTF Chinese text is garbled by AnyDoc conversion** (UTF-8 decoded as Latin-1, field-tested); but the verify source (striprtf) extracts correctly — **rely on Step 3/4 rebuilding from the ground truth**; this is the typical value case for double cross-checking

@@ -32,7 +32,7 @@ Internally the script uses the AnyDoc Python API (`anydoc.to_markdown(path)` for
 
 * AnyDoc supports Excel (.xlsx/.xls/.xlsm/.xlsb/.ods), Word (.docx/.doc/.docm/.odt/.rtf), PowerPoint (.pptx/.ppt/.pptm/.odp), EPUB (.epub), CSV (.csv), PDF (.pdf), but **does not support OCR**; pure scans (no text layer) are **kept by embedding every page as an image** (no OCR — see the scan branch in Step 4)
 
-* AnyDoc **does not support .html/.md/.txt/.doc/.ppt/.tsv** (raises `UnsupportedError` / unrecognized extension): html/md/txt are already text, ingest directly; legacy .doc/.ppt must be converted to OOXML or via LibreOffice; **.tsv must be renamed to .csv** before conversion (content is identical)
+* AnyDoc **does not support .html/.md/.txt/.tsv** (raises `UnsupportedError` / unrecognized extension): html/md/txt are already text, ingest directly; **.tsv must be renamed to .csv** before conversion (content is identical)
 
 * **AnyDoc handles .odp very weakly** (field-tested: only the title text survives; body/tables lost): convert ODP to .pptx first
 
@@ -74,14 +74,14 @@ The script outputs an `issues` list (heading jumps, duplicate headings, inconsis
 
 ### Validation dimensions & weights
 
-| Dimension                      | Weight | What is checked                          |
-| ------------------------------ | ------ | ---------------------------------------- |
-| Heading-level continuity       | 30%    | `# → ## → ###` continuous, no jumps      |
+| Dimension                      | Weight | What is checked                                                |
+| ------------------------------ | ------ | -------------------------------------------------------------- |
+| Heading-level continuity       | 30%    | `# → ## → ###` continuous, no jumps                            |
 | Heading-meaning clarity        | 20%    | vague headings (duplicates are scored mechanically — see note) |
-| Table structural integrity     | 20%    | header present, consistent column counts |
-| List format consistency        | 10%    | unified markers, sane indentation        |
-| Code blocks & special elements | 10%    | language tags, image paths               |
-| Content truncation & mojibake  | 10%    | complete paragraphs, no garbage chars    |
+| Table structural integrity     | 20%    | header present, consistent column counts                       |
+| List format consistency        | 10%    | unified markers, sane indentation                              |
+| Code blocks & special elements | 10%    | language tags, image paths                                     |
+| Content truncation & mojibake  | 10%    | complete paragraphs, no garbage chars                          |
 
 > **Do not double-charge.** Every issue in `validate_structure.py`'s output carries a `dimension` field naming where it was already deducted. Exact duplicate headings are detected mechanically and deducted from *Heading-level continuity*, so they are not part of Heading-meaning clarity — that dimension covers *vague* headings, which only the LLM can judge.
 
@@ -303,3 +303,4 @@ kb-polish only produces Markdown — it does not ingest. Place `final.md` (or th
 | Scan (empty text layer)                                   | **Keep as images**: render pages to `images/page_N.png`, final.md body = `![page N](./images/page_N.png)` references + "image-only (no text layer), no OCR" note; LLM must not guess content |
 | Unsupported special format                                | Ask the user to prepare a Markdown version manually                                                                                                                                          |
 
+<br />

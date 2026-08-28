@@ -32,11 +32,11 @@ class PptxVerifier(ZipXmlVerifier):
     def extract(self, path: Path) -> ExtractResult:
         slide_targets = self._slide_targets(path)
         rel_members = [f"ppt/slides/_rels/{t.rsplit('/', 1)[-1]}.rels" for t in slide_targets]
-        files = self._read_zip(path, [f"ppt/{t}" for t in slide_targets] + rel_members)
+        files = self._read_zip(path, slide_targets + rel_members)
 
         pages, all_tables = [], []
         for idx, target in enumerate(slide_targets, 1):
-            data = files.get(f"ppt/{target}")
+            data = files.get(target)
             if data is None:
                 continue
             root = self._xml(data)
@@ -97,24 +97,29 @@ class PptxVerifier(ZipXmlVerifier):
         return rid2name
 
     def _slide_targets(self, path: Path) -> list[str]:
-        rels = self._read_zip(path, ["ppt/_rels/presentation.xml.rels"])
+        """Slide parts in presentation order, as zip-internal paths."""
+        rels_name = "ppt/_rels/presentation.xml.rels"
+        rels = self._read_zip(path, [rels_name])
         targets = []
-        if "ppt/_rels/presentation.xml.rels" in rels:
-            rel_root = self._xml(rels["ppt/_rels/presentation.xml.rels"])
+        if rels_name in rels:
+            rel_root = self._xml(rels[rels_name])
             if rel_root is not None:
                 for rel in rel_root.iter(_tag(REL, "Relationship")):
-                    t = rel.get("Target", "")
-                    if re.match(r"^slides/slide\d+\.xml$", t):
-                        targets.append(t)
+                    part = self._resolve_part(rels_name, rel.get("Target", ""))
+                    if re.match(r"^ppt/slides/slide\d+\.xml$", part):
+                        targets.append(part)
         if targets:
-            targets.sort(key=lambda t: int(re.search(r"\d+", t).group()))
+            targets.sort(key=lambda p: int(re.search(r"\d+", p.rsplit("/", 1)[-1]).group()))
             return targets
+        # Fallback: enumerate the zip, ordered numerically so slide10 does not
+        # sort before slide2.
         z = self._open_zip(path)
         if z is None:
             return []
         with z:
-            cand = (n.replace("ppt/", "", 1) for n in z.namelist())
-            return sorted(c for c in cand if re.match(r"^slides/slide\d+\.xml$", c))
+            parts = [n for n in z.namelist() if re.match(r"^ppt/slides/slide\d+\.xml$", n)]
+        parts.sort(key=lambda p: int(re.search(r"\d+", p.rsplit("/", 1)[-1]).group()))
+        return parts
 
     def _parse_table(self, tbl) -> tuple[str, list[list[str]]]:
         rows = []

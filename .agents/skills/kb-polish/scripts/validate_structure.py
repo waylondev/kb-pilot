@@ -312,7 +312,13 @@ def main() -> int:
 
 Checks: heading jumps / duplicate headings / multiple H1 / table cols / list markers / code-block language / image paths
 
-Output: JSON to stdout; progress to stderr.""",
+Output: JSON to stdout; progress to stderr. The mechanical score covers 70 of the
+100 pts in workflow.md's rubric; the other 30 are the LLM's semantic judgment.
+
+Exit codes:
+  0  validation completed — read "issues" in the JSON (findings are a result,
+     not an error; a clean document and a broken one both exit 0)
+  1  bad args, or the file does not exist""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("input", help="path to the Markdown file")

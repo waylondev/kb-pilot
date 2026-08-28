@@ -5,7 +5,7 @@ license: MIT
 compatibility: Requires Python 3.10+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment.
 allowed-tools: Bash(python:*) Read Write
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
 ---
 # kb-polish Skill
 > Convert source documents into high-quality Markdown that meets kb-pilot ingestion standards.

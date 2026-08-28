@@ -56,14 +56,16 @@ These are exactly why line-level citations exist: when an answer matters, a huma
 
 ---
 
-### Q: What does "version awareness" in the README mean?
+### Q: What does the README mean by "version awareness"?
 
-The README's "Version awareness" refers to the `source_sha256` checksum in each `tree.json`, and it does two things:
+It refers to the `source_sha256` checksum in each `tree.json` (see "Version awareness (drift protection)" under Step 4 of the README's end-to-end workflow), and it does two things:
 
 - **Detects drift before reading** — kb-chat compares the source's current checksum against the recorded one and warns if they differ, because citations may then point at text that has since changed. This compares checksums, not line counts: an edit that changes a number or rewords a sentence keeps the line count identical while silently making a citation wrong.
 - **Re-anchors on re-ingest** — re-ingesting recomputes line anchors against the corrected text, so citations land on the new lines.
 
 What it does **not** do is decide whether an existing LLM-written summary is still accurate. `build_tree.py` preserves previous summaries by matching `(level, title)`, so an edit that leaves the headings intact carries every old summary forward — including ones that edit invalidated. The script reports `source_changed` and how many fillings were reused; judging whether they are now stale, and re-verifying them, is the LLM's job. That is the boundary between the two layers: scripts state facts about the skeleton, the LLM decides what the text means.
+
+`title` and `domain` follow the opposite rule: they are **not** inherited, and are re-derived on every ingest. Both sit on the semantic side of the line — `domain` is a routing hint that exists only in the index, the source carries no trace of it — and both are a single value, so there is no cost argument for keeping the old one the way there is for a document's worth of summaries. Leaving them out drops the previous value, which the script announces on stderr and reports as `previous_title` / `previous_domain`. Pass the flags on every re-ingest; that is how the classification gets reconsidered rather than assumed.
 
 It also does **not** mean kb-pilot automatically selects between different document versions (e.g., an old and a new contract). Selecting "what applies now" depends on the LLM noticing version markers in the source and on the current date being provided in context — see "known boundaries" above.
 

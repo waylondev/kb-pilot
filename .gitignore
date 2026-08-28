@@ -224,6 +224,15 @@ data/
 # kb-pilot: test knowledge base and test suites (not source code)
 fixtures/
 docs/test-suites/
+
+# kb-pilot: evaluation harness. The runner scripts and the score report stay in
+# version control on purpose — an unchecked runner drifts out of sync with the
+# scripts it measures and nobody notices. Only the generated corpus, the
+# per-document outputs and the machine-specific manifest are ignored.
+examples/_gen_test/generated/
+examples/_gen_test/edge/
+examples/_gen_test/real_docs/
+examples/_gen_test/corpus/qc/
+examples/_gen_test/corpus/manifest.json
 # hangseng-cards / hangseng-cards-md: now tracked in git as the knowledge base
 # (source .md + .kb/ skeleton & semantic fillings). Removed from ignore on purpose.
-examples/

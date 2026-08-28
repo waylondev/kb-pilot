@@ -25,6 +25,7 @@ _KB_INGEST_SCRIPTS = _KROOT / ".agents" / "skills" / "kb-ingest" / "scripts"
 sys.path.insert(0, str(_KB_INGEST_SCRIPTS))
 
 import build_tree  # noqa: E402
+import build_manifest  # noqa: E402
 import check_source  # noqa: E402
 
 
@@ -75,7 +76,84 @@ class TestFenceDetection(_TempTreeTestCase):
             "```python\n# fake title in code\nx = 1\n```\n\n"
             "# Real Title\n\n## Section\n"
         )
-        self.assertEqual(build_tree.infer_title(self.src), "Real Title")
+        self.assertEqual(build_tree.first_h1(self.src), "Real Title")
+
+    def test_no_h1_reports_empty_rather_than_the_file_stem(self):
+        # A caller must be able to tell "no H1" from "title is the file stem",
+        # otherwise a previously authored title gets overwritten by a stem.
+        self.write_src("## Section only\n\ntext\n")
+        self.assertEqual(build_tree.first_h1(self.src), "")
+
+
+class TestRecordFields(_TempTreeTestCase):
+    """title and domain are re-derived every ingest — never inherited.
+
+    Both sit on the semantic side of the skeleton/flesh line, and both are a
+    single value, so there is no cost argument for carrying one forward the way
+    there is for a document's worth of summaries. What the script owes instead is
+    a report of what it just dropped.
+    """
+
+    def test_domain_is_not_inherited_and_the_loss_is_reported(self):
+        self.write_src("# T\n\n## A\n\ntext\n")
+        build_tree.build(str(self.src), str(self.out), source_path="doc.md", domain="api")
+
+        self.write_src("# T\n\n## A\n\ntext changed\n")
+        second = build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+
+        self.assertEqual(second["domain"], "")
+        # Reported, so the caller can re-supply it rather than never finding out.
+        self.assertEqual(second["previous_domain"], "api")
+
+    def test_domain_is_re_supplied_each_ingest(self):
+        self.write_src("# T\n\n## A\n\ntext\n")
+        build_tree.build(str(self.src), str(self.out), source_path="doc.md", domain="api")
+
+        second = build_tree.build(str(self.src), str(self.out), source_path="doc.md", domain="billing")
+
+        self.assertEqual(second["domain"], "billing")
+        self.assertEqual(second["previous_domain"], "api")
+
+    def test_title_comes_from_the_flag_then_h1_then_stem(self):
+        self.write_src("# From H1\n\n## A\n\ntext\n")
+        explicit = build_tree.build(str(self.src), str(self.out), source_path="doc.md",
+                                    title="From flag")
+        self.assertEqual(explicit["title_source"], "flag")
+        self.assertEqual(explicit["title"], "From flag")
+
+        h1 = build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+        self.assertEqual(h1["title_source"], "h1")
+        self.assertEqual(h1["title"], "From H1")
+
+        self.write_src("## A\n\nno h1 here\n")
+        stem = build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+        self.assertEqual(stem["title_source"], "stem")
+        self.assertEqual(stem["title"], "doc")
+
+    def test_h1_change_replaces_the_previous_title(self):
+        # The source restated its title; the old one is only remembered, not kept.
+        self.write_src("# Original\n\n## A\n\ntext\n")
+        build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+
+        self.write_src("# Renamed\n\n## A\n\ntext\n")
+        second = build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+
+        self.assertEqual(second["title"], "Renamed")
+        self.assertEqual(second["previous_title"], "Original")
+
+    def test_fillings_are_still_carried_over(self):
+        # The contrast that makes the rule above coherent: summaries cost a
+        # re-read to regenerate, so those *are* inherited (and reported).
+        self.write_src("# T\n\n## A\n\nfee is 100\n")
+        build_tree.build(str(self.src), str(self.out), source_path="doc.md", domain="api")
+        tree = json.loads(self.out.read_text(encoding="utf-8"))
+        tree["nodes"][0]["summary"] = "section A summary"
+        self.out.write_text(json.dumps(tree, ensure_ascii=False), encoding="utf-8")
+
+        second = build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+
+        self.assertEqual(second["reused_fillings"], 1)
+        self.assertEqual(second["domain"], "")
 
 
 class TestFillingsCarryover(_TempTreeTestCase):
@@ -133,6 +211,97 @@ class TestSourceDrift(_TempTreeTestCase):
         result = check_source.check(str(self.src), str(self.out))
         self.assertTrue(result["checksum_unknown"])
         self.assertFalse(result["trustworthy"])
+
+
+class _TempKbTestCase(unittest.TestCase):
+    """Base case: a temp knowledge base with a .kb/index/ tree."""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.kb = Path(self._tmp.name)
+        (self.kb / ".kb" / "index").mkdir(parents=True)
+
+    def ingest(self, rel_path: str, text: str, **fields) -> Path:
+        src = self.kb / rel_path
+        src.parent.mkdir(parents=True, exist_ok=True)
+        src.write_text(text, encoding="utf-8")
+        out = self.kb / ".kb" / "index" / Path(rel_path).with_suffix("") / "tree.json"
+        build_tree.build(str(src), str(out), source_path=rel_path, **fields)
+        return out
+
+    def fill(self, tree_path: Path, top: list, nested: list = None) -> None:
+        """Simulate the LLM having filled keywords on a tree.json's nodes."""
+        tree = json.loads(tree_path.read_text(encoding="utf-8"))
+        tree["nodes"][0]["keywords"] = top
+        if nested is not None and tree["nodes"][0]["children"]:
+            tree["nodes"][0]["children"][0]["keywords"] = nested
+        tree_path.write_text(json.dumps(tree, ensure_ascii=False), encoding="utf-8")
+
+    def manifest(self) -> list:
+        return json.loads((self.kb / ".kb" / "manifest.json").read_text(encoding="utf-8"))
+
+
+class TestManifest(_TempKbTestCase):
+    """The manifest is kb-chat Step 1's only input — pin down its shape."""
+
+    def test_tags_come_from_top_level_sections_only(self):
+        # Sub-section keywords stay in tree.json for localization. If they leak
+        # into the manifest, routing gets noisy and the manifest grows unbounded.
+        tree = self.ingest("docs/api/auth.md", "# T\n\n## Overview\n\n### Nested\n\nx\n")
+        self.fill(tree, top=["jwt", "overview"], nested=["expiry", "sub-only"])
+
+        build_manifest.build(str(self.kb))
+
+        self.assertEqual(self.manifest()[0]["tags"], ["jwt", "overview"])
+
+    def test_entry_fields_map_to_the_document_record(self):
+        tree = self.ingest("docs/api/auth.md", "# T\n\n## A\n\nx\n",
+                           title="API Auth", domain="api")
+        tree_data = json.loads(tree.read_text(encoding="utf-8"))
+        tree_data["summary"] = "How auth works"
+        tree.write_text(json.dumps(tree_data, ensure_ascii=False), encoding="utf-8")
+
+        result = build_manifest.build(str(self.kb))
+
+        entry = self.manifest()[0]
+        self.assertEqual(entry["doc_id"], tree_data["doc_id"])
+        self.assertEqual(entry["title"], "API Auth")
+        self.assertEqual(entry["domain"], "api")
+        self.assertEqual(entry["summary"], "How auth works")
+        self.assertEqual(entry["path"], "docs/api/auth.md")
+        self.assertEqual(entry["updated_at"], tree_data["ingested_at"])
+        self.assertEqual(result["document_count"], 1)
+
+    def test_doc_ids_are_assigned_and_stable_without_the_cli(self):
+        # doc_id is part of the skeleton, so build() resolves it itself — a
+        # caller that bypasses the CLI must not get an empty doc_id.
+        first = self.ingest("docs/a.md", "# A\n\n## S\n\nx\n")
+        second = self.ingest("docs/b.md", "# B\n\n## S\n\nx\n")
+        self.assertEqual(json.loads(first.read_text(encoding="utf-8"))["doc_id"], "doc_001")
+        self.assertEqual(json.loads(second.read_text(encoding="utf-8"))["doc_id"], "doc_002")
+
+        self.ingest("docs/a.md", "# A\n\n## S\n\nedited\n")
+        self.assertEqual(json.loads(first.read_text(encoding="utf-8"))["doc_id"], "doc_001")
+
+    def test_missing_index_root_is_an_error_not_an_empty_manifest(self):
+        # Silently writing an empty manifest would make kb-chat report "not
+        # mentioned in the documents" for a knowledge base that is simply unset.
+        (self.kb / ".kb" / "index").rmdir()
+        with self.assertRaises(FileNotFoundError):
+            build_manifest.build(str(self.kb))
+
+    def test_unreadable_tree_is_skipped_without_losing_the_rest(self):
+        self.ingest("docs/good.md", "# Good\n\n## A\n\nx\n")
+        corrupt = self.kb / ".kb" / "index" / "docs" / "broken" / "tree.json"
+        corrupt.parent.mkdir(parents=True, exist_ok=True)
+        corrupt.write_text("{ not json", encoding="utf-8")
+
+        build_manifest.build(str(self.kb))
+
+        entries = self.manifest()
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["title"], "Good")
 
 
 if __name__ == "__main__":

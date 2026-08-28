@@ -10,7 +10,6 @@ Each worksheet is restored as one table. .xlsb (binary) is out of scope.
 from __future__ import annotations
 
 import re
-import zipfile
 from pathlib import Path
 
 from .base import ZipXmlVerifier, ExtractResult, PKG_REL
@@ -38,13 +37,14 @@ class XlsxVerifier(ZipXmlVerifier):
                 for si in root.iter(_tag(M, "si")):
                     shared.append("".join(t.text or "" for t in si.iter(_tag(M, "t"))))
 
-        # sheet file order (from workbook relationships)
+        # sheet file order (from workbook relationships), read in one pass
         sheet_targets = self._sheet_targets(path, files)
+        if sheet_targets:
+            files.update(self._read_zip(path, sheet_targets))
+
         tables, all_texts = [], []
         for idx, target in enumerate(sheet_targets, 1):
-            data = files.get(f"xl/{target}")
-            if data is None:
-                data = self._read_zip(path, [f"xl/{target}"]).get(f"xl/{target}")
+            data = files.get(target)
             if data is None:
                 continue
             root = self._xml(data)
@@ -85,17 +85,25 @@ class XlsxVerifier(ZipXmlVerifier):
         return v.text if v is not None and v.text else ""
 
     def _sheet_targets(self, path: Path, files: dict) -> list[str]:
+        """Worksheet parts in workbook order, as zip-internal paths."""
+        rels_name = "xl/_rels/workbook.xml.rels"
         targets = []
-        if "xl/_rels/workbook.xml.rels" in files:
-            rel_root = self._xml(files["xl/_rels/workbook.xml.rels"])
+        if rels_name in files:
+            rel_root = self._xml(files[rels_name])
             if rel_root is not None:
                 for rel in rel_root.iter(_tag(REL, "Relationship")):
-                    t = rel.get("Target", "")
-                    if re.match(r"^worksheets/sheet\d+\.xml$", t):
-                        targets.append(t)
+                    part = self._resolve_part(rels_name, rel.get("Target", ""))
+                    if re.match(r"^xl/worksheets/sheet\d+\.xml$", part):
+                        targets.append(part)
         if targets:
-            targets.sort(key=lambda t: int(re.search(r"\d+", t).group()))
+            targets.sort(key=lambda p: int(re.search(r"\d+", p.rsplit("/", 1)[-1]).group()))
             return targets
-        with zipfile.ZipFile(path) as z:
-            cand = (n.replace("xl/", "", 1) for n in z.namelist())
-            return sorted(c for c in cand if re.match(r"^worksheets/sheet\d+\.xml$", c))
+        # Fallback: enumerate the zip. Ordered by the numeric part, so sheet10
+        # does not sort before sheet2 the way a plain string sort would.
+        z = self._open_zip(path)
+        if z is None:
+            return []
+        with z:
+            parts = [n for n in z.namelist() if re.match(r"^xl/worksheets/sheet\d+\.xml$", n)]
+        parts.sort(key=lambda p: int(re.search(r"\d+", p.rsplit("/", 1)[-1]).group()))
+        return parts

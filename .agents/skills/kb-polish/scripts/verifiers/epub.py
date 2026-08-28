@@ -7,6 +7,7 @@ EPUB = zip + XHTML. Read XHTML content in spine order and extract the body text.
 
 from __future__ import annotations
 
+import posixpath
 from pathlib import Path
 
 from .base import ZipXmlVerifier, ExtractResult
@@ -68,14 +69,16 @@ class EpubVerifier(ZipXmlVerifier):
                 return []
             for item in opf_root.iter(_tag(OPF, "item")):
                 manifest[item.get("id")] = item.get("href", "")
-            base = str(Path(opf_path).parent)
+            # hrefs are relative to the OPF, and may be ./x, ../x, or nested —
+            # a plain string replace would mangle them mid-path.
+            base = posixpath.dirname(opf_path)
             for ref in opf_root.iter(_tag(OPF, "itemref")):
                 idref = ref.get("idref")
-                if idref in manifest:
-                    href = manifest[idref]
-                    target = f"{base}/{href}" if base != "." else href
-                    target = target.replace("./", "")
-                    spine.append(target)
+                href = manifest.get(idref) if idref else None
+                if not href:
+                    continue
+                target = posixpath.normpath(posixpath.join(base, href)) if base else posixpath.normpath(href)
+                spine.append(target)
             return [t for t in spine if t in names]
 
     def _xhtml_text(self, data: bytes) -> str:

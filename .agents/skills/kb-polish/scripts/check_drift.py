@@ -88,7 +88,15 @@ rewrite signal (e.g. HK$6,000 not appearing). missing_structured is high-confide
 missing_numeric is noisier and needs the document as context — a hit may be drift, an
 intentional removal (footer amounts), or a reformat (6,000 -> 6000).
 
-Output: JSON to stdout; progress to stderr.""",
+Passing proves no numeric drift, never that the content is unchanged — prose drift
+is the LLM's judgment.
+
+Output: JSON to stdout; progress to stderr.
+
+Exit codes:
+  0  check completed — missing_count may be 0 or >0; the drift result is in the
+     JSON and judging it is the caller's job, not an exit code's
+  1  bad args, or an input file does not exist""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("truth", help="verify ground-truth file (extract_verify.py's verify_text.txt)")

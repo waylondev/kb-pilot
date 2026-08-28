@@ -16,6 +16,7 @@ Design principle (per kb-pilot "scripts own the skeleton, the LLM owns the conte
 
 from __future__ import annotations
 
+import posixpath
 import re
 import zipfile
 import xml.etree.ElementTree as ET
@@ -121,3 +122,22 @@ class ZipXmlVerifier(BaseVerifier):
     def _clean(s: str) -> str:
         """Collapse whitespace and strip."""
         return re.sub(r"[ \t]+", " ", s).strip()
+
+    @staticmethod
+    def _resolve_part(rels_path: str, target: str) -> str:
+        """Resolve a .rels `Target` to a zip-internal path.
+
+        Targets are relative to the part's own directory, but producers write them
+        inconsistently: `worksheets/sheet1.xml`, `./worksheets/sheet1.xml`,
+        `/xl/worksheets/sheet1.xml`, and backslashes all occur in the wild.
+        Matching only the first form drops parts silently — the zip-enumeration
+        fallback then hides it, because the document still appears to convert.
+        """
+        t = (target or "").replace("\\", "/").strip()
+        if not t:
+            return ""
+        if t.startswith("/"):
+            return posixpath.normpath(t).lstrip("/")
+        # xl/_rels/workbook.xml.rels -> xl ; ppt/slides/_rels/slide1.xml.rels -> ppt/slides
+        base = posixpath.dirname(posixpath.dirname(rels_path))
+        return posixpath.normpath(posixpath.join(base, t)) if base else posixpath.normpath(t)

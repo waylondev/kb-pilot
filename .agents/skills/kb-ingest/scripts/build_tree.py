@@ -19,10 +19,14 @@ Two correctness guarantees the skeleton depends on:
 - Lines inside fenced code blocks (``` or ~~~) are never headings. A `# comment`
   in a shell block must not become a node, or it both invents a phantom section
   and truncates the enclosing section's end_line.
-- On re-ingest, carried-over LLM fillings are *reported*, not silently applied.
-  `reused_fillings` / `reused_doc_summary` / `source_changed` tell the LLM what
-  was inherited and whether the text moved underneath it. Deciding whether an
-  inherited summary is now stale is the LLM's job, not the script's.
+- On re-ingest, only *fillings* are carried over, and what is carried over is
+  *reported*, not silently applied. `reused_fillings` / `reused_doc_summary` /
+  `source_changed` tell the LLM what was inherited and whether the text moved
+  underneath it. `title` and `domain` are re-derived every time instead — they are
+  single semantic values with no cost argument for inheriting, and keeping them
+  would mean the script deciding that last time's classification still holds.
+  `previous_title` / `previous_domain` are reported so a dropped value is visible.
+  Deciding whether an inherited summary is stale is the LLM's job, not the script's.
 
 See --help for usage. Emits JSON result to stdout, progress to stderr.
 """
@@ -269,19 +273,28 @@ def validate_tree(tree: dict) -> tuple:
 
 
 def merge_existing_fillings(new_tree: dict, existing_path: Path) -> tuple:
-    """If a tree.json already exists, preserve LLM-filled summary/keywords.
+    """If a tree.json already exists, carry over the fillings a rebuild would blank.
 
-    Matching is anchored on (level, title) rather than positional node ids, so
-    fillings survive headings being inserted or removed above or around them.
-    Duplicate titles are matched in order (first new occurrence takes the first
-    old filling for that (level, title)). Best-effort: a renamed or fully
-    restructured section loses its old filling.
+    Only *fillings* are carried over — per-section summary/keywords, and the
+    document-level summary — because regenerating them means re-reading the whole
+    document, and most of them are still valid when the structure has not moved.
 
-    Returns (new_tree, info). `info` reports facts only: how many fillings were
-    carried over, and whether the source text changed since the last ingest.
-    Whether a carried-over summary is now *stale* is a semantic judgment and
-    stays with the LLM — the script cannot know that "the fee is 100" stopped
-    being true.
+    Record fields (`title`, `domain`) are deliberately **not** carried over. Both
+    are semantic judgements the LLM makes per ingest, and both are a single value,
+    so there is no cost argument for inheriting one the way there is for a
+    document's worth of summaries. Keeping them would mean the script deciding
+    that last time's classification still holds — a semantic call, not a skeleton
+    fact. What the script does instead is report `previous_title` /
+    `previous_domain` so the caller can see what it just dropped.
+
+    Fillings are matched on (level, title) rather than positional node ids, so
+    they survive headings inserted or removed around them. Duplicate titles are
+    matched in order; a renamed or fully restructured section loses its filling.
+
+    Returns (new_tree, info). `info` reports facts only: how much was carried
+    over, and whether the source text changed since the last ingest. Whether a
+    carried-over summary is now *stale* is a semantic judgment and stays with
+    the LLM — the script cannot know that "the fee is 100" stopped being true.
 
     That distinction matters because matching is structural: a source edit that
     changes only a number or a sentence — the most common kind — keeps every
@@ -292,6 +305,8 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> tuple:
         "reused_fillings": 0,
         "reused_doc_summary": False,
         "previous_sha256": "",
+        "previous_title": "",
+        "previous_domain": "",
         "had_existing": False,
     }
     if not existing_path.exists():
@@ -304,6 +319,10 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> tuple:
 
     info["had_existing"] = True
     info["previous_sha256"] = old_tree.get("source_sha256", "")
+    # Recorded so the caller can see a value it just let go, without this script
+    # second-guessing whether the old one was still right.
+    info["previous_title"] = old_tree.get("title", "")
+    info["previous_domain"] = old_tree.get("domain", "")
 
     # preserve the document-level summary when the new skeleton has none yet
     if old_tree.get("summary") and not new_tree.get("summary"):
@@ -343,11 +362,15 @@ def merge_existing_fillings(new_tree: dict, existing_path: Path) -> tuple:
     return new_tree, info
 
 
-def infer_title(source_path: Path) -> str:
-    """Get title from the first H1; fall back to the file stem if there is none.
+def first_h1(source_path: Path) -> str:
+    """Return the first H1's text, or "" when the source has none.
 
     Lines inside fenced code blocks are skipped — otherwise a shell comment such
     as `# Install Guide` becomes the document title and pollutes routing.
+
+    Returns "" rather than falling back to the file stem, because a caller needs
+    to tell the two apart: only a *missing* H1 means a previously authored title
+    is still the best one available. Falling back here would overwrite it.
     """
     lines = source_path.read_text(encoding="utf-8").splitlines()
     is_inside_code = make_fence_checker(find_code_fence_regions(lines))
@@ -357,7 +380,7 @@ def infer_title(source_path: Path) -> str:
         m = re.match(r"^#\s+(.+)$", line)
         if m:
             return m.group(1).strip()
-    return source_path.stem
+    return ""
 
 
 def build(
@@ -370,20 +393,32 @@ def build(
     ingested_at: str = "",
     pretty: bool = False,
 ) -> dict:
-    """Build the tree.json skeleton, write to output_path, return result metadata."""
+    """Build the tree.json skeleton, write to output_path, return result metadata.
+
+    `doc_id` is resolved here when left empty: the id already in an existing
+    tree.json wins (so a re-ingest keeps its id), otherwise the next free one
+    scanned from the whole .kb/index/ root.
+    """
     src = Path(source)
     if not src.exists():
         raise FileNotFoundError(f"source file not found: {source}")
 
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
     tree = parse_headings(src)
-    tree["doc_id"] = doc_id
-    tree["title"] = title or infer_title(src)
+    # doc_id is part of the skeleton, so it is resolved here rather than left to
+    # the caller: a re-ingest keeps its id, a new document takes the next free one.
+    tree["doc_id"] = doc_id or resolve_doc_id(output)
+    # title and domain are re-derived on every ingest, never inherited. Both are
+    # the LLM's call (domain is a routing hint; neither appears in the source),
+    # and both are a single value, so there is nothing to save by keeping the old
+    # one. Title falls back to the source's H1, then the file stem.
+    h1 = first_h1(src)
+    tree["title"] = title or h1 or src.stem
     tree["domain"] = domain
     tree["source_path"] = source_path
     tree["ingested_at"] = ingested_at or datetime.now(timezone.utc).isoformat()
-
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
 
     tree, merge_info = merge_existing_fillings(tree, output)
 
@@ -407,6 +442,24 @@ def build(
             file=sys.stderr,
         )
 
+    # A re-ingest that does not re-supply title/domain drops the previous values.
+    # That is intended — both are re-derived each time — but losing a value nobody
+    # decided to lose is exactly the kind of change that should be announced.
+    dropped = []
+    if merge_info["previous_domain"] and not tree["domain"]:
+        dropped.append(f"domain (was {merge_info['previous_domain']!r})")
+    if merge_info["previous_title"] and tree["title"] != merge_info["previous_title"]:
+        if not title and not h1:
+            # Only a silent demotion: the source offers no title, so the stem won.
+            dropped.append(f"title (was {merge_info['previous_title']!r})")
+    if dropped:
+        print(
+            "[build_tree] not supplied this run, previous value dropped: "
+            + "; ".join(dropped)
+            + " — pass --domain/--title to set it deliberately",
+            file=sys.stderr,
+        )
+
     output.write_text(dump_json(tree, pretty), encoding="utf-8")
 
     return {
@@ -421,6 +474,9 @@ def build(
         "top_level_nodes": len(tree["nodes"]),
         "reused_fillings": merge_info["reused_fillings"],
         "reused_doc_summary": merge_info["reused_doc_summary"],
+        "title_source": "flag" if title else ("h1" if h1 else "stem"),
+        "previous_title": merge_info["previous_title"],
+        "previous_domain": merge_info["previous_domain"],
         "source_changed": source_changed,
         "previous_sha256": merge_info["previous_sha256"],
         "validation_issues": len(errors),
@@ -448,9 +504,16 @@ On re-ingest the result reports what was carried over from the existing tree.jso
   reused_fillings     sections that kept their previous summary/keywords
   reused_doc_summary  whether the document-level summary was kept
   source_changed      whether the source text differs from the recorded sha256
+  title_source        where the title came from: flag / h1 / stem
+  previous_title      the previous title, when this run replaced it
+  previous_domain     the previous domain, when this run did not re-supply one
 When source_changed is true while fillings were reused, re-read the source and
 re-verify them: structure-preserving edits (a number, a sentence) inherit every
 old filling without anything else noticing.
+
+title and domain are NOT inherited — pass --title/--domain on every re-ingest.
+Both are the LLM's judgement per ingest, and dropping one is reported on stderr
+rather than done quietly.
 
 Exit codes:
   0  success
@@ -468,14 +531,11 @@ Exit codes:
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON (default: minified)")
     args = parser.parse_args()
 
-    output_path = Path(args.output)
-    doc_id = resolve_doc_id(output_path, args.doc_id)
-
     try:
         result = build(
             args.source,
             args.output,
-            doc_id=doc_id,
+            doc_id=args.doc_id,
             title=args.title,
             domain=args.domain,
             source_path=args.source_path,
@@ -496,6 +556,8 @@ Exit codes:
     print(f"  source_sha256={result['source_sha256'][:16]}...", file=sys.stderr)
     print(
         f"  reused_fillings={result['reused_fillings']} "
+        f"title_source={result['title_source']} "
+        f"domain={result['domain'] or '-'} "
         f"source_changed={result['source_changed']}",
         file=sys.stderr,
     )

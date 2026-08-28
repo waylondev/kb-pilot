@@ -44,7 +44,15 @@ def main() -> int:
   python extract_verify.py input.pdf -o outdir --save-text
   python extract_verify.py --list
 
-Supported formats: %s""" % ", ".join(supported_extensions()),
+Supported formats: %s
+
+Output: JSON to stdout, progress to stderr. Summary by default (a preview plus
+stats); add --full-text for the complete text, --save-text to land verify_text.txt.
+
+Exit codes:
+  0  success — a plugin that degrades to a warning still exits 0
+  1  bad args, file not found, unsupported format, or the plugin failed
+  2  missing dependency (e.g. pymupdf / striprtf)""" % ", ".join(supported_extensions()),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("input", nargs="?", help="input document path")

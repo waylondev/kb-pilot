@@ -98,7 +98,14 @@ def main() -> int:
   python convert_document.py input.docx -o outdir
   python convert_document.py input.pdf -o outdir
 
-Output: raw.md (first draft), images/, attachments/""",
+Output: raw.md (first draft), images/, attachments/
+
+Not supported by AnyDoc: .html/.md/.txt (already text — ingest directly) and
+.tsv (rename to .csv first). Pure scans are kept as page images, never OCR'd.
+
+Exit codes:
+  0  success
+  1  bad args, file not found, or conversion failed (see stderr)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("input", help="input document path (PDF/Word/PPT/Excel/CSV etc.)")

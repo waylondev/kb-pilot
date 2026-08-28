@@ -54,7 +54,7 @@ SKILLs **must** follow the official [Agent Skills](https://agentskills.io) guide
 - **argparse CLI with `--help`** — Examples and exit codes in the epilog
 - **stdout = JSON result, stderr = progress** — Machine-parseable output, human-readable logs
 - **Single responsibility** — One script does one deterministic thing
-- **Preserve LLM work on rebuild** — Keep existing summary/keywords where structure still matches, and **report what was kept**. Silence is the failure mode: an edit that changes only a number or a sentence preserves every heading, so every filling is inherited while quietly going stale. The script states the facts (how much was reused, whether the source moved); judging staleness is the LLM's job
+- **Preserve the fillings a rebuild would otherwise blank, and report what was kept** — Summary/keywords are carried over where the structure still matches, because regenerating them means re-reading the whole document. Record fields like `title` and `domain` are *not* carried over: they are single semantic values, so there is no cost argument for inheriting one, and keeping it would mean the script asserting that last time's classification still holds. For those the script reports what it dropped (`previous_title`, `previous_domain`) instead. Silence is the failure mode either way: an edit that changes only a number or a sentence preserves every heading, so every filling is inherited while quietly going stale. The script states the facts (how much was reused, whether the source moved); judging staleness — and re-deriving what was dropped — is the LLM's job
 - **Parse real Markdown, not a toy subset** — Fenced code blocks are part of the format, and a `#` inside one is a comment, not a heading. A parser that skips this invents phantom sections and truncates line ranges while still reporting zero validation errors, because the mangled ranges remain internally consistent. Validate against the failures that are *silent*, not just the ones that crash
 
 ## Official references
@@ -73,23 +73,31 @@ When creating or modifying SKILLs, **read these first** — do not write SKILLs 
 ## File map
 
 ```
-.agents/
-└── skills/
-    ├── kb-ingest/
-    │   ├── SKILL.md               # ingest workflow (8 steps: clone → tree → LLM fill → manifest → hand off; git commit is the user's job)
-    │   └── scripts/
-    │       ├── build_tree.py      # Markdown → tree.json (document record + skeleton, deterministic)
-    │       ├── build_manifest.py  # tree.json × N → manifest.json (deterministic)
-    │       └── check_source.py    # source SHA256 vs tree.json's recorded checksum → drift (read-only)
-    ├── kb-chat/                   # QA workflow (5 steps: route → localize → read → answer → self-verify)
-    │   └── SKILL.md               #   Step 3 reuses kb-ingest's check_source.py; kb-chat ships no scripts
-    └── kb-polish/                 # OPTIONAL, non-core: source doc (PDF/Word/Excel/PPT/EPUB/CSV) → Markdown
-        │                          #   (AnyDoc + LLM re-render, 5 steps). A user-side convenience only —
-        ├── SKILL.md               #   not a required system stage; the user may convert any way they want
-        ├── references/            #   workflow.md (full flow) + rules.md (boundaries & scoring)
-        └── scripts/               #   convert_document / validate_structure / extract_verify / check_drift
-            └── verifiers/         #   per-format deterministic verify-source plugins
+kb-pilot/
+├── .agents/skills/
+│   ├── kb-ingest/
+│   │   ├── SKILL.md               # ingest workflow (8 steps: clone → tree → LLM fill → manifest → hand off; git commit is the user's job)
+│   │   └── scripts/
+│   │       ├── build_tree.py      # Markdown → tree.json (document record + skeleton, deterministic)
+│   │       ├── build_manifest.py  # tree.json × N → manifest.json (deterministic)
+│   │       └── check_source.py    # source SHA256 vs tree.json's recorded checksum → drift (read-only)
+│   ├── kb-chat/                   # QA workflow (5 steps: route → localize → read → answer → self-verify)
+│   │   └── SKILL.md               # Step 3 calls kb-ingest's check_source.py; kb-chat ships no scripts
+│   └── kb-polish/                 # OPTIONAL, non-core: source document → Markdown
+│       ├── SKILL.md               # (AnyDoc + LLM re-render, 5 steps). A user-side convenience only —
+│       ├── references/            # not a required system stage; the user may convert any way they want.
+│       │                          # workflow.md (full flow) + rules.md (boundaries & scoring)
+│       └── scripts/               # convert_document / validate_structure / extract_verify / check_drift
+│           └── verifiers/         # per-format deterministic verify-source plugins (one file per format)
+├── tests/
+│   └── test_core.py               # regression tests for the core path (see below)
+└── examples/
+    └── _gen_test/                 # kb-polish evaluation harness (corpus + runner), not part of the core path
 ```
+
+kb-polish converts PDF, Word (`.docx`/`.docm`), Excel (`.xlsx`/`.xlsm`), PowerPoint
+(`.pptx`/`.pptm`/`.ppsx`/`.ppsm`), EPUB, CSV, RTF and OpenDocument (`.odt`/`.ods`/`.odp`).
+It does no OCR: a pure scan is kept by embedding every page as an image.
 
 ## Tests
 
@@ -102,6 +110,8 @@ tests/
 The suite targets failures that are *silent* rather than loud. A parser that crashes gets noticed on the first run; one that invents a section, truncates a line range, or carries a stale summary forward does not — so those are what get pinned down.
 
 Each test writes to a self-cleaning `tempfile.TemporaryDirectory` (system temp), so nothing under `tests/` is modified by the run — the only file shipped is `test_core.py` itself.
+
+Run it after any change to a core script. It covers the core path only (kb-ingest's three scripts); `kb-polish` has no unit suite of its own, because what matters there is behaviour per input format. That is checked by the corpus runner under `examples/_gen_test/`, which scores conversion across the format matrix and must be re-run whenever the skill or its scripts change.
 
 ## Optimization directions
 

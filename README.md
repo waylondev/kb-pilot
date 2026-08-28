@@ -145,8 +145,7 @@ kb-pilot/
 ├── README.md           # project overview and end-to-end workflow
 ├── FAQ.md              # scope, trade-offs, and design comparisons
 ├── .agents/skills/     # Agent SKILL definitions (kb-ingest / kb-chat / kb-polish)
-├── tests/              # regression tests for the core path
-├── examples/           # kb-polish corpus & scoring harness
+├── tests/              # all tests — core path + kb-polish (nothing test-related lives elsewhere)
 └── knowledge_repo/     # knowledge base data (example, not committed)
 ```
 

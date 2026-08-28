@@ -13,6 +13,10 @@ Pure deterministic aggregation; does not call the LLM.
 The output is minified JSON by default (to save tokens when the LLM reads it in
 kb-chat Step 1); pass --pretty for a human-readable copy.
 
+An index that yields no usable tree.json raises instead of writing `[]`: an empty
+manifest is indistinguishable from "this knowledge base has no documents", and
+kb-chat would answer "not mentioned in the documents" for sources that exist.
+
 See --help for usage. Emits JSON result to stdout, progress to stderr.
 """
 import argparse
@@ -50,6 +54,17 @@ def collect_entry(tree_path: Path) -> dict:
     return entry
 
 
+class EmptyIndexError(Exception):
+    """Raised when .kb/index/ yields no usable tree.json at all.
+
+    Serializing an empty list is the one outcome that must never happen quietly:
+    kb-chat's failure handling looks for a *missing* manifest, so an empty array
+    sails through and every question is answered "not mentioned in the documents"
+    for a knowledge base that still has sources. Losing the routing table must
+    look like the failure it is.
+    """
+
+
 def build(repo_root: str, pretty: bool = False) -> dict:
     """Scan all tree.json under .kb/index/ and recompute manifest.json."""
     root = Path(repo_root)
@@ -62,6 +77,7 @@ def build(repo_root: str, pretty: bool = False) -> dict:
         )
 
     entries = []
+    skipped = []
     for tree_path in sorted(kb_index.rglob("tree.json")):
         try:
             entry = collect_entry(tree_path)
@@ -70,11 +86,21 @@ def build(repo_root: str, pretty: bool = False) -> dict:
                 f"[build_manifest] skipping unreadable tree.json: {tree_path} ({exc})",
                 file=sys.stderr,
             )
+            skipped.append(str(tree_path))
             continue
         entries.append(entry)
         print(
             f"[build_manifest] {entry['doc_id']}: {entry['title']} (domain={entry['domain']})",
             file=sys.stderr,
+        )
+
+    if not entries:
+        raise EmptyIndexError(
+            f"no usable tree.json under {kb_index}"
+            + (f" ({len(skipped)} unreadable, skipped)" if skipped else " (the directory is empty)")
+            + ". Refusing to write an empty manifest: kb-chat would then answer "
+            "'not mentioned in the documents' for every question. Re-ingest the "
+            "documents, or repair the tree.json files listed above."
         )
 
     manifest_path = root / ".kb" / "manifest.json"
@@ -87,6 +113,7 @@ def build(repo_root: str, pretty: bool = False) -> dict:
     return {
         "manifest_path": str(manifest_path),
         "document_count": len(entries),
+        "skipped_unreadable": skipped,
         "domains": sorted({e["domain"] for e in entries if e["domain"]}),
         "pretty": pretty,
     }
@@ -104,10 +131,14 @@ Examples:
 
 Output is minified JSON by default (fewer tokens when the LLM reads it); pass --pretty for a readable copy.
 
+An index that yields no usable tree.json is an error, never an empty manifest: an
+empty manifest makes kb-chat answer "not mentioned in the documents" for a knowledge
+base that still has sources.
+
 Exit codes:
   0  success
   1  unexpected error (see stderr)
-  2  .kb/index/ not found (run kb-ingest first)
+  2  .kb/index/ missing, or no usable tree.json in it (run kb-ingest first)
 """
     )
     parser.add_argument("repo_root", help="Path to the knowledge base Git repo root")
@@ -116,7 +147,7 @@ Exit codes:
 
     try:
         result = build(args.repo_root, pretty=args.pretty)
-    except FileNotFoundError as e:
+    except (FileNotFoundError, EmptyIndexError) as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(2)
     except Exception as e:

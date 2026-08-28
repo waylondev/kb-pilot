@@ -13,6 +13,8 @@ Run:
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import sys
 import tempfile
@@ -140,6 +142,23 @@ class TestRecordFields(_TempTreeTestCase):
 
         self.assertEqual(second["title"], "Renamed")
         self.assertEqual(second["previous_title"], "Original")
+
+    def test_title_replaced_by_the_source_is_announced(self):
+        # Last run set a title deliberately; this run passes no --title, so the
+        # H1 wins and the previous value is gone. Three documents promise that a
+        # dropped value is announced on stderr, so it has to be said out loud.
+        self.write_src("# Plain H1\n\n## A\n\ntext\n")
+        build_tree.build(str(self.src), str(self.out), source_path="doc.md",
+                         title="Authored Title")
+
+        buf = io.StringIO()
+        with contextlib.redirect_stderr(buf):
+            second = build_tree.build(str(self.src), str(self.out), source_path="doc.md")
+
+        self.assertEqual(second["title"], "Plain H1")
+        self.assertEqual(second["previous_title"], "Authored Title")
+        self.assertIn("title", buf.getvalue())
+        self.assertIn("Authored Title", buf.getvalue())
 
     def test_fillings_are_still_carried_over(self):
         # The contrast that makes the rule above coherent: summaries cost a
@@ -291,17 +310,37 @@ class TestManifest(_TempKbTestCase):
         with self.assertRaises(FileNotFoundError):
             build_manifest.build(str(self.kb))
 
+    def test_empty_index_is_an_error_not_an_empty_manifest(self):
+        # The directory exists but holds nothing. `[]` is indistinguishable from
+        # "this knowledge base has no documents", so kb-chat would answer "not
+        # mentioned" for a knowledge base that still has sources.
+        with self.assertRaises(build_manifest.EmptyIndexError):
+            build_manifest.build(str(self.kb))
+        self.assertFalse((self.kb / ".kb" / "manifest.json").exists())
+
+    def test_all_unreadable_trees_is_an_error_not_an_empty_manifest(self):
+        corrupt = self.kb / ".kb" / "index" / "docs" / "broken" / "tree.json"
+        corrupt.parent.mkdir(parents=True, exist_ok=True)
+        corrupt.write_text("{ not json", encoding="utf-8")
+
+        with self.assertRaises(build_manifest.EmptyIndexError):
+            build_manifest.build(str(self.kb))
+        self.assertFalse((self.kb / ".kb" / "manifest.json").exists())
+
     def test_unreadable_tree_is_skipped_without_losing_the_rest(self):
         self.ingest("docs/good.md", "# Good\n\n## A\n\nx\n")
         corrupt = self.kb / ".kb" / "index" / "docs" / "broken" / "tree.json"
         corrupt.parent.mkdir(parents=True, exist_ok=True)
         corrupt.write_text("{ not json", encoding="utf-8")
 
-        build_manifest.build(str(self.kb))
+        result = build_manifest.build(str(self.kb))
 
+        # The good document still lands, and the skip is reported rather than
+        # silently absorbed — "how much did I drop" must be answerable.
         entries = self.manifest()
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0]["title"], "Good")
+        self.assertEqual(len(result["skipped_unreadable"]), 1)
 
 
 if __name__ == "__main__":

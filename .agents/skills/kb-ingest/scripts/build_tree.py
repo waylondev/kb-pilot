@@ -445,13 +445,25 @@ def build(
     # A re-ingest that does not re-supply title/domain drops the previous values.
     # That is intended — both are re-derived each time — but losing a value nobody
     # decided to lose is exactly the kind of change that should be announced.
+    #
+    # The title announcement is not limited to the "no H1 either, so the file stem
+    # won" case. An H1 winning is a legitimate re-derivation, but it still replaces
+    # a previously recorded title that nobody was asked about — most importantly an
+    # LLM-authored one, which is the value the flags exist to set. Reporting it is
+    # one line; swallowing it means a --title from a previous ingest disappears
+    # with nothing in the run saying so.
     dropped = []
     if merge_info["previous_domain"] and not tree["domain"]:
         dropped.append(f"domain (was {merge_info['previous_domain']!r})")
-    if merge_info["previous_title"] and tree["title"] != merge_info["previous_title"]:
-        if not title and not h1:
-            # Only a silent demotion: the source offers no title, so the stem won.
-            dropped.append(f"title (was {merge_info['previous_title']!r})")
+    if (
+        merge_info["previous_title"]
+        and tree["title"] != merge_info["previous_title"]
+        and not title
+    ):
+        dropped.append(
+            f"title (was {merge_info['previous_title']!r}; re-derived from "
+            f"{'the H1' if h1 else 'the file stem'} this run)"
+        )
     if dropped:
         print(
             "[build_tree] not supplied this run, previous value dropped: "

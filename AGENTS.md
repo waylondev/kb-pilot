@@ -89,11 +89,14 @@ kb-pilot/
 │       │                          # workflow.md (full flow) + rules.md (boundaries & scoring)
 │       └── scripts/               # convert_document / validate_structure / extract_verify / check_drift
 │           └── verifiers/         # per-format deterministic verify-source plugins (one file per format)
-├── tests/
-│   └── test_core.py               # regression tests for the core path (see below)
-└── examples/
-    └── _gen_test/                 # kb-polish evaluation harness (corpus + runner), not part of the core path
+└── tests/
+    ├── test_core.py               # core-path regressions — kb-ingest's three scripts
+    └── test_polish.py             # kb-polish — the stdlib-only scripts + the verifier registry
 ```
+
+**Tests live in `tests/` and nowhere else.** No second test directory, no evaluation
+harness parked under `examples/` or anywhere else. A corpus run may need generated
+files; those are gitignored under `tests/`, never given a directory of their own.
 
 kb-polish converts PDF, Word (`.docx`/`.docm`), Excel (`.xlsx`/`.xlsm`), PowerPoint
 (`.pptx`/`.pptm`/`.ppsx`/`.ppsm`), EPUB, CSV, RTF and OpenDocument (`.odt`/`.ods`/`.odp`).
@@ -101,17 +104,22 @@ It does no OCR: a pure scan is kept by embedding every page as an image.
 
 ## Tests
 
+All tests live in `tests/` — neither a test file nor an evaluation harness goes anywhere else in the repo.
+
 ```
 tests/
-└── test_core.py   # regression tests for the core path — stdlib unittest, zero dependencies
-                   #   run: python tests/test_core.py
+├── test_core.py     # core path: kb-ingest's three scripts — stdlib unittest, zero dependencies
+└── test_polish.py   # kb-polish: validate_structure / check_drift + the verifier format registry
+                     #   run: python tests/test_core.py && python tests/test_polish.py
 ```
 
 The suite targets failures that are *silent* rather than loud. A parser that crashes gets noticed on the first run; one that invents a section, truncates a line range, or carries a stale summary forward does not — so those are what get pinned down.
 
-Each test writes to a self-cleaning `tempfile.TemporaryDirectory` (system temp), so nothing under `tests/` is modified by the run — the only file shipped is `test_core.py` itself.
+Each test writes to a self-cleaning `tempfile.TemporaryDirectory` (system temp), so nothing under `tests/` is modified by a run — the only files shipped are the two test modules.
 
-Run it after any change to a core script. It covers the core path only (kb-ingest's three scripts); `kb-polish` has no unit suite of its own, because what matters there is behaviour per input format. That is checked by the corpus runner under `examples/_gen_test/`, which scores conversion across the format matrix and must be re-run whenever the skill or its scripts change.
+Run `test_core.py` after any change to a core script, `test_polish.py` after any change to a kb-polish script or to the verifier registry.
+
+`test_polish.py` covers the parts of kb-polish that run on the standard library alone: the mechanical structure checks and the drift spot-check, plus which format maps to which plugin. What it does not cover is per-format conversion quality — that needs `firecrawl-anydoc` / `pymupdf` / `striprtf` and a corpus of real documents. When you do run that, put the runner in `tests/` with the rest of the suite and keep the generated corpus and per-document outputs gitignored; do not let it grow a second home.
 
 ## Optimization directions
 

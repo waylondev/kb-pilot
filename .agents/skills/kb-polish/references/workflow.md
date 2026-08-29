@@ -160,6 +160,27 @@ The LLM checks these against `verify_text.txt` — completeness, accuracy, and s
 
 On top of Step 3 verification, the LLM uses the **deterministic source as the content ground truth** and **re-renders** `raw.md` into complete, standards-compliant Markdown for kb-pilot ingestion. This is "rebuild", not "patch": emit clean, complete, logically coherent standard Markdown in one pass. **Two hard rules: ① preserve the original content, ② do not change logical relationships.**
 
+### Before you start: size and strategy
+
+Read `verify_result.json`'s `stats` (`chars` / `lines` / `pages` / `tables`) produced by
+Step 3, and decide the strategy **before** writing a single line:
+
+| Ground-truth size | Strategy |
+| --- | --- |
+| Fits comfortably (well under ~30k chars) | One pass over the whole document |
+| Long (~30k+ chars, or 30+ pages) | **Section by section**: walk `raw.md`'s H2 skeleton, render one section at a time from `verify_text.txt`, append it to `final.md`, then move to the next |
+
+Why this is a hard prerequisite and not a detail: Step 4's input is the *entire* ground
+truth. When it does not fit in context, the natural outcome is a `final.md` that quietly
+stops early — and truncated content is content loss, which the content hard rules call a
+redo. Section-by-section keeps each section inside its own budget, and it converts the
+failure mode: a section that never got written is visible (it is simply absent), whereas a
+section that ran out of room looks like a complete one.
+
+`check_drift.py` afterwards catches numbers that went missing, so a shortfall in a
+table-heavy section usually surfaces there too. Prose lost off the end of a section does
+not — which is why the sectioning is decided up front.
+
 ### Re-render source priority (where content comes from)
 
 | Layer                                                                         | Source            | Note                                                                               |

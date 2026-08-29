@@ -40,22 +40,24 @@ from verifiers import (  # noqa: E402
 
 
 def _fence_checker(lines):
-    skeleton = validate_structure.skeleton_parser()
-    return skeleton.make_fence_checker(skeleton.find_code_fence_regions(lines))
+    sk = validate_structure._load_skeleton()
+    return sk.make_fence_checker(sk.find_code_fence_regions(lines))
 
 
 class TestFenceGuard(unittest.TestCase):
     """A `#` inside a fenced block is code, not heading material.
 
     Mistaking one for a heading invents issues the LLM would then "fix". kb-polish
-    borrows the parser from kb-ingest's build_tree.py instead of keeping a second
-    copy, so these tests drive that borrowed routine through kb-polish's validators.
+    optionally borrows kb-ingest's skeleton parser — present in this repo — so
+    these tests drive that borrowed routine through kb-polish's validators.
     """
 
-    def test_the_borrowed_parser_is_reachable(self):
-        # Path derivation is the fragile half of borrowing: the sibling's address is
-        # derived from this script's own location, never hard-coded.
-        parser = validate_structure.skeleton_parser()
+    def test_the_skeleton_borrow_is_optional_but_present(self):
+        # In this repo kb-ingest sits next to kb-polish, so the borrow resolves.
+        # A standalone kb-polish (no kb-ingest) would get None and skip heading
+        # checks, which is reported rather than fatal.
+        parser = validate_structure._load_skeleton()
+        self.assertIsNotNone(parser)
         self.assertTrue(hasattr(parser, "find_code_fence_regions"))
         self.assertTrue(hasattr(parser, "make_fence_checker"))
         self.assertEqual(
@@ -79,7 +81,7 @@ class TestFenceGuard(unittest.TestCase):
         self.assertEqual(issues, [])
 
     def test_unterminated_fence_runs_to_end_of_file(self):
-        regions = validate_structure.skeleton_parser().find_code_fence_regions(
+        regions = validate_structure._load_skeleton().find_code_fence_regions(
             ["```", "## never a heading"]
         )
         self.assertEqual(regions, [(1, 2)])
@@ -88,7 +90,7 @@ class TestFenceGuard(unittest.TestCase):
         # A backtick fence must not close a ~~~ block, or everything between them
         # is treated as prose and any `#` in it becomes a heading.
         lines = ["~~~", "## not a heading", "```", "## still not", "~~~"]
-        regions = validate_structure.skeleton_parser().find_code_fence_regions(lines)
+        regions = validate_structure._load_skeleton().find_code_fence_regions(lines)
         self.assertEqual(regions, [(1, 5)])
 
 
@@ -108,6 +110,43 @@ class TestMechanicalChecks(unittest.TestCase):
     def test_well_formed_table_reports_nothing(self):
         lines = ["| a | b |", "|---|---|", "| 1 | 2 |"]
         self.assertEqual(validate_structure.validate_tables(lines, _fence_checker(lines)), [])
+
+
+class TestHeadingPresence(unittest.TestCase):
+    """The two checks that close the cross-skill blind spot: a document with no H1,
+    or no H2+ headings at all, used to pass validation with zero issues and then
+    fail at ingest — the silent failure this suite exists to pin down."""
+
+    def test_missing_h1_is_reported(self):
+        lines = ["## A", "", "## B"]
+        issues = validate_structure.validate_missing_h1(lines, _fence_checker(lines))
+        self.assertEqual([i["type"] for i in issues], ["missing_h1"])
+
+    def test_document_with_h1_reports_nothing(self):
+        lines = ["# Title", "", "## A"]
+        self.assertEqual(validate_structure.validate_missing_h1(lines, _fence_checker(lines)), [])
+
+    def test_h1_inside_fence_does_not_count(self):
+        # A bash comment is not a title — the same guard the parser applies elsewhere.
+        lines = ["```bash", "# fake title in code", "```", "## A"]
+        issues = validate_structure.validate_missing_h1(lines, _fence_checker(lines))
+        self.assertEqual([i["type"] for i in issues], ["missing_h1"])
+
+    def test_no_h2_headings_is_reported(self):
+        lines = ["# Title only"]
+        issues = validate_structure.validate_headings_present(lines, _fence_checker(lines))
+        self.assertEqual([i["type"] for i in issues], ["no_headings"])
+
+    def test_h2_present_reports_nothing(self):
+        lines = ["# Title", "", "## A"]
+        self.assertEqual(validate_structure.validate_headings_present(lines, _fence_checker(lines)), [])
+
+    def test_setext_style_document_is_reported(self):
+        # `Title` underlined with `===` is not an ATX heading: kb-ingest builds an
+        # empty tree from it, so validation must flag it rather than wave it through.
+        lines = ["Title", "====="]
+        issues = validate_structure.validate_headings_present(lines, _fence_checker(lines))
+        self.assertEqual([i["type"] for i in issues], ["no_headings"])
 
 
 class TestDriftTokens(unittest.TestCase):

@@ -29,44 +29,29 @@ from pathlib import Path
 # Issue types are typed strings (not free text) so the LLM can group and weigh
 # them. The script reports mechanical facts; severity is the LLM's call.
 
+# The heading/fence rules are borrowed from kb-ingest when it sits next to this
+# skill — never copied, never required. With kb-ingest installed the heading
+# checks run in full; without it they are skipped and reported in the `skipped`
+# list, so a standalone kb-polish still works, it just validates less. The
+# borrow is optional on purpose: the skills are published independently.
+_SKELETON = None
+_heading = None  # bound to kb-ingest's build_tree.heading by _load_skeleton()
 
-_SKELETON_PARSER = None
 
-
-def skeleton_parser():
-    """Return kb-ingest's `build_tree` module, which owns the Markdown skeleton parser.
-
-    Both skills need to know what a heading is: kb-polish validates the Markdown it
-    produced, and kb-ingest is what will later parse it. Two copies of that decision
-    drift silently — a document validates clean here and parses wrong there, with
-    nothing reporting the disagreement.
-
-    The fix is the one kb-chat already established for `check_source.py`: one skill
-    owns the routine, the other borrows it, deriving the path from its own location
-    rather than hard-coding a sibling's address. That keeps each skill independently
-    installable without making either one carry a second copy of the logic. The
-    direction is always optional → core, never the reverse, so the core never
-    depends on an optional skill.
-    """
-    global _SKELETON_PARSER
-    if _SKELETON_PARSER is not None:
-        return _SKELETON_PARSER
-
+def _load_skeleton():
+    """Load kb-ingest's `build_tree` module if it sits next to this skill, else None."""
+    global _SKELETON, _heading
+    if _SKELETON is not None:
+        return _SKELETON
     # …/kb-polish/scripts/validate_structure.py -> parents[2] is .agents/skills/
     ingest_scripts = Path(__file__).resolve().parents[2] / "kb-ingest" / "scripts"
-    candidate = ingest_scripts / "build_tree.py"
-    if not candidate.is_file():
-        raise SystemExit(
-            f"[validate] kb-ingest's build_tree.py not found at {candidate}. "
-            "kb-polish borrows the Markdown skeleton parser from kb-ingest instead of "
-            "keeping a second copy; both skills must be installed together."
-        )
-
+    if not (ingest_scripts / "build_tree.py").is_file():
+        return None
     sys.path.insert(0, str(ingest_scripts))
     import build_tree
-
-    _SKELETON_PARSER = build_tree
-    return build_tree
+    _SKELETON = build_tree
+    _heading = build_tree.heading
+    return _SKELETON
 
 
 def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
@@ -75,7 +60,7 @@ def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = skeleton_parser().heading(line)
+        h = _heading(line)
         if not h:
             continue
         level = h[0]
@@ -96,7 +81,7 @@ def validate_duplicate_headings(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = skeleton_parser().heading(line)
+        h = _heading(line)
         if not h:
             continue
         text = h[1]
@@ -125,7 +110,7 @@ def validate_single_h1(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = skeleton_parser().heading(line)
+        h = _heading(line)
         if h and h[0] == 1:
             h1_lines.append((i, line.strip()))
     issues = []
@@ -142,6 +127,58 @@ def validate_single_h1(lines: list[str], is_inside_code) -> list[dict]:
                 "text": text,
             })
     return issues
+
+
+def validate_missing_h1(lines: list[str], is_inside_code) -> list[dict]:
+    """A document must have exactly one H1 — the other half of `validate_single_h1`.
+
+    `validate_single_h1` only fires above one H1, so a document with *none* used to
+    pass validation with zero issues while still breaking the rule kb-polish states
+    as hard ("exactly one H1"). The failure is silent and it lands downstream:
+    kb-ingest falls back to the file stem for `title`, which quietly degrades
+    routing without a single line anywhere saying so.
+
+    kb-pilot's reason for the rule is in kb-ingest: H1 is the document title and
+    never enters the tree, so the tree starts at H2.
+    """
+    for i, line in enumerate(lines, 1):
+        if is_inside_code(i):
+            continue
+        h = _heading(line)
+        if h and h[0] == 1:
+            return []
+    return [{
+        "type": "missing_h1",
+        "line": 0,
+        "detail": "no H1 heading in the document (kb-pilot requires exactly one; H1 is the title)",
+        "text": "",
+    }]
+
+
+def validate_headings_present(lines: list[str], is_inside_code) -> list[dict]:
+    """The tree must not be empty: kb-ingest needs at least one H2+ heading.
+
+    This is the check that closes a cross-skill blind spot. A document written in
+    setext style (`Title` underlined with `===`) or one with no ATX headings at all
+    used to report zero issues here, then fail at ingest with "no headings below
+    H1" — kb-polish's Step 4 acceptance loop ("re-run Step 2 until zero issues")
+    had already waved it through. Reporting it here means the same fact surfaces at
+    the stage that can still fix it.
+
+    Only levels 2+ count, because H1 is the title and never enters the tree.
+    """
+    for i, line in enumerate(lines, 1):
+        if is_inside_code(i):
+            continue
+        h = _heading(line)
+        if h and h[0] >= 2:
+            return []
+    return [{
+        "type": "no_headings",
+        "line": 0,
+        "detail": "no H2+ headings; kb-ingest would build an empty tree (H1 is the title, not a node)",
+        "text": "",
+    }]
 
 
 def validate_tables(lines: list[str], is_inside_code) -> list[dict]:
@@ -231,7 +268,17 @@ def main() -> int:
         epilog="""Examples:
   python validate_structure.py raw.md
 
-Checks: heading jumps / duplicate headings / multiple H1 / table cols / code-block language / image paths
+Checks: heading jumps / duplicate headings / multiple H1 / missing H1 / no H2+
+headings / table cols / code-block language / image paths
+
+`missing_h1` and `no_headings` exist because a document can otherwise pass with
+zero issues and still fail at ingest: kb-polish requires exactly one H1, and
+kb-ingest builds an empty tree from a document with no H2+ headings. Both were
+silent before, and silence at validation time is the failure that reaches the user.
+
+Heading rules are borrowed from kb-ingest when it sits next to this skill. If it
+does not, the heading checks are skipped and the output's `skipped` list says so —
+the script still runs and reports the table/code/image checks.
 
 Output: JSON to stdout; progress to stderr. The issue list states mechanical
 facts; judging severity is the LLM's job.
@@ -251,14 +298,25 @@ Exit codes:
         return 1
 
     lines = input_path.read_text(encoding="utf-8-sig").splitlines()
-    skeleton = skeleton_parser()
-    regions = skeleton.find_code_fence_regions(lines)
-    is_inside_code = skeleton.make_fence_checker(regions)
-
-    issues = []
-    issues += validate_heading_continuity(lines, is_inside_code)
-    issues += validate_duplicate_headings(lines, is_inside_code)
-    issues += validate_single_h1(lines, is_inside_code)
+    skeleton = _load_skeleton()
+    if skeleton is not None:
+        regions = skeleton.find_code_fence_regions(lines)
+        is_inside_code = skeleton.make_fence_checker(regions)
+        issues = []
+        issues += validate_heading_continuity(lines, is_inside_code)
+        issues += validate_duplicate_headings(lines, is_inside_code)
+        issues += validate_single_h1(lines, is_inside_code)
+        issues += validate_missing_h1(lines, is_inside_code)
+        issues += validate_headings_present(lines, is_inside_code)
+        skipped = []
+    else:
+        regions = []
+        is_inside_code = lambda _n: False
+        issues = []
+        skipped = [
+            "kb-ingest's build_tree.py not found next to this skill; "
+            "heading checks skipped (table/code/image checks still ran)"
+        ]
     issues += validate_tables(lines, is_inside_code)
     issues += validate_codeblock_lang(lines, regions)
     issues += validate_image_paths(lines, is_inside_code, input_path.parent)
@@ -268,6 +326,7 @@ Exit codes:
         "input": str(input_path),
         "issue_count": len(issues),
         "issues": issues,
+        "skipped": skipped,
     }
 
     # progress to stderr, structured result to stdout (the LLM parses stdout)

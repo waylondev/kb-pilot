@@ -78,6 +78,7 @@ def build(repo_root: str, pretty: bool = False) -> dict:
 
     entries = []
     skipped = []
+    missing_sources = []
     for tree_path in sorted(kb_index.rglob("tree.json")):
         try:
             entry = collect_entry(tree_path)
@@ -93,6 +94,22 @@ def build(repo_root: str, pretty: bool = False) -> dict:
             f"[build_manifest] {entry['doc_id']}: {entry['title']} (domain={entry['domain']})",
             file=sys.stderr,
         )
+
+    # A `path` that does not resolve makes the document unanswerable: kb-chat reads
+    # the source from it, and the failure only surfaces at Step 3 as a
+    # FileNotFoundError that its failure handling does not list. Reporting the fact
+    # here costs one line and puts it where the ingest that produced it still is.
+    # Deciding what to do about it — retype the flag, re-ingest, or delete the
+    # entry — is the caller's call, so this warns rather than blocks.
+    for entry in entries:
+        rel = entry.get("path", "")
+        if rel and not (root / rel).is_file():
+            missing_sources.append({"doc_id": entry["doc_id"], "path": rel})
+            print(
+                f"[build_manifest] {entry['doc_id']}: source_path does not resolve "
+                f"under the kb root: {rel}",
+                file=sys.stderr,
+            )
 
     if not entries:
         raise EmptyIndexError(
@@ -114,6 +131,9 @@ def build(repo_root: str, pretty: bool = False) -> dict:
         "manifest_path": str(manifest_path),
         "document_count": len(entries),
         "skipped_unreadable": skipped,
+        # Facts, not a verdict: an entry listed here is unreachable for kb-chat,
+        # never a reason to abort the build.
+        "missing_sources": missing_sources,
         "domains": sorted({e["domain"] for e in entries if e["domain"]}),
         "pretty": pretty,
     }
@@ -130,6 +150,10 @@ Examples:
   python scripts/build_manifest.py {abs_kb} --pretty
 
 Output is minified JSON by default (fewer tokens when the LLM reads it); pass --pretty for a readable copy.
+
+`missing_sources` lists entries whose `path` does not resolve under the kb root —
+a typo there makes the document unanswerable, and it is reported rather than
+enforced. The build still writes the manifest.
 
 An index that yields no usable tree.json is an error, never an empty manifest: an
 empty manifest makes kb-chat answer "not mentioned in the documents" for a knowledge

@@ -17,12 +17,7 @@ Path calculation: manifest entry `path: docs/api/auth.md` → tree.json at `.kb/
 
 Path resolution: `{kb_path}` comes from this skill's `metadata` and is relative to the project root — resolve it to an absolute path (`{abs_kb}`) before running anything.
 
-The one script this workflow borrows lives in the **kb-ingest** skill, which sits next to
-this one. With `{skills_dir}` = this SKILL.md's parent directory, it is
-`{skills_dir}/kb-ingest/scripts/…` — resolve that to `{abs_ingest}`. kb-chat deliberately
-does **not** declare where kb-ingest lives: the two skills are independent, and a path
-written in this file would go stale the moment either one moves. Derive it from your own
-location instead.
+The drift check lives in **kb-ingest**'s `scripts/check_source.py`, found by resolving this SKILL.md's parent directory (the two skills share one parent when installed together). It is optional, never required: if kb-ingest is absent, skip the check and note it — kb-chat still answers, it just validates less.
 
 ## Input / Output
 
@@ -67,7 +62,7 @@ Both files are minified JSON — parse them, do not read them as prose.
 
 ## Available script
 
-One deterministic check backs Step 3. It ships with the **kb-ingest** skill rather than this one (`{abs_ingest}/scripts/check_source.py`), and it is read-only, so kb-chat can run it without writing anything:
+One deterministic check backs Step 3 — the optional drift check above, read-only:
 
 - **`check_source.py {source_file} {tree_json}`** — compares the source's current SHA256 against the `source_sha256` recorded in tree.json and reports `drifted`. Exit code 0 means "check completed" — a drift is a result in the JSON, not an error.
 
@@ -78,7 +73,7 @@ One deterministic check backs Step 3. It ships with the **kb-ingest** skill rath
 Progress:
 - [ ] **1. Document routing** — Read `.kb/manifest.json`. If `domain_preference` is provided, use it as a strong routing hint. Match domain/title/summary/tags semantically and produce a **ranked candidate list** (most relevant first), not a single pick. Then decide by count: none → answer "not mentioned in the documents" (never guess); one clearly relevant → proceed; several → start with the most relevant, and read further candidates if the question spans documents (comparison, relation, conflict) or the first pass comes up short. Do not interrupt the user just because several candidates exist — escalate only when reading still leaves you unable to decide (candidates conflict, or the question needs a hint). No numeric scores or thresholds; relevance is an ordering, not a score. **User sees**: the chosen document(s), e.g. "→ routed to docs/api/auth.md" (or "→ not in the knowledge base")
 - [ ] **2. Section localization** — Read the hit document's `tree.json`, locate the most precise section via **semantic matching** of node title/summary/keywords. Recurse into children until specific enough. **User sees**: the section path, e.g. "→ section: Authentication flow » JWT issuance"
-- [ ] **3. Content extraction** — Before reading, check the source has not drifted: run `python {abs_ingest}/scripts/check_source.py {abs_kb}/docs/api/auth.md {abs_kb}/.kb/index/docs/api/auth/tree.json` and read `drifted` from its JSON. If true, the source was edited after ingestion — warn the user that citations may be stale and offer to re-ingest before continuing. Compare the checksum, not the line count — a number edit keeps the line count identical while breaking every citation into that section. Use start_line/end_line as navigation anchors; read the source starting from there. The LLM decides how much to read — expand to parent, siblings, or the full document as judgment dictates. Note that content between the H1 title and the first section heading is the document intro: if the question may concern it (overview, scope, intro facts), read from the top of the file. Record the exact line ranges read — they become the per-claim citations in Step 4. **User sees**: the ranges read, e.g. "→ read docs/api/auth.md#L16-L40"
+- [ ] **3. Content extraction** — Before reading, check the source has not drifted: if kb-ingest's `scripts/check_source.py` exists next to this skill (same parent directory), run `python {skills_dir}/kb-ingest/scripts/check_source.py {abs_kb}/docs/api/auth.md {abs_kb}/.kb/index/docs/api/auth/tree.json` and read `drifted` from its JSON; if it does not exist, skip the check and note "drift check skipped (kb-ingest not installed)". If drifted is true, the source was edited after ingestion — warn the user that citations may be stale and offer to re-ingest before continuing. If true, the source was edited after ingestion — warn the user that citations may be stale and offer to re-ingest before continuing. Compare the checksum, not the line count — a number edit keeps the line count identical while breaking every citation into that section. Use start_line/end_line as navigation anchors; read the source starting from there. The LLM decides how much to read — expand to parent, siblings, or the full document as judgment dictates. Note that content between the H1 title and the first section heading is the document intro: if the question may concern it (overview, scope, intro facts), read from the top of the file. Record the exact line ranges read — they become the per-claim citations in Step 4. **User sees**: the ranges read, e.g. "→ read docs/api/auth.md#L16-L40"
 - [ ] **4. Generate answer** — Organize the answer autonomously based on extracted source text. After each claim, attach a citation link `[path#L{start}-L{end}](path#L{start}-L{end})` backed by the exact range that supports it — `path` is the manifest path (relative to the kb root), so the link resolves against the current directory and clicks open. End with a `Source:` footer listing the distinct citations. **User sees**: the answer with inline citations and the Source footer
 - [ ] **5. Self-verify** — Before delivering, re-read your own answer against the source: does every claim carry a citation, and do the cited ranges actually support it? Pay special attention to numeric claims (amounts, dates, ratios) — re-check each digit against the cited lines. Did you actually answer the question? The LLM decides how many rounds — a simple fact may need one glance, complex cross-document reasoning may need several. If a gap is found, go back to Step 3 and re-read, then re-verify. Stop when you can stand behind every claim; if the source still doesn't support it after re-reading, say "not mentioned in the documents". **User sees**: a one-line verdict, e.g. "→ verified: every claim grounded in the cited lines"
 
@@ -92,7 +87,7 @@ Progress:
 ## Gotchas
 
 - **path field is critical** — The manifest entry's path is the source file path relative to the repo root; the source is read from there. tree.json lives under the `.kb/index/` mirrored directory. A mismatch makes the document unanswerable
-- **tree.json and manifest.json are minified** — Read them as JSON, not prose; use `--pretty` (`{abs_ingest}/scripts/build_tree.py` / `{abs_ingest}/scripts/build_manifest.py`) if you need a readable copy
+- **tree.json and manifest.json are minified** — Read them as JSON, not prose. If you need a readable copy, ask kb-ingest to regenerate with `--pretty` (that is its job, not this skill's)
 - **Drift is a checksum question, not a line-count one** — most edits (a number, a date, a reworded clause) keep the line count identical, so a line-count check reports "unchanged" while the cited lines say something else. `check_source.py` compares the SHA256 and catches it
 - **Citation links are relative by design** — The `#L{start}-L{end}` suffix is the standard GitHub line-range anchor; the path is the manifest `path` (relative to the kb root), so citations stay machine-independent, read the same as on GitHub, and click open from the current directory. Never embed absolute machine paths
 - **Cross-document comparison** — Run routing and localization independently per document

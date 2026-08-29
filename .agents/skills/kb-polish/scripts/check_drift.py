@@ -27,7 +27,7 @@ Usage:
     python check_drift.py verify_text.txt final.md
     python check_drift.py verify_text.txt final_1.md final_2.md   # combine multiple outputs
     python check_drift.py verify_text.txt final.md \
-        --extra-pattern 'ART-\d{4}' --extra-pattern 'clause \d+\.\d+'
+        --extra-pattern 'ART-\\d{4}' --extra-pattern 'clause \\d+\\.\\d+'
 
 Output (stdout):
     {"ok": true, "missing_structured": [...], "missing_numeric": [...], "missing_count": N, ...}

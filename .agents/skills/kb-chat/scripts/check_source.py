@@ -13,9 +13,12 @@ an edit that replaces "100" with "500" keeps the line count identical, so a
 line-count comparison reports "no drift" while every citation into that section
 now points at text that says something else.
 
+This is kb-chat's own copy. kb-ingest carries an identical copy for its
+"Rebuild on change" step; the two are pinned behaviour-identical by the
+cross-skill contract tests in tests/test_consistency.py.
+
 Used by:
 - kb-chat Step 3, before reading — to warn that citations may be stale
-- kb-ingest "Rebuild on change" Step 1 — to decide whether a re-ingest is due
 
 Reports facts only. Whether a drift matters for the question being asked, and
 whether to re-ingest now or continue with a warning, is the caller's judgment.

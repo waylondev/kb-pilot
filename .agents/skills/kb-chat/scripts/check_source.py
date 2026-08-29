@@ -44,7 +44,7 @@ def compute_sha256(filepath: Path) -> str:
 
 
 def count_lines(filepath: Path) -> int:
-    return len(filepath.read_text(encoding="utf-8").splitlines())
+    return len(filepath.read_text(encoding="utf-8-sig").splitlines())
 
 
 def check(source: str, tree: str) -> dict:

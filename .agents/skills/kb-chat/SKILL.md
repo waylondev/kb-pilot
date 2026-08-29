@@ -62,6 +62,8 @@ Both files are minified JSON — parse them, do not read them as prose.
 
 ## Available script
 
+Script paths follow the standard skill convention: `scripts/...` is relative to **this skill's directory root** (run commands from there). Knowledge-base file paths are resolved against the project root — resolve `{kb_path}` to an absolute path (`{abs_kb}`) before running.
+
 One deterministic check backs Step 3. It ships with this skill (`scripts/check_source.py`) and is read-only:
 
 - **`check_source.py {source_file} {tree_json}`** — compares the source's current SHA256 against the `source_sha256` recorded in tree.json and reports `drifted`. Exit code 0 means "check completed" — a drift is a result in the JSON, not an error.

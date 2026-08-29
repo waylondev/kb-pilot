@@ -28,13 +28,20 @@ import json
 import sys
 from pathlib import Path
 
+# Force UTF-8 on stdout/stderr so the JSON contract survives non-UTF-8 consoles
+# (Windows GBK/cp936; field-tested).
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 
 def compute_sha256(filepath: Path) -> str:
     return hashlib.sha256(filepath.read_bytes()).hexdigest()
 
 
 def count_lines(filepath: Path) -> int:
-    return len(filepath.read_text(encoding="utf-8").splitlines())
+    return len(filepath.read_text(encoding="utf-8-sig").splitlines())
 
 
 def check(source: str, tree: str) -> dict:

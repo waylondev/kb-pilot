@@ -134,8 +134,8 @@ Exit codes:
             print(f"[check_drift] output file not found: {t}", file=sys.stderr)
             return 1
 
-    truth_text = truth_path.read_text(encoding="utf-8")
-    target_text = "".join(Path(t).read_text(encoding="utf-8") for t in args.targets)
+    truth_text = truth_path.read_text(encoding="utf-8-sig")
+    target_text = "".join(Path(t).read_text(encoding="utf-8-sig") for t in args.targets)
 
     structured_patterns = TOKEN_PATTERNS + list(args.extra_pattern)
     truth_structured = extract_tokens(truth_text, structured_patterns)

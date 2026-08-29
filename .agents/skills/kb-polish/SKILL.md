@@ -2,7 +2,7 @@
 name: kb-polish
 description: Convert source documents into high-quality Markdown conforming to the kb-pilot spec — PDF, Word (docx/docm), Excel (xlsx/xlsm), PowerPoint (pptx/pptm/ppsx/ppsm), EPUB, CSV, RTF and OpenDocument (odt/ods/odp). Runs AnyDoc coarse conversion, structure validation, content verification (deterministic extraction cross-check), and normalization. Does NOT OCR; pure scans (no text layer) are kept by embedding every page as an image. Use when the user needs a document converted to Markdown, PDF-to-MD, Word-to-MD, ODT-to-MD, RTF-to-MD, pre-ingestion preprocessing (kb-ingest), or conversion-quality verification.
 license: MIT
-compatibility: Requires Python 3.10+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment. Standalone — no other skill is required; when kb-ingest is installed next to it, structure validation additionally runs the heading checks (optional borrow, never a requirement).
+compatibility: Requires Python 3.10+; dependencies firecrawl-anydoc (AnyDoc conversion), pymupdf (PDF verify source), striprtf (RTF verify source); scripts need a Bash/python environment. Standalone — no other skill is required at runtime.
 allowed-tools: Bash(python:* pip:*) Read Write
 metadata:
   version: "1.6.0"
@@ -51,7 +51,7 @@ metadata:
 - **Re-render is not rewriting**: Step 4 rebuilds Markdown from the verified ground truth, but content must change by zero — no polishing, no completion, no reordering (section order / table rows & columns / list nesting / clause ownership). When ground truth is missing, mark "original is empty here", never guess
 - **Exactly one H1; multiple H1s demote & merge by default**: kb-pilot treats H1 as the document title (not in the tree; the tree starts at H2). Standard Markdown allows multiple H1s, but multiple H1 blocks in one input file are usually related (e.g. a credit-card PDF = notices/statements + product summary), so **merge into one final by default: keep the main title as H1, demote the rest to H2 with internal levels shifted**; delete redundant headers/cross-page duplicates. Only split when the blocks are fully independent. `validate_structure.py`'s `multiple_h1` guards against multiple H1s in a single file
 - **Do not use scripts for semantic judgment**: `validate_structure.py` only checks mechanical structure; heading semantics / content truncation are for the LLM to assess — don't expect a score, the issue list is the input and your judgment is the output
-- **Batch use needs no batch script**: this skill is single-file by design. For many documents, run these 5 steps **per file**, one document at a time, with isolated outputs — like kb-ingest's batch walk. The LLM drives the repetition; scripts stay single-responsibility
+- **Batch use needs no batch script**: this skill is single-file by design. For many documents, run these 5 steps **per file**, one document at a time, with isolated outputs. The LLM drives the repetition; scripts stay single-responsibility
 
 ## Detailed docs (when to load)
 
@@ -61,7 +61,8 @@ metadata:
 ## Scripts
 
 - `scripts/convert_document.py`: AnyDoc conversion + embedded asset extraction (markdown + images/ + attachments/)
-- `scripts/validate_structure.py`: mechanical Markdown structure validation (deterministic issue list; severity is the LLM's judgment). Heading rules are optionally borrowed from kb-ingest's `build_tree.py` when it sits next to this skill; without it, the heading checks are skipped and reported in the output's `skipped` list — the script still runs
+- `scripts/validate_structure.py`: mechanical Markdown structure validation (deterministic issue list; severity is the LLM's judgment). Heading rules come from this skill's own `markdown_skeleton.py` — kb-polish never looks for another skill at runtime
+- `scripts/markdown_skeleton.py`: what counts as a heading and what is inside a code fence (CommonMark) — this skill's own copy, pinned behaviour-identical to kb-ingest's parser by the cross-skill contract tests
 - `scripts/extract_verify.py`: verify-source extraction entry (dispatches to verifiers/ plugins by format; outputs source text for LLM cross-check)
 - `scripts/check_drift.py`: content-drift spot check (numeric tokens in verify_text vs final.md; outputs the missing list; used in the Step 4 validation loop)
 - `scripts/verifiers/`: format verification plugins, one file per format (pdf/docx/pptx/xlsx/odt/epub/rtf/csv), aligned with AnyDoc-supported formats

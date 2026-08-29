@@ -29,29 +29,11 @@ from pathlib import Path
 # Issue types are typed strings (not free text) so the LLM can group and weigh
 # them. The script reports mechanical facts; severity is the LLM's call.
 
-# The heading/fence rules are borrowed from kb-ingest when it sits next to this
-# skill — never copied, never required. With kb-ingest installed the heading
-# checks run in full; without it they are skipped and reported in the `skipped`
-# list, so a standalone kb-polish still works, it just validates less. The
-# borrow is optional on purpose: the skills are published independently.
-_SKELETON = None
-_heading = None  # bound to kb-ingest's build_tree.heading by _load_skeleton()
-
-
-def _load_skeleton():
-    """Load kb-ingest's `build_tree` module if it sits next to this skill, else None."""
-    global _SKELETON, _heading
-    if _SKELETON is not None:
-        return _SKELETON
-    # …/kb-polish/scripts/validate_structure.py -> parents[2] is .agents/skills/
-    ingest_scripts = Path(__file__).resolve().parents[2] / "kb-ingest" / "scripts"
-    if not (ingest_scripts / "build_tree.py").is_file():
-        return None
-    sys.path.insert(0, str(ingest_scripts))
-    import build_tree
-    _SKELETON = build_tree
-    _heading = build_tree.heading
-    return _SKELETON
+# The heading/fence rules are this skill's own copy (markdown_skeleton.py), kept
+# behaviour-identical to kb-ingest's `build_tree` by the cross-skill contract
+# tests in tests/test_consistency.py. kb-polish stands alone: it never looks for
+# a sibling skill at runtime.
+from markdown_skeleton import heading, find_code_fence_regions, make_fence_checker
 
 
 def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
@@ -60,7 +42,7 @@ def validate_heading_continuity(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = _heading(line)
+        h = heading(line)
         if not h:
             continue
         level = h[0]
@@ -81,7 +63,7 @@ def validate_duplicate_headings(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = _heading(line)
+        h = heading(line)
         if not h:
             continue
         text = h[1]
@@ -110,7 +92,7 @@ def validate_single_h1(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = _heading(line)
+        h = heading(line)
         if h and h[0] == 1:
             h1_lines.append((i, line.strip()))
     issues = []
@@ -144,7 +126,7 @@ def validate_missing_h1(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = _heading(line)
+        h = heading(line)
         if h and h[0] == 1:
             return []
     return [{
@@ -170,7 +152,7 @@ def validate_headings_present(lines: list[str], is_inside_code) -> list[dict]:
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
             continue
-        h = _heading(line)
+        h = heading(line)
         if h and h[0] >= 2:
             return []
     return [{
@@ -276,9 +258,9 @@ zero issues and still fail at ingest: kb-polish requires exactly one H1, and
 kb-ingest builds an empty tree from a document with no H2+ headings. Both were
 silent before, and silence at validation time is the failure that reaches the user.
 
-Heading rules are borrowed from kb-ingest when it sits next to this skill. If it
-does not, the heading checks are skipped and the output's `skipped` list says so —
-the script still runs and reports the table/code/image checks.
+Heading rules are this skill's own copy (markdown_skeleton.py), pinned
+behaviour-identical to kb-ingest's parser by the cross-skill contract tests —
+kb-polish never looks for a sibling skill at runtime.
 
 Output: JSON to stdout; progress to stderr. The issue list states mechanical
 facts; judging severity is the LLM's job.
@@ -298,25 +280,15 @@ Exit codes:
         return 1
 
     lines = input_path.read_text(encoding="utf-8-sig").splitlines()
-    skeleton = _load_skeleton()
-    if skeleton is not None:
-        regions = skeleton.find_code_fence_regions(lines)
-        is_inside_code = skeleton.make_fence_checker(regions)
-        issues = []
-        issues += validate_heading_continuity(lines, is_inside_code)
-        issues += validate_duplicate_headings(lines, is_inside_code)
-        issues += validate_single_h1(lines, is_inside_code)
-        issues += validate_missing_h1(lines, is_inside_code)
-        issues += validate_headings_present(lines, is_inside_code)
-        skipped = []
-    else:
-        regions = []
-        is_inside_code = lambda _n: False
-        issues = []
-        skipped = [
-            "kb-ingest's build_tree.py not found next to this skill; "
-            "heading checks skipped (table/code/image checks still ran)"
-        ]
+    regions = find_code_fence_regions(lines)
+    is_inside_code = make_fence_checker(regions)
+
+    issues = []
+    issues += validate_heading_continuity(lines, is_inside_code)
+    issues += validate_duplicate_headings(lines, is_inside_code)
+    issues += validate_single_h1(lines, is_inside_code)
+    issues += validate_missing_h1(lines, is_inside_code)
+    issues += validate_headings_present(lines, is_inside_code)
     issues += validate_tables(lines, is_inside_code)
     issues += validate_codeblock_lang(lines, regions)
     issues += validate_image_paths(lines, is_inside_code, input_path.parent)
@@ -326,7 +298,6 @@ Exit codes:
         "input": str(input_path),
         "issue_count": len(issues),
         "issues": issues,
-        "skipped": skipped,
     }
 
     # progress to stderr, structured result to stdout (the LLM parses stdout)

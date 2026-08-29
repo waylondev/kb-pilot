@@ -40,28 +40,25 @@ from verifiers import (  # noqa: E402
 
 
 def _fence_checker(lines):
-    sk = validate_structure._load_skeleton()
-    return sk.make_fence_checker(sk.find_code_fence_regions(lines))
+    return validate_structure.make_fence_checker(
+        validate_structure.find_code_fence_regions(lines)
+    )
 
 
 class TestFenceGuard(unittest.TestCase):
     """A `#` inside a fenced block is code, not heading material.
 
     Mistaking one for a heading invents issues the LLM would then "fix". kb-polish
-    optionally borrows kb-ingest's skeleton parser — present in this repo — so
-    these tests drive that borrowed routine through kb-polish's validators.
+    carries its own skeleton parser (markdown_skeleton.py); behaviour-identical
+    copies in the two skills are pinned by tests/test_consistency.py. These tests
+    drive kb-polish's own parser through its validators.
     """
 
-    def test_the_skeleton_borrow_is_optional_but_present(self):
-        # In this repo kb-ingest sits next to kb-polish, so the borrow resolves.
-        # A standalone kb-polish (no kb-ingest) would get None and skip heading
-        # checks, which is reported rather than fatal.
-        parser = validate_structure._load_skeleton()
-        self.assertIsNotNone(parser)
-        self.assertTrue(hasattr(parser, "find_code_fence_regions"))
-        self.assertTrue(hasattr(parser, "make_fence_checker"))
+    def test_the_own_skeleton_parser_is_reachable(self):
+        self.assertTrue(hasattr(validate_structure, "find_code_fence_regions"))
+        self.assertTrue(hasattr(validate_structure, "make_fence_checker"))
         self.assertEqual(
-            parser.find_code_fence_regions(["```", "x", "```"]),
+            validate_structure.find_code_fence_regions(["```", "x", "```"]),
             [(1, 3)],
         )
 
@@ -81,7 +78,7 @@ class TestFenceGuard(unittest.TestCase):
         self.assertEqual(issues, [])
 
     def test_unterminated_fence_runs_to_end_of_file(self):
-        regions = validate_structure._load_skeleton().find_code_fence_regions(
+        regions = validate_structure.find_code_fence_regions(
             ["```", "## never a heading"]
         )
         self.assertEqual(regions, [(1, 2)])
@@ -90,7 +87,7 @@ class TestFenceGuard(unittest.TestCase):
         # A backtick fence must not close a ~~~ block, or everything between them
         # is treated as prose and any `#` in it becomes a heading.
         lines = ["~~~", "## not a heading", "```", "## still not", "~~~"]
-        regions = validate_structure._load_skeleton().find_code_fence_regions(lines)
+        regions = validate_structure.find_code_fence_regions(lines)
         self.assertEqual(regions, [(1, 5)])
 
 

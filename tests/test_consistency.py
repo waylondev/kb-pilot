@@ -25,6 +25,7 @@ sys.path.insert(0, str(ROOT / ".agents" / "skills" / "kb-chat" / "scripts"))
 import build_tree  # kb-ingest: the owner
 import check_source  # kb-chat's copy — behaviour-pinned to kb-ingest's below
 import markdown_skeleton  # kb-polish's copy
+import validate_structure  # kb-polish: the validator that reads with utf-8-sig
 
 
 def _load_module(name: str, path: Path):
@@ -110,6 +111,39 @@ class TestFenceContract(unittest.TestCase):
                 a, b,
                 f"fence regions disagree on {doc!r}: kb-polish={a!r} kb-ingest={b!r}",
             )
+
+
+class TestBomContract(unittest.TestCase):
+    """A UTF-8 BOM at the start of a Markdown file must not hide the first H1.
+
+    kb-polish's validate_structure reads source with utf-8-sig (BOM stripped);
+    kb-ingest's build_tree reads the same heading text with utf-8. A BOM-prefixed
+    first line (`\ufeff# Title`) therefore parsed as a heading on one side and as
+    a plain line on the other: validation reported clean while the document title
+    silently degraded to the file stem. The contract: both skills must extract the
+    same H1 from a BOM'd file. (e2e-t4 finding.)
+    """
+
+    def test_bom_prefix_h1_is_document_title_in_both_skills(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "bom.md"
+            # BOM-prefixed first line, as Windows Notepad writes
+            src.write_bytes(b"\xef\xbb\xbf# BOM Title\n\n## Section\n\nbody\n")
+
+            # kb-ingest: build() must derive the title from the H1, not the stem
+            res = build_tree.build(
+                str(src), str(Path(tmp) / "tree.json"), source_path="bom.md"
+            )
+            self.assertEqual(res["title_source"], "h1")
+            self.assertEqual(res["title"], "BOM Title")
+
+            # kb-polish: the same file must validate clean (no missing H1)
+            lines = src.read_text(encoding="utf-8-sig").splitlines()
+            is_inside_code = markdown_skeleton.make_fence_checker(
+                markdown_skeleton.find_code_fence_regions(lines)
+            )
+            issues = validate_structure.validate_missing_h1(lines, is_inside_code)
+            self.assertEqual(issues, [], "BOM-prefixed H1 reported as missing")
 
 
 class TestCheckSourceContract(unittest.TestCase):

@@ -186,7 +186,7 @@ def parse_headings(source_path: Path, lines: list = None) -> dict:
     not read the same file once per consumer.
     """
     if lines is None:
-        lines = source_path.read_text(encoding="utf-8").splitlines()
+        lines = source_path.read_text(encoding="utf-8-sig").splitlines()
     total_lines = len(lines)
 
     is_inside_code = make_fence_checker(find_code_fence_regions(lines))
@@ -396,7 +396,7 @@ def first_h1(source_path: Path, lines: list = None) -> str:
     is still the best one available. Falling back here would overwrite it.
     """
     if lines is None:
-        lines = source_path.read_text(encoding="utf-8").splitlines()
+        lines = source_path.read_text(encoding="utf-8-sig").splitlines()
     is_inside_code = make_fence_checker(find_code_fence_regions(lines))
     for i, line in enumerate(lines, 1):
         if is_inside_code(i):
@@ -432,8 +432,11 @@ def build(
 
     # Read the source once as text and hand the same lines to both consumers;
     # the checksum reads bytes separately on purpose (re-encoding text would
-    # lose BOM/CRLF differences that the checksum exists to catch).
-    lines = src.read_text(encoding="utf-8").splitlines()
+    # lose BOM/CRLF differences that the checksum exists to catch). The text
+    # read strips a UTF-8 BOM (utf-8-sig) so a BOM-prefixed first line still
+    # parses as its heading — the same decode kb-polish's validate_structure
+    # uses, so both skills classify a BOM'd H1 identically.
+    lines = src.read_text(encoding="utf-8-sig").splitlines()
     tree = parse_headings(src, lines)
     # doc_id is part of the skeleton, so it is resolved here rather than left to
     # the caller: a re-ingest keeps its id, a new document takes the next free one.

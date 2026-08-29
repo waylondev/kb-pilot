@@ -17,9 +17,29 @@ from .base import ZipXmlVerifier, ExtractResult, PKG_REL
 M = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 REL = PKG_REL  # namespace of the Relationship element in .rels
 
+_CELL_REF = re.compile(r"^([A-Z]+)\d+$")
+
 
 def _tag(ns: str, t: str) -> str:
     return f"{{{ns}}}{t}"
+
+
+def _col_index(ref: str) -> int | None:
+    """0-based column index from an Excel cell reference like `C3`, or None.
+
+    Excel omits the `<c>` elements of empty cells, so a row's cells appear in
+    document order only for the columns that have values — appending them blindly
+    shifts every later column one slot left (a `0%` lands under the wrong header;
+    field-tested). The `r` attribute is the authoritative column
+    position; place cells by it and fill the gaps with empty strings.
+    """
+    m = _CELL_REF.match(ref or "")
+    if not m:
+        return None
+    idx = 0
+    for ch in m.group(1):
+        idx = idx * 26 + (ord(ch) - ord("A") + 1)
+    return idx - 1
 
 
 class XlsxVerifier(ZipXmlVerifier):
@@ -51,10 +71,12 @@ class XlsxVerifier(ZipXmlVerifier):
             rows = []
             if root is not None:
                 for row in root.iter(_tag(M, "row")):
-                    cells = []
-                    for c in row.iter(_tag(M, "c")):
-                        cells.append(self._cell_value(c, shared))
-                    rows.append(cells)
+                    rows.append(self._row_cells(row, shared))
+                # Align every row to the widest one in the sheet: a stray narrow
+                # row renders as a ragged table, which validate_structure reports
+                # as inconsistent column counts and kb-chat misreads.
+                width = max((len(r) for r in rows), default=0)
+                rows = [r + [""] * (width - len(r)) for r in rows]
             tables.append({"name": f"sheet{idx}", "rows": rows})
             text = "\n".join(" | ".join(cell for cell in r) for r in rows if any(r))
             all_texts.append(f"[sheet{idx}]\n{text}")
@@ -65,6 +87,26 @@ class XlsxVerifier(ZipXmlVerifier):
             pages=[{"index": i + 1, "text": t} for i, t in enumerate(all_texts)],
             tables=tables,
         )
+
+    def _row_cells(self, row, shared: list[str]) -> list[str]:
+        """One row as a list of cell texts, positioned by the `r` column reference.
+
+        Cells with a resolvable `r` are placed at their true column, gaps filled
+        with "". A row with no usable references falls back to document order —
+        the value list, not the column alignment, is then the best available fact.
+        """
+        placed: list[tuple[int, str]] = []
+        for c in row.iter(_tag(M, "c")):
+            col = _col_index(c.get("r", ""))
+            placed.append((col, self._cell_value(c, shared)))
+        if any(col is not None for col, _ in placed):
+            width = max(col for col, _ in placed if col is not None) + 1
+            out = [""] * width
+            for col, val in placed:
+                if col is not None:
+                    out[col] = val
+            return out
+        return [val for _, val in placed]
 
     def _cell_value(self, c, shared: list[str]) -> str:
         t = c.get("t", "")

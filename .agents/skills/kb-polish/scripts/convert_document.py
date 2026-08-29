@@ -32,6 +32,13 @@ import json
 import sys
 from pathlib import Path
 
+# Force UTF-8 on stdout/stderr so the JSON contract survives non-UTF-8 consoles
+# (Windows GBK/cp936; field-tested).
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 def load_anydoc():
     """Import AnyDoc lazily.
 
@@ -129,7 +136,7 @@ Exit codes:
         raw_md.write_text(markdown_text, encoding="utf-8")
 
         # 2) extract embedded assets (images -> images/, others -> attachments/)
-        images, attachments = [], []
+        images, attachments, asset_warnings = [], [], []
         try:
             document = anydoc.to_document(bytes(input_path.read_bytes()))
             for idx, asset in enumerate(document.assets, 1):
@@ -141,8 +148,13 @@ Exit codes:
                     (images if is_image else attachments).append(str(target))
                     print(f"[convert] extracted {category}: {target.name}", file=sys.stderr)
         except Exception as e:
-            # asset-extraction failure must not block the main conversion
-            print(f"[convert] asset extraction skipped: {e}", file=sys.stderr)
+            # asset-extraction failure must not block the main conversion, but it
+            # must not be silent either — the stdout JSON reports it so the LLM
+            # knows the image/attachment list may be incomplete (field-tested:
+            # previously only stderr, stdout still ok:true)
+            msg = f"asset extraction skipped: {e}"
+            asset_warnings.append(msg)
+            print(f"[convert] {msg}", file=sys.stderr)
 
         result = {
             "ok": True,
@@ -151,6 +163,7 @@ Exit codes:
             "markdown": str(raw_md),
             "images": images,
             "attachments": attachments,
+            "warnings": asset_warnings,
             "format": input_path.suffix.lstrip(".").lower(),
         }
     except Exception as e:

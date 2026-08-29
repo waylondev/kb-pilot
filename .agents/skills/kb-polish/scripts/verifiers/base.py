@@ -105,6 +105,25 @@ class ZipXmlVerifier(BaseVerifier):
                     out[m] = z.read(m)
         return out
 
+    def extract_image(self, path: Path, filename: str) -> bytes | None:
+        """Return the bytes of a zip member by its basename, or None.
+
+        OLE preview bitmaps (e.g. `word/media/ole_preview.png`) and other embedded
+        objects surface in the verify text as `[image: <name>]` placeholders but are
+        not always present in AnyDoc's asset extraction. This gives extract_verify.py
+        a deterministic byte path for exactly those files, so a placeholder never
+        ends up referencing a file that cannot exist (field-tested: docx OLE preview
+        dangling).
+        """
+        z = self._open_zip(path)
+        if z is None:
+            return None
+        with z:
+            for name in z.namelist():
+                if name.rsplit("/", 1)[-1] == filename:
+                    return z.read(name)
+        return None
+
     def _xml(self, data: bytes) -> ET.Element | None:
         try:
             return ET.fromstring(data)

@@ -10,6 +10,7 @@ future edit is most likely to break, so a change on either side turns red until
 both are updated. Consistency is enforced here, not by a shared import.
 """
 
+import importlib.util
 import json
 import sys
 import tempfile
@@ -22,8 +23,22 @@ sys.path.insert(0, str(ROOT / ".agents" / "skills" / "kb-ingest" / "scripts"))
 sys.path.insert(0, str(ROOT / ".agents" / "skills" / "kb-chat" / "scripts"))
 
 import build_tree  # kb-ingest: the owner
-import check_source  # kb-chat's copy — check_source.py is identical in both skills
+import check_source  # kb-chat's copy — behaviour-pinned to kb-ingest's below
 import markdown_skeleton  # kb-polish's copy
+
+
+def _load_module(name: str, path: Path):
+    """Load a script as a module from an explicit path (for the second copy)."""
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+ingest_check_source = _load_module(
+    "ingest_check_source",
+    ROOT / ".agents" / "skills" / "kb-ingest" / "scripts" / "check_source.py",
+)
 
 
 class TestHeadingContract(unittest.TestCase):
@@ -130,6 +145,35 @@ class TestCheckSourceContract(unittest.TestCase):
     def test_missing_source_fails_both_ways(self):
         with self.assertRaises(FileNotFoundError):
             check_source.check(str(self.tmp / "nope.md"), str(self.tree))
+
+    def test_ingest_copy_reports_same_facts(self):
+        """kb-ingest's copy must report byte-identical drift facts on the same input.
+
+        Both skills carry their own check_source.py (no runtime import between
+        skills); the two copies are pinned here. Docstrings may differ — the
+        contract is behaviour, not bytes (e2e-hy4 P0-1: the copies drifted in
+        prose only, and a byte-equality test would have failed on an edit that
+        changed nothing semantic).
+        """
+        import hashlib
+        sha = hashlib.sha256(self.src.read_bytes()).hexdigest()
+        self.tree.write_text(json.dumps(self._tree(sha)), encoding="utf-8")
+
+        for tree_sha, label in [
+            (sha, "no drift"),
+            ("0" * 64, "value edit"),
+        ]:
+            self.tree.write_text(json.dumps(self._tree(tree_sha)), encoding="utf-8")
+            a = check_source.check(str(self.src), str(self.tree))
+            b = ingest_check_source.check(str(self.src), str(self.tree))
+            for key in ("drifted", "trustworthy", "line_count_changed",
+                        "checksum_unknown", "current_total_lines",
+                        "recorded_total_lines"):
+                self.assertEqual(
+                    a.get(key), b.get(key),
+                    f"copies disagree on {key!r} for {label}: "
+                    f"kb-chat={a.get(key)!r} kb-ingest={b.get(key)!r}",
+                )
 
 
 if __name__ == "__main__":

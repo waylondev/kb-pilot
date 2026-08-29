@@ -28,8 +28,18 @@ Exit codes:
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
+
+# Force UTF-8 on stdout/stderr so the JSON contract survives non-UTF-8 consoles
+# (Windows GBK/cp936 raises UnicodeEncodeError on non-ASCII output, killing the
+# machine-readable result; field-tested). The stdout=JSON promise
+# must not depend on the caller setting PYTHONIOENCODING.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
 # allow running directly as a script (scripts/extract_verify.py) so verifiers can be imported
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -126,16 +136,43 @@ Exit codes:
         out_dir.mkdir(parents=True, exist_ok=True)
         if args.save_text:
             (out_dir / "verify_text.txt").write_text(result.text, encoding="utf-8")
+        img_dir = out_dir / "images"
+        img_dir.mkdir(parents=True, exist_ok=True)
+        landed = set()
         if result.images:
             # land embedded images in out_dir/images/, so Step 4 can reference
             # them as ![](./images/<name>) exactly like the zip-based formats
-            img_dir = out_dir / "images"
-            img_dir.mkdir(parents=True, exist_ok=True)
             for img in result.images:
                 name, data = img.get("name"), img.get("data")
                 if not name or not data:
                     continue
                 (img_dir / name).write_bytes(bytes(data))
+                landed.add(name)
+        # Every `[image: <name>]` placeholder in the verify text must resolve to a
+        # real file. AnyDoc's asset extraction misses some zip media (e.g. docx OLE
+        # preview bitmaps), so pull those bytes straight out of the container; if a
+        # placeholder still has no byte source, say so in warnings instead of
+        # letting Step 4 emit a dangling image reference (field-tested).
+        placeholder_re = re.compile(r"\[image:\s*([^\]]+?)\s*\]")
+        for name in placeholder_re.findall(result.text):
+            if name in landed or (img_dir / name).is_file():
+                continue
+            getter = getattr(verifier, "extract_image", None)
+            if getter is not None:
+                data = getter(input_path, name)
+                if data:
+                    (img_dir / name).write_bytes(bytes(data))
+                    landed.add(name)
+                    print(f"[verify] exported missing asset from container: {name}", file=sys.stderr)
+                    continue
+            result.warnings.append(
+                f"image '{name}' is referenced in the verify text but has no byte source "
+                "(not extracted by AnyDoc, not found in the container); do not emit a "
+                "![...] reference for it — describe it in words or drop it"
+            )
+            print(f"[verify] missing asset, no byte source: {name}", file=sys.stderr)
+        payload["warnings"] = result.warnings
+        payload["images"] = sorted(landed)
         (out_dir / "verify_result.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"[verify] result saved to {out_dir}", file=sys.stderr)

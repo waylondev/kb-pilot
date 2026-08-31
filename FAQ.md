@@ -170,7 +170,7 @@ The rule: **the system does not perform format conversion.**
 
 AGENTS.md states: **"No format conversion — PDF/Word/HTML → Markdown is the user's job, not the system's."**
 
-PDFs, images, Excel files must be converted to Markdown before ingestion — but you choose how. This isn't a technical limitation — it's a design choice: conversion accuracy must remain your responsibility. You can convert any way you like (manually, an external tool, or the optional **kb-polish** skill, which runs AnyDoc + a deterministic verify cross-check and an LLM re-render, then asks you to confirm). The recommended workflow is AI-assisted conversion + human review.
+PDFs, images, Excel files must be converted to Markdown before ingestion — but you choose how. This isn't a technical limitation — it's a design choice: conversion accuracy must remain your responsibility. You can convert any way you like (manually, an external tool, or the optional **kb-polish** skill — a thin wrapper that turns the document into a first-draft Markdown, extracts embedded assets, and lets the LLM organize the result into the standard Markdown form, then asks you to confirm). The recommended workflow is AI-assisted conversion + human review.
 
 **If a document references an image (e.g., "see Figure 5"), the extracted source snippet includes the reference text and surrounding Markdown context. The system does not interpret image contents unless that content is represented in Markdown.**
 

@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Cross-skill contract tests.
 
-The three skills are published independently and carry no runtime dependency on
-each other. kb-polish's `markdown_skeleton.py` and kb-chat's `check_source.py`
-are therefore *copies* of routines owned by kb-ingest. Copies drift silently —
-one side changes, the other keeps validating clean and parsing wrong. These tests
-pin the behaviour of the copies to the originals using the same boundary cases a
-future edit is most likely to break, so a change on either side turns red until
-both are updated. Consistency is enforced here, not by a shared import.
+The skills are published independently and carry no runtime dependency on each
+other. kb-chat's `check_source.py` is a *copy* of the routine owned by kb-ingest.
+Copies drift silently — one side changes, the other keeps validating clean and
+parsing wrong. These tests pin the behaviour of the copy to the original using the
+same boundary cases a future edit is most likely to break, so a change on either
+side turns red until both are updated. Consistency is enforced here, not by a
+shared import.
 """
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -18,14 +19,11 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / ".agents" / "skills" / "kb-polish" / "scripts"))
 sys.path.insert(0, str(ROOT / ".agents" / "skills" / "kb-ingest" / "scripts"))
 sys.path.insert(0, str(ROOT / ".agents" / "skills" / "kb-chat" / "scripts"))
 
 import build_tree  # kb-ingest: the owner
 import check_source  # kb-chat's copy — behaviour-pinned to kb-ingest's below
-import markdown_skeleton  # kb-polish's copy
-import validate_structure  # kb-polish: the validator that reads with utf-8-sig
 
 
 def _load_module(name: str, path: Path):
@@ -40,110 +38,6 @@ ingest_check_source = _load_module(
     "ingest_check_source",
     ROOT / ".agents" / "skills" / "kb-ingest" / "scripts" / "check_source.py",
 )
-
-
-class TestHeadingContract(unittest.TestCase):
-    """kb-polish's heading() must classify exactly like kb-ingest's."""
-
-    CASES = [
-        "# Title",          # H1
-        "## Section",       # H2
-        "### Sub",          # H3
-        "#### Deep",        # H4
-        "##### Deeper",     # H5
-        "###### Deepest",   # H6
-        "####### seven",    # 7 #s: not a heading (CommonMark)
-        "### ",             # empty title: not a heading
-        "#",                # no title: not a heading
-        "## Title ##",      # trailing #s stripped from title
-        "## Title ###",     # longer trailing sequence, stripped
-        "#heading",         # no space after #: paragraph, not a heading
-        "    # indented",   # 4-space indent: not a heading (not up to 3)
-        "  # two spaces",   # up to 3 leading spaces: still a heading
-        "# heading  ",      # trailing whitespace trimmed
-        "## A | B",         # pipe in title is fine
-        "# `code` title",   # backticks in title are fine
-        "普通中文标题",      # non-ASCII title (no leading #): not a heading
-        "## 中文标题",       # non-ASCII ATX heading
-    ]
-
-    def test_classification_and_text_agree(self):
-        for line in self.CASES:
-            a = markdown_skeleton.heading(line)
-            b = build_tree.heading(line)
-            self.assertEqual(
-                a, b,
-                f"heading() disagrees on {line!r}: kb-polish={a!r} kb-ingest={b!r}",
-            )
-
-
-class TestFenceContract(unittest.TestCase):
-    """kb-polish's fence detection must return the same regions as kb-ingest's."""
-
-    DOCS = [
-        # simple fence
-        ["```", "x", "```"],
-        # tilde fence
-        ["~~~", "x", "~~~"],
-        # backtick fence must not close a tilde block
-        ["~~~", "## not a heading", "```", "## still not", "~~~"],
-        # unterminated fence runs to EOF
-        ["```", "## never a heading"],
-        # info string with a backtick is not a fence opener
-        ["```python `bad`", "## still a heading"],
-        # longer closing fence is valid
-        ["```", "x", "````"],
-        # shorter closing fence does not close
-        ["````", "x", "```", "## still inside"],
-        # 3+ leading spaces is not a fence
-        ["    ```", "## a heading"],
-        # 1-3 leading spaces is a fence
-        ["  ```", "## not a heading", "  ```"],
-        # two fences in one document
-        ["```", "a", "```", "", "~~~", "b", "~~~"],
-    ]
-
-    def test_regions_agree(self):
-        for doc in self.DOCS:
-            a = markdown_skeleton.find_code_fence_regions(doc)
-            b = build_tree.find_code_fence_regions(doc)
-            self.assertEqual(
-                a, b,
-                f"fence regions disagree on {doc!r}: kb-polish={a!r} kb-ingest={b!r}",
-            )
-
-
-class TestBomContract(unittest.TestCase):
-    """A UTF-8 BOM at the start of a Markdown file must not hide the first H1.
-
-    kb-polish's validate_structure reads source with utf-8-sig (BOM stripped);
-    kb-ingest's build_tree reads the same heading text with utf-8. A BOM-prefixed
-    first line (`\ufeff# Title`) therefore parsed as a heading on one side and as
-    a plain line on the other: validation reported clean while the document title
-    silently degraded to the file stem. The contract: both skills must extract the
-    same H1 from a BOM'd file. (e2e-t4 finding.)
-    """
-
-    def test_bom_prefix_h1_is_document_title_in_both_skills(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            src = Path(tmp) / "bom.md"
-            # BOM-prefixed first line, as Windows Notepad writes
-            src.write_bytes(b"\xef\xbb\xbf# BOM Title\n\n## Section\n\nbody\n")
-
-            # kb-ingest: build() must derive the title from the H1, not the stem
-            res = build_tree.build(
-                str(src), str(Path(tmp) / "tree.json"), source_path="bom.md"
-            )
-            self.assertEqual(res["title_source"], "h1")
-            self.assertEqual(res["title"], "BOM Title")
-
-            # kb-polish: the same file must validate clean (no missing H1)
-            lines = src.read_text(encoding="utf-8-sig").splitlines()
-            is_inside_code = markdown_skeleton.make_fence_checker(
-                markdown_skeleton.find_code_fence_regions(lines)
-            )
-            issues = validate_structure.validate_missing_h1(lines, is_inside_code)
-            self.assertEqual(issues, [], "BOM-prefixed H1 reported as missing")
 
 
 class TestCheckSourceContract(unittest.TestCase):
@@ -161,7 +55,6 @@ class TestCheckSourceContract(unittest.TestCase):
         return {"doc_id": "doc_001", "source_sha256": sha, "total_lines": 5}
 
     def test_no_drift_agrees(self):
-        import hashlib
         sha = hashlib.sha256(self.src.read_bytes()).hexdigest()
         self.tree.write_text(json.dumps(self._tree(sha)), encoding="utf-8")
         a = check_source.check(str(self.src), str(self.tree))
@@ -189,7 +82,6 @@ class TestCheckSourceContract(unittest.TestCase):
         prose only, and a byte-equality test would have failed on an edit that
         changed nothing semantic).
         """
-        import hashlib
         sha = hashlib.sha256(self.src.read_bytes()).hexdigest()
         self.tree.write_text(json.dumps(self._tree(sha)), encoding="utf-8")
 

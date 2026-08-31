@@ -16,7 +16,7 @@ This is a **convenience helper, not a required stage**. Per AGENTS.md, format co
 
 ## Steps
 
-- [ ] 1. **Convert + extract assets**: `python scripts/convert_document.py {input} -o {outdir}` — writes `raw.md` and lands embedded objects into `images/` (images) and `attachments/` (other files). JSON result on stdout.
+- [ ] 1. **Convert + extract assets**: `python scripts/convert_document.py {input} -o {outdir}` — writes `raw.md` and lands embedded objects into `images/` (images) and `attachments/` (other files) via AnyDoc. JSON result on stdout. **Pure AnyDoc: no rasterization, no per-format plugins.** A scan (no text layer) fails conversion with a `NeedsOcrError` — that failure surfaces honestly.
 - [ ] 2. **LLM organizes into standard Markdown**: read `raw.md`, correct its layout into the kb-pilot form (see template). This is the LLM's semantic job — fix split/reordered/misaligned text, rebuild heading levels, restore table rows/columns, point image references at `images/`.
 - [ ] 3. **Human confirmation**, then hand off to `kb-ingest`.
 

@@ -108,7 +108,10 @@ def main() -> int:
 Output: raw.md (first draft), images/, attachments/
 
 Not supported by AnyDoc: .html/.md/.txt (already text — ingest directly) and
-.tsv (rename to .csv first). Pure scans are kept as page images, never OCR'd.
+.tsv (rename to .csv first). AnyDoc does no OCR, so scans (no text layer) fail
+conversion with a NeedsOcrError — that failure surfaces, not a fabricated result.
+Note: AnyDoc exposes no asset API for PDF (to_document refuses PDFs), so PDF
+assets are not extracted; images embedded in Word/PPT/Excel etc. land in images/.
 
 Exit codes:
   0  success
@@ -151,7 +154,8 @@ Exit codes:
             # asset-extraction failure must not block the main conversion, but it
             # must not be silent either — the stdout JSON reports it so the LLM
             # knows the image/attachment list may be incomplete (field-tested:
-            # previously only stderr, stdout still ok:true)
+            # previously only stderr, stdout still ok:true). E.g. AnyDoc gives PDF
+            # no asset API (to_document refuses PDFs), so PDFs get this warning.
             msg = f"asset extraction skipped: {e}"
             asset_warnings.append(msg)
             print(f"[convert] {msg}", file=sys.stderr)

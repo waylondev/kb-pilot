@@ -1,19 +1,18 @@
 name: contract & regression tests
 
 # The core path has no third-party dependencies by design (AGENTS.md: kb-ingest and
-# kb-chat run on the standard library), and all three test files are stdlib-only so
+# kb-chat run on the standard library), and the two test files are stdlib-only so
 # they run anywhere. Nothing here installs packages, so a regression cannot hide
 # behind a dependency-resolution failure.
 #
-# test_consistency.py is the cross-skill contract suite: kb-polish's
-# markdown_skeleton.py and kb-chat's check_source.py are *copies* of routines owned
-# by kb-ingest, and copies drift silently — one side changes, the other keeps
-# validating clean and parsing wrong. Pinning them on every push is what keeps the
-# three independently-published skills behaviour-identical.
+# test_consistency.py is the cross-skill contract suite: kb-chat's check_source.py
+# is a *copy* of the routine owned by kb-ingest, and copies drift silently — one
+# side changes, the other keeps validating clean and parsing wrong. Pinning them
+# on every push is what keeps the independently-published skills behaviour-identical.
 #
-# What is deliberately not covered here: per-format conversion quality. That needs
-# firecrawl-anydoc / pymupdf / striprtf and a corpus of real documents; test_polish.py
-# states that its runner belongs in tests/ too when that run happens.
+# What is deliberately not covered here: per-format conversion quality. kb-polish is
+# a thin AnyDoc wrapper whose only script (convert_document.py) needs firecrawl-anydoc,
+# so it is exercised by the LLM during real use, not pinned in this dependency-free CI.
 
 on:
   push:
@@ -39,9 +38,6 @@ jobs:
 
       - name: kb-ingest / kb-chat core path
         run: python tests/test_core.py
-
-      - name: kb-polish stdlib-only scripts
-        run: python tests/test_polish.py
 
       - name: cross-skill contract tests (copies pinned to the owners)
         run: python tests/test_consistency.py

@@ -434,8 +434,7 @@ def build(
     # the checksum reads bytes separately on purpose (re-encoding text would
     # lose BOM/CRLF differences that the checksum exists to catch). The text
     # read strips a UTF-8 BOM (utf-8-sig) so a BOM-prefixed first line still
-    # parses as its heading — the same decode kb-polish's validate_structure
-    # uses, so both skills classify a BOM'd H1 identically.
+    # parses as its heading.
     lines = src.read_text(encoding="utf-8-sig").splitlines()
     tree = parse_headings(src, lines)
     # doc_id is part of the skeleton, so it is resolved here rather than left to
